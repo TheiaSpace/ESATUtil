@@ -32,6 +32,9 @@ class ESATUtil
 
     // Pad a string with a leading padding character to a given total length.
     String pad(String text, char padding, unsigned int length);
+
+    // Swap the bytes of a word.
+    word swapWordBytes(word number);
 };
 
 extern ESATUtil Util;
