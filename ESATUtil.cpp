@@ -44,4 +44,9 @@ String ESATUtil::pad(String text, char padding, unsigned int length)
   return paddedText;
 }
 
+word ESATUtil::swapWordBytes(const word number)
+{
+  return word(lowByte(number), highByte(number));
+}
+
 ESATUtil Util;
