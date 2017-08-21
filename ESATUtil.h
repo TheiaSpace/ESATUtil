@@ -27,6 +27,12 @@ class ESATUtil
     // Return the hexadecimal representation of a one-byte number.
     String byteToHexadecimal(byte number);
 
+    // Convert a hexadecimal string to a byte.
+    byte hexadecimalToByte(String hexadecimalNumber);
+
+    // Convert a hexadecimal string to a word.
+    word hexadecimalToWord(String hexadecimalNumber);
+
     // Return the hexadecimal representation of a two-byte number.
     String intToHexadecimal(unsigned int number);
 
