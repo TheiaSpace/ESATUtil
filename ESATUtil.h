@@ -41,6 +41,9 @@ class ESATUtil
 
     // Swap the bytes of a word.
     word swapWordBytes(word number);
+
+    // Return the hexadecimal representation of a two-byte number.
+    String wordToHexadecimal(word number);
 };
 
 extern ESATUtil Util;

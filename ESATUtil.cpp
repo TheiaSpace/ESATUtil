@@ -126,4 +126,11 @@ word ESATUtil::swapWordBytes(const word number)
   return word(lowByte(number), highByte(number));
 }
 
+String ESATUtil::wordToHexadecimal(const word number)
+{
+  String text =
+    byteToHexadecimal(highByte(number)) + byteToHexadecimal(lowByte(number));
+  return text;
+}
+
 ESATUtil Util;
