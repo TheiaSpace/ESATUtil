@@ -26,8 +26,7 @@
 class ESATI2CDevice
 {
   public:
-    // Error flag.  Set to true on communication error.
-    // Reset it manually.
+    // Error flag.  True if the latest communication failed; true otherwise.
     boolean error;
 
     // Instantiate a new I2C device.

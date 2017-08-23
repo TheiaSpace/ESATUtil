@@ -47,6 +47,7 @@ word ESATI2CDevice::readBigEndianWord(const byte registerNumber)
     error = true;
     return 0;
   }
+  error = false;
   return word(firstByte, secondByte);
 }
 
@@ -67,6 +68,7 @@ byte ESATI2CDevice::readByte(const byte registerNumber)
     error = true;
     return 0;
   }
+  error = false;
   return byte(reading);
 }
 
@@ -77,12 +79,16 @@ word ESATI2CDevice::readLittleEndianWord(const byte registerNumber)
 
 void ESATI2CDevice::writeBigEndianWord(const byte registerNumber, const word datum)
 {
-  bus.beginTransmission(address);
+   bus.beginTransmission(address);
   bus.write(registerNumber);
   bus.write(highByte(datum));
   bus.write(lowByte(datum));
   const byte status = bus.endTransmission();
-  if (status != 0)
+  if (status == 0)
+  {
+    error = false;
+  }
+  else
   {
     error = true;
   }
@@ -100,7 +106,11 @@ void ESATI2CDevice::writeBytes(const byte registerNumber, const byte* const data
   bus.write(registerNumber);
   bus.write(data, length);
   const byte status = bus.endTransmission();
-  if (status != 0)
+  if (status == 0)
+  {
+    error = false;
+  }
+  else
   {
     error = true;
   }
