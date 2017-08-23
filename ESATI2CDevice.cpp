@@ -34,7 +34,7 @@ word ESATI2CDevice::readBigEndianWord(const byte registerNumber)
     error = true;
     return 0;
   }
-  bus.requestFrom(uint8_t(address), uint8_t(1));
+  bus.requestFrom(uint8_t(address), uint8_t(2));
   const int firstByte = bus.read();
   if (firstByte < 0)
   {
