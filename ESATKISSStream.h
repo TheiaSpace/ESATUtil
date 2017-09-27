@@ -57,6 +57,9 @@ class ESATKISSStream: public Stream
     // which may be greater than 1 due to escaping.
     size_t write(uint8_t datum);
 
+    // Overloaded versions of write from Print.
+    using Print::write;
+
     // End a KISS frame.
     // The next byte available for reading
     // will signal the end of a frame.
