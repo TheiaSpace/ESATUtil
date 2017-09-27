@@ -29,25 +29,11 @@ void ESATPacket::clear()
   buffer[payloadLengthOffset] = 0;
 }
 
-word ESATPacket::readBigEndianWord()
-{
-  const byte highByte = readByte();
-  const byte lowByte = readByte();
-  return word(highByte, lowByte);
-}
-
 byte ESATPacket::readByte()
 {
   const byte datum = buffer[readPosition];
   readPosition = readPosition + 1;
   return datum;
-}
-
-word ESATPacket::readLittleEndianWord()
-{
-  const word lowByte = readByte();
-  const word highByte = readByte();
-  return word(highByte, lowByte);
 }
 
 byte ESATPacket::readMajorVersionNumber()
@@ -85,23 +71,18 @@ byte ESATPacket::readSubsystemIdentifier()
   return buffer[subsystemIdentifierOffset];
 }
 
+word ESATPacket::readWord()
+{
+  const byte highByte = readByte();
+  const byte lowByte = readByte();
+  return word(highByte, lowByte);
+}
+
 void ESATPacket::writeByte(const byte datum)
 {
   const byte payloadLength = readPayloadLength();
   buffer[payloadOffset + payloadLength] = datum;
   buffer[payloadLengthOffset] = payloadLength + 1;
-}
-
-void ESATPacket::writeBigEndianWord(const word datum)
-{
-  writeByte(highByte(datum));
-  writeByte(lowByte(datum));
-}
-
-void ESATPacket::writeLittleEndianWord(const word datum)
-{
-  writeByte(lowByte(datum));
-  writeByte(highByte(datum));
 }
 
 void ESATPacket::writeMajorVersionNumber(const byte majorVersionNumber)
@@ -127,4 +108,10 @@ void ESATPacket::writePatchVersionNumber(const byte patchVersionNumber)
 void ESATPacket::writeSubsystemIdentifier(const byte subsystemIdentifier)
 {
   buffer[subsystemIdentifierOffset] = subsystemIdentifier;
+}
+
+void ESATPacket::writeWord(const word datum)
+{
+  writeByte(highByte(datum));
+  writeByte(lowByte(datum));
 }

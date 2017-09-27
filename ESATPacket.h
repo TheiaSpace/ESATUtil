@@ -31,6 +31,7 @@
 //   - minor version number;
 //   - patch version number;
 //   - payload length.
+// Multi-byte words are stored in big-endian byte order.
 class ESATPacket
 {
   public:
@@ -52,14 +53,8 @@ class ESATPacket
     // Clear the packet by setting the payload length to 0.
     void clear();
 
-    // Read the next big-endian 16-bit integer from the packet payload.
-    word readBigEndianWord();
-
     // Read the next 8-bit integer from the packet payload.
     byte readByte();
-
-    // Read the next little-endian 16-bit integer from the packet payload.
-    word readLittleEndianWord();
 
     // Read the major version number of the packet.
     byte readMajorVersionNumber();
@@ -82,14 +77,11 @@ class ESATPacket
     // Read the subsystem identifier of the packet.
     byte readSubsystemIdentifier();
 
-    // Append a big-endian 16-bit integer to the packet buffer.
-    void writeBigEndianWord(word datum);
+    // Read the next 16-bit integer from the packet payload.
+    word readWord();
 
     // Append an 8-bit integer to the packet buffer.
     void writeByte(byte datum);
-
-    // Append a little-endian 16-bit integer to the packet buffer.
-    void writeLittleEndianWord(word datum);
 
     // Set the major version number of the packet.
     void writeMajorVersionNumber(byte majorVersionNumber);
@@ -105,6 +97,9 @@ class ESATPacket
 
     // Set the subsystem identifier of the packet.
     void writeSubsystemIdentifier(byte subsystemIdentifier);
+
+    // Append a 16-bit integer to the packet buffer.
+    void writeWord(word datum);
 
   private:
     // Field offsets.
