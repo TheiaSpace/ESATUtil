@@ -40,7 +40,7 @@ int ESATKISSStream::available()
 
 size_t ESATKISSStream::beginTransmission()
 {
-  const size_t frameEndMarkBytesWritten = backendStream.write(FEND);
+  const size_t frameEndMarkBytesWritten = backendStream.write(FRAME_END);
   const size_t dataFrameCommandCodeBytesWritten =
     backendStream.write(DATA_FRAME_COMMAND_CODE);
   return frameEndMarkBytesWritten + dataFrameCommandCodeBytesWritten;
@@ -77,13 +77,13 @@ int ESATKISSStream::decodeEscapedFrameData(const int datum)
 {
   switch (datum)
   {
-  case TFEND:
+  case TRANSPOSED_FRAME_END:
     decoderState = DECODING_FRAME_DATA;
-    return FEND;
+    return FRAME_END;
     break;
-  case TFESC:
+  case TRANSPOSED_FRAME_ESCAPE:
     decoderState = DECODING_FRAME_DATA;
-    return FESC;
+    return FRAME_ESCAPE;
     break;
   default:
     decoderState = WAITING_FOR_FRAME_START_MARK;
@@ -110,11 +110,11 @@ int ESATKISSStream::decodeFrameData(const int datum)
 {
   switch (datum)
   {
-  case FEND:
+  case FRAME_END:
     decoderState = WAITING_FOR_FRAME_START_MARK;
     return -1;
     break;
-  case FESC:
+  case FRAME_ESCAPE:
     decoderState = DECODING_ESCAPED_FRAME_DATA;
     return -1;
     break;
@@ -127,7 +127,7 @@ int ESATKISSStream::decodeFrameData(const int datum)
 
 int ESATKISSStream::decodeStartMark(const int datum)
 {
-  if (datum == FEND)
+  if (datum == FRAME_END)
   {
     decoderState = WAITING_FOR_DATA_FRAME_COMMAND_CODE;
     return -1;
@@ -136,7 +136,7 @@ int ESATKISSStream::decodeStartMark(const int datum)
 
 size_t ESATKISSStream::endTransmission()
 {
-  return backendStream.write(FEND);
+  return backendStream.write(FRAME_END);
 }
 
 void ESATKISSStream::flush()
@@ -172,10 +172,10 @@ size_t ESATKISSStream::write(const uint8_t datum)
 {
   switch (datum)
   {
-  case FEND:
+  case FRAME_END:
     return writeEscapedFrameEndMark();
     break;
-  case FESC:
+  case FRAME_ESCAPE:
     return writeEscapedEscapeMark();
     break;
   default:
@@ -186,14 +186,18 @@ size_t ESATKISSStream::write(const uint8_t datum)
 
 size_t ESATKISSStream::writeEscapedEscapeMark()
 {
-  const size_t escapeMarkBytesWritten = backendStream.write(FESC);
-  const size_t escapedEscapeMarkBytesWritten = backendStream.write(TFESC);
+  const size_t escapeMarkBytesWritten =
+    backendStream.write(FRAME_ESCAPE);
+  const size_t escapedEscapeMarkBytesWritten =
+    backendStream.write(TRANSPOSED_FRAME_ESCAPE);
   return escapeMarkBytesWritten + escapedEscapeMarkBytesWritten;
 }
 
 size_t ESATKISSStream::writeEscapedFrameEndMark()
 {
-  const size_t escapeMarkBytesWritten = backendStream.write(FESC);
-  const size_t escapedFrameEndMarkBytesWritten = backendStream.write(TFEND);
+  const size_t escapeMarkBytesWritten =
+    backendStream.write(FRAME_ESCAPE);
+  const size_t escapedFrameEndMarkBytesWritten =
+    backendStream.write(TRANSPOSED_FRAME_END);
   return escapeMarkBytesWritten + escapedFrameEndMarkBytesWritten;
 }
