@@ -68,10 +68,10 @@ class ESATKISSStream: public Stream
 
   private:
     // Special characters.
-    static const byte FEND = 0xC0;
-    static const byte FESC = 0xDB;
-    static const byte TFEND = 0xDC;
-    static const byte TFESC = 0xDD;
+    static const byte FRAME_END = 0xC0;
+    static const byte FRAME_ESCAPE = 0xDB;
+    static const byte TRANSPOSED_FRAME_END = 0xDC;
+    static const byte TRANSPOSED_FRAME_ESCAPE = 0xDD;
 
     // Supported command codes.
     static const byte DATA_FRAME_COMMAND_CODE = 0x00;
