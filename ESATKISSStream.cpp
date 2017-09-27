@@ -155,6 +155,12 @@ int ESATKISSStream::peek()
 
 int ESATKISSStream::read()
 {
+  if (nextByte > -1)
+  {
+    const int datum = nextByte;
+    nextByte = -1;
+    return datum;
+  }
   nextByte = -1;
   while (backendStream.available() > 0)
   {
