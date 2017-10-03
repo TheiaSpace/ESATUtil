@@ -36,6 +36,10 @@ void ESATCCSDSPacket::clear()
 
 word ESATCCSDSPacket::readApplicationProcessIdentifier()
 {
+  if (bufferLength < PRIMARY_HEADER_LENGTH)
+  {
+    return 0;
+  }
   return readBits(applicationProcessIdentifierOffset,
                   applicationProcessIdentifierLength);
 }
@@ -46,6 +50,10 @@ word ESATCCSDSPacket::readBits(const byte offset, const byte length)
   for (int position = 0; position < length; position++)
   {
     const byte sourceByte = (offset + position) / 8;
+    if (sourceByte >= bufferLength)
+    {
+      return 0;
+    }
     const byte sourceBit = 8 - ((offset + position) % 8) - 1;
     const byte targetBit = length - position - 1;
     const boolean bitValue = bitRead(buffer[sourceByte], sourceBit);
@@ -56,25 +64,42 @@ word ESATCCSDSPacket::readBits(const byte offset, const byte length)
 
 byte ESATCCSDSPacket::readByte()
 {
+  const unsigned long nextReadPosition = readPosition + 1;
+  if (nextReadPosition >= bufferLength)
+  {
+    return 0;
+  }
   const byte datum = buffer[readPosition];
-  readPosition = readPosition + 1;
+  readPosition = nextReadPosition;
   return datum;
 }
 
 word ESATCCSDSPacket::readPacketDataLength()
 {
+  if (bufferLength < PRIMARY_HEADER_LENGTH)
+  {
+    return 0;
+  }
   return word(buffer[packetDataLengthOffset],
               buffer[packetDataLengthOffset+1]);
 }
 
 word ESATCCSDSPacket::readPacketSequenceCount()
 {
+  if (bufferLength < PRIMARY_HEADER_LENGTH)
+  {
+    return 0;
+  }
   return readBits(packetSequenceCountOffset,
                   packetSequenceCountLength);
 }
 
 ESATCCSDSPacket::PacketType ESATCCSDSPacket::readPacketType()
 {
+  if (bufferLength < PRIMARY_HEADER_LENGTH)
+  {
+    return ESATCCSDSPacket::PacketType(0);
+  }
   const word bits = readBits(packetTypeOffset,
                              packetTypeLength);
   return ESATCCSDSPacket::PacketType(bits);
@@ -82,12 +107,20 @@ ESATCCSDSPacket::PacketType ESATCCSDSPacket::readPacketType()
 
 byte ESATCCSDSPacket::readPacketVersionNumber()
 {
+  if (bufferLength < PRIMARY_HEADER_LENGTH)
+  {
+    return 0;
+  }
   return readBits(packetVersionNumberOffset,
                   packetVersionNumberLength);
 }
 
 ESATCCSDSPacket::SecondaryHeaderFlag ESATCCSDSPacket::readSecondaryHeaderFlag()
 {
+  if (bufferLength < PRIMARY_HEADER_LENGTH)
+  {
+    return ESATCCSDSPacket::SecondaryHeaderFlag(0);
+  }
   const word bits = readBits(secondaryHeaderFlagOffset,
                              secondaryHeaderFlagLength);
   return ESATCCSDSPacket::SecondaryHeaderFlag(bits);
@@ -95,6 +128,10 @@ ESATCCSDSPacket::SecondaryHeaderFlag ESATCCSDSPacket::readSecondaryHeaderFlag()
 
 ESATCCSDSPacket::SequenceFlags ESATCCSDSPacket::readSequenceFlags()
 {
+  if (bufferLength < PRIMARY_HEADER_LENGTH)
+  {
+    return ESATCCSDSPacket::SequenceFlags(0);
+  }
   const word bits = readBits(sequenceFlagsOffset,
                              sequenceFlagsLength);
   return ESATCCSDSPacket::SequenceFlags(bits);
