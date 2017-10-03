@@ -59,6 +59,9 @@ class ESATCCSDSPacket
     // Length of the primary header.
     static const byte PRIMARY_HEADER_LENGTH = 6;
 
+    // Buffer with the raw packet data.
+    byte* const buffer;
+
     // Instantiate a new packet backed by the given buffer.
     // The buffer must be at least 6 bytes long plus the amount
     // of space necessary for storing the packet data field.
@@ -179,9 +182,6 @@ class ESATCCSDSPacket
     static const byte packetSequenceCountLength = 14;
     // The following offset is expressed in bytes:
     static const byte packetDataLengthOffset = 4;
-
-    // Buffer with the raw packet data.
-    byte* const buffer;
 
     // Position of the next read operation.
     unsigned long readPosition;
