@@ -108,6 +108,10 @@ class ESATCCSDSPacket
     // Read the next 16-bit integer from the packet payload.
     word readWord();
 
+    // Move the read pointer back to the start of the packet data
+    // field (packet payload).
+    void rewind();
+
     // Write the CCSDS application process identifier.
     // This field is part of the primary header.
     // There should be one application process identifier per logical

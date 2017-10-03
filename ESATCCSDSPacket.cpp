@@ -105,6 +105,11 @@ word ESATCCSDSPacket::readWord()
   return word(highByte, lowByte);
 }
 
+void ESATCCSDSPacket::rewind()
+{
+  readPosition = 0;
+}
+
 void ESATCCSDSPacket::writeApplicationProcessIdentifier(const word applicationProcessIdentifier)
 {
   writeBits(applicationProcessIdentifierOffset,
