@@ -70,7 +70,7 @@ class ESATCCSDSPacket
     // of space necessary for storing the packet data field.
     ESATCCSDSPacket(byte buffer[], word bufferLength);
 
-    // Clear the packet by setting all the primary header fields to 0.
+    // Clear the packet by setting all buffer bytes to 0.
     void clear();
 
     // Read the CCSDS application process identifier.

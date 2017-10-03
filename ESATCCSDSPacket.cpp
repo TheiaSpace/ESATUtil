@@ -28,7 +28,7 @@ ESATCCSDSPacket::ESATCCSDSPacket(byte* const byteBuffer,
 
 void ESATCCSDSPacket::clear()
 {
-  for (int position = 0; position < PRIMARY_HEADER_LENGTH; position++)
+  for (int position = 0; position < bufferLength; position++)
   {
     buffer[position] = 0;
   }
