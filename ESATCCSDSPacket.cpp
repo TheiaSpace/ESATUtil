@@ -18,8 +18,10 @@
 
 #include "ESATCCSDSPacket.h"
 
-ESATCCSDSPacket::ESATCCSDSPacket(byte* const byteBuffer):
+ESATCCSDSPacket::ESATCCSDSPacket(byte* const byteBuffer,
+                                 const word byteBufferLength):
   buffer(byteBuffer),
+  bufferLength(byteBufferLength),
   readPosition(PRIMARY_HEADER_LENGTH)
 {
 }

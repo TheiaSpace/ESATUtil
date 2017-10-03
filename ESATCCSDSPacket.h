@@ -62,10 +62,13 @@ class ESATCCSDSPacket
     // Buffer with the raw packet data.
     byte* const buffer;
 
+    // Buffer length in bytes.
+    const word bufferLength;
+
     // Instantiate a new packet backed by the given buffer.
     // The buffer must be at least 6 bytes long plus the amount
     // of space necessary for storing the packet data field.
-    ESATCCSDSPacket(byte buffer[]);
+    ESATCCSDSPacket(byte buffer[], word bufferLength);
 
     // Clear the packet by setting all the primary header fields to 0.
     void clear();
