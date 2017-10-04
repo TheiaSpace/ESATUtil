@@ -83,6 +83,10 @@ class ESATCCSDSPacket
     // Read the next 8-bit integer from the packet payload.
     byte readByte();
 
+    // Read the next IEEE 754 single-precision floating-point number
+    // from the packet payload.
+    float readFloat();
+
     // Read the next 32-bit integer from the packet payload.
     unsigned long readLong();
 
@@ -131,6 +135,11 @@ class ESATCCSDSPacket
     // Append an 8-bit integer to the packet buffer.
     // This increments the packet data length by 1.
     void writeByte(byte datum);
+
+    // Append an IEEE 754 single-precision floating-point number to
+    // the packet buffer.
+    // This increments the packet data length by 4.
+    void writeFloat(float datum);
 
     // Append a 32-bit integer to the packet buffer.
     // This increments the packet data length by 4.
@@ -195,6 +204,14 @@ class ESATCCSDSPacket
 
     // Position of the next read operation.
     unsigned long readPosition;
+
+    // Return the bits of a floating-point number packed into a 32-bit
+    // integer.
+    unsigned long floatToLong(float number);
+
+    // Return the floating point number encoded in the bits of a
+    // 32-bit integer.
+    float longToFloat(unsigned long bits);
 
     // Read up to 16 bits at a given offset.
     word readBits(byte offset, byte length);
