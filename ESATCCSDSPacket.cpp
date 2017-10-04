@@ -147,6 +147,19 @@ word ESATCCSDSPacket::readBits(const byte offset, const byte length)
   return bits;
 }
 
+boolean ESATCCSDSPacket::readBoolean()
+{
+  const byte datum = readByte();
+  if (datum > 0)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 byte ESATCCSDSPacket::readByte()
 {
   const unsigned long nextReadPosition = readPosition + 1;
@@ -275,6 +288,18 @@ void ESATCCSDSPacket::writeBits(const byte offset,
     const byte sourceBit = length - position - 1;
     const boolean bitValue = bitRead(bits, sourceBit);
     bitWrite(buffer[targetByte], targetBit, bitValue);
+  }
+}
+
+void ESATCCSDSPacket::writeBoolean(const boolean datum)
+{
+  if (datum)
+  {
+    writeByte(1);
+  }
+  else
+  {
+    writeByte(0);
   }
 }
 
