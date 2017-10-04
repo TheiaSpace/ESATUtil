@@ -74,6 +74,15 @@ byte ESATCCSDSPacket::readByte()
   return datum;
 }
 
+unsigned long ESATCCSDSPacket::readLong()
+{
+  const unsigned long firstByte = readByte();
+  const unsigned long secondByte = readByte();
+  const unsigned long thirdByte = readByte();
+  const unsigned long fourthByte = readByte();
+  return (firstByte << 24) | (secondByte << 16) | (thirdByte << 8) | fourthByte;
+}
+
 word ESATCCSDSPacket::readPacketDataLength()
 {
   if (bufferLength < PRIMARY_HEADER_LENGTH)
@@ -187,6 +196,14 @@ void ESATCCSDSPacket::writeByte(const byte datum)
     buffer[PRIMARY_HEADER_LENGTH + packetDataLength] = datum;
     writePacketDataLength(packetDataLength + 1);
   }
+}
+
+void ESATCCSDSPacket::writeLong(const unsigned long datum)
+{
+  writeByte((datum >> 24) & B11111111);
+  writeByte((datum >> 16) & B11111111);
+  writeByte((datum >> 8) & B11111111);
+  writeByte(datum & B11111111);
 }
 
 void ESATCCSDSPacket::writePacketDataLength(const word packetDataLength)

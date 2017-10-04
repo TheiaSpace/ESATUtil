@@ -83,6 +83,9 @@ class ESATCCSDSPacket
     // Read the next 8-bit integer from the packet payload.
     byte readByte();
 
+    // Read the next 32-bit integer from the packet payload.
+    unsigned long readLong();
+
     // Return the packet data length (expressed in octets).
     // This field is part of the primary header.
     // The packet data length includes the secondary header
@@ -128,6 +131,10 @@ class ESATCCSDSPacket
     // Append an 8-bit integer to the packet buffer.
     // This increments the packet data length by 1.
     void writeByte(byte datum);
+
+    // Append a 32-bit integer to the packet buffer.
+    // This increments the packet data length by 4.
+    void writeLong(unsigned long datum);
 
     // Write the packet data length (expressed in octets).
     // This field is part of the primary header.
