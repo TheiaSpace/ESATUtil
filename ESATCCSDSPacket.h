@@ -80,6 +80,9 @@ class ESATCCSDSPacket
     // subsystem should have its own application process identifier).
     word readApplicationProcessIdentifier();
 
+    // Read the next boolean (an 8-bit entry) from the packet payload.
+    boolean readBoolean();
+
     // Read the next 8-bit integer from the packet payload.
     byte readByte();
 
@@ -131,6 +134,10 @@ class ESATCCSDSPacket
     // subsystem (e.g., the attitude determination and control
     // subsystem should have its own application process identifier).
     void writeApplicationProcessIdentifier(word applicationProcessIdentifier);
+
+    // Append a boolean to the packet buffer.
+    // This increments the packet data length by 1.
+    void writeBoolean(boolean datum);
 
     // Append an 8-bit integer to the packet buffer.
     // This increments the packet data length by 1.
