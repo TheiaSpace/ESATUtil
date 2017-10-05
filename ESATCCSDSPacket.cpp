@@ -259,7 +259,7 @@ word ESATCCSDSPacket::readWord()
 
 void ESATCCSDSPacket::rewind()
 {
-  readPosition = 0;
+  readPosition = PRIMARY_HEADER_LENGTH;
 }
 
 void ESATCCSDSPacket::writeApplicationProcessIdentifier(const word applicationProcessIdentifier)
