@@ -80,6 +80,10 @@ class ESATCCSDSPacket
     // Clear the packet by setting all bytes to 0.
     void clear();
 
+    // Return true if the last read operation reached the end of the
+    // packet.  Otherwise return false.
+    boolean endOfPacketDataReached();
+
     // Read the CCSDS application process identifier.
     // This field is part of the primary header.
     // There should be one application process identifier per logical

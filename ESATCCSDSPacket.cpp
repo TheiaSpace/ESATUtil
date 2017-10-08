@@ -47,6 +47,18 @@ void ESATCCSDSPacket::clear()
   }
 }
 
+boolean ESATCCSDSPacket::endOfPacketDataReached()
+{
+  if (readPosition >= readPacketDataLength())
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 unsigned long ESATCCSDSPacket::floatToLong(const float number)
 {
   if (number == 0)
