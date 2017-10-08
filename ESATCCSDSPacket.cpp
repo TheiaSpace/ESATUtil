@@ -19,6 +19,7 @@
 #include "ESATCCSDSPacket.h"
 
 ESATCCSDSPacket::ESATCCSDSPacket():
+  primaryHeader({0, 0, 0, 0, 0, 0}),
   packetData(nullptr),
   packetDataBufferLength(0),
   readPosition(0)
@@ -27,6 +28,7 @@ ESATCCSDSPacket::ESATCCSDSPacket():
 
 ESATCCSDSPacket::ESATCCSDSPacket(byte* const buffer,
                                  const word bufferLength):
+  primaryHeader({0, 0, 0, 0, 0, 0}),
   packetData(buffer),
   packetDataBufferLength(bufferLength),
   readPosition(0)
