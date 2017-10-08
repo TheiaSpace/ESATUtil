@@ -108,7 +108,12 @@ class ESATCCSDSPacket
     // This field is part of the primary header.
     // The packet data length includes the secondary header
     // and the user data/packet payload.
-    word readPacketDataLength();
+    // It can go from 1 to 65536 for valid packets.
+    // If it reads as 0, the packet is empty, and thus malformed.
+    // The packet data length is stored as its value - 1
+    // in the primary header, but this method returns the actual
+    // value, not the stored one.
+    long readPacketDataLength();
 
     // Read the CCSDS packet sequence count.
     // This field is part of the primary header.
@@ -167,7 +172,12 @@ class ESATCCSDSPacket
     // This field is part of the primary header.
     // The packet data length includes the secondary header
     // and the user data/packet payload.
-    void writePacketDataLength(word packetDataLength);
+    // It can go from 1 to 65536 for valid packets.
+    // If it is out of that range, the packet is malformed.
+    // The packet data length is stored as its value - 1
+    // in the primary header, but this method accepts the actual
+    // value, not the stored one, as an argument.
+    void writePacketDataLength(long packetDataLength);
 
     // Read the CCSDS packet sequence count.
     // This field is part of the primary header.
@@ -219,6 +229,10 @@ class ESATCCSDSPacket
     static const byte PACKET_SEQUENCE_COUNT_LENGTH = 14;
     // The following offset is expressed in bytes:
     static const byte PACKET_DATA_LENGTH_OFFSET = 4;
+
+    // True if the packet has a non-emtpy packet data field;
+    // false otherwise.
+    boolean hasData;
 
     // Position of the next read operation.
     word readPosition;

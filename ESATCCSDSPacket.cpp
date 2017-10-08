@@ -19,6 +19,7 @@
 #include "ESATCCSDSPacket.h"
 
 ESATCCSDSPacket::ESATCCSDSPacket():
+  hasData(false),
   primaryHeader({0, 0, 0, 0, 0, 0}),
   packetData(nullptr),
   packetDataBufferLength(0),
@@ -28,6 +29,7 @@ ESATCCSDSPacket::ESATCCSDSPacket():
 
 ESATCCSDSPacket::ESATCCSDSPacket(byte* const buffer,
                                  const word bufferLength):
+  hasData(false),
   primaryHeader({0, 0, 0, 0, 0, 0}),
   packetData(buffer),
   packetDataBufferLength(bufferLength),
@@ -45,6 +47,7 @@ void ESATCCSDSPacket::clear()
   {
     packetData[position] = 0;
   }
+  hasData = false;
 }
 
 boolean ESATCCSDSPacket::endOfPacketDataReached()
@@ -190,10 +193,17 @@ unsigned long ESATCCSDSPacket::readLong()
   return (firstByte << 24) | (secondByte << 16) | (thirdByte << 8) | fourthByte;
 }
 
-word ESATCCSDSPacket::readPacketDataLength()
+long ESATCCSDSPacket::readPacketDataLength()
 {
-  return word(primaryHeader[PACKET_DATA_LENGTH_OFFSET],
-              primaryHeader[PACKET_DATA_LENGTH_OFFSET + 1]);
+  if (hasData)
+  {
+    return 1 + long(word(primaryHeader[PACKET_DATA_LENGTH_OFFSET],
+                         primaryHeader[PACKET_DATA_LENGTH_OFFSET + 1]));
+  }
+  else
+  {
+    return 0;
+  }
 }
 
 word ESATCCSDSPacket::readPacketSequenceCount()
@@ -281,11 +291,12 @@ void ESATCCSDSPacket::writeBoolean(const boolean datum)
 
 void ESATCCSDSPacket::writeByte(const byte datum)
 {
-  const word packetDataLength = readPacketDataLength();
+  const long packetDataLength = readPacketDataLength();
   if (packetDataLength < packetDataBufferLength)
   {
     packetData[packetDataLength] = datum;
     writePacketDataLength(packetDataLength + 1);
+    hasData = true;
   }
 }
 
@@ -303,10 +314,20 @@ void ESATCCSDSPacket::writeLong(const unsigned long datum)
   writeByte(datum & B11111111);
 }
 
-void ESATCCSDSPacket::writePacketDataLength(const word packetDataLength)
+void ESATCCSDSPacket::writePacketDataLength(const long packetDataLength)
 {
-  primaryHeader[PACKET_DATA_LENGTH_OFFSET] = highByte(packetDataLength);
-  primaryHeader[PACKET_DATA_LENGTH_OFFSET + 1] = lowByte(packetDataLength);
+  if ((packetDataLength >= 1) && (packetDataLength <= 65536))
+  {
+    primaryHeader[PACKET_DATA_LENGTH_OFFSET] =
+      highByte(packetDataLength - 1);
+    primaryHeader[PACKET_DATA_LENGTH_OFFSET + 1] =
+      lowByte(packetDataLength - 1);
+  }
+  else
+  {
+    primaryHeader[PACKET_DATA_LENGTH_OFFSET] = 0;
+    primaryHeader[PACKET_DATA_LENGTH_OFFSET + 1] = 0;
+  }
 }
 
 void ESATCCSDSPacket::writePacketSequenceCount(const word packetSequenceCount)
