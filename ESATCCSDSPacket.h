@@ -60,10 +60,10 @@ class ESATCCSDSPacket
     static const byte PRIMARY_HEADER_LENGTH = 6;
 
     // Buffer with the raw packet data field.
-    byte* const packetData;
+    byte* packetData;
 
     // Packet data buffer length in bytes.
-    const word packetDataBufferLength;
+    word packetDataBufferLength;
 
     // Buffer with the raw primary header.
     byte primaryHeader[PRIMARY_HEADER_LENGTH];
