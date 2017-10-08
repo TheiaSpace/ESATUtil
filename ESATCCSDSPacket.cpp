@@ -18,6 +18,13 @@
 
 #include "ESATCCSDSPacket.h"
 
+ESATCCSDSPacket::ESATCCSDSPacket():
+  packetData(nullptr),
+  packetDataBufferLength(0),
+  readPosition(0)
+{
+}
+
 ESATCCSDSPacket::ESATCCSDSPacket(byte* const buffer,
                                  const word bufferLength):
   packetData(buffer),
