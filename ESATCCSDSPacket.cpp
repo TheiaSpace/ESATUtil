@@ -18,19 +18,23 @@
 
 #include "ESATCCSDSPacket.h"
 
-ESATCCSDSPacket::ESATCCSDSPacket(byte* const byteBuffer,
-                                 const word byteBufferLength):
-  buffer(byteBuffer),
-  bufferLength(byteBufferLength),
-  readPosition(PRIMARY_HEADER_LENGTH)
+ESATCCSDSPacket::ESATCCSDSPacket(byte* const buffer,
+                                 const word bufferLength):
+  packetData(buffer),
+  packetDataBufferLength(bufferLength),
+  readPosition(0)
 {
 }
 
 void ESATCCSDSPacket::clear()
 {
-  for (int position = 0; position < bufferLength; position++)
+  for (byte position = 0; position < PRIMARY_HEADER_LENGTH; position++)
   {
-    buffer[position] = 0;
+    primaryHeader[position] = 0;
+  }
+  for (long position = 0; position < packetDataBufferLength; position++)
+  {
+    packetData[position] = 0;
   }
 }
 
@@ -121,30 +125,8 @@ float ESATCCSDSPacket::longToFloat(const unsigned long bits)
 
 word ESATCCSDSPacket::readApplicationProcessIdentifier()
 {
-  if (bufferLength < PRIMARY_HEADER_LENGTH)
-  {
-    return 0;
-  }
-  return readBits(applicationProcessIdentifierOffset,
-                  applicationProcessIdentifierLength);
-}
-
-word ESATCCSDSPacket::readBits(const byte offset, const byte length)
-{
-  word bits = 0;
-  for (int position = 0; position < length; position++)
-  {
-    const byte sourceByte = (offset + position) / 8;
-    if (sourceByte >= bufferLength)
-    {
-      return 0;
-    }
-    const byte sourceBit = 8 - ((offset + position) % 8) - 1;
-    const byte targetBit = length - position - 1;
-    const boolean bitValue = bitRead(buffer[sourceByte], sourceBit);
-    bitWrite(bits, targetBit, bitValue);
-  }
-  return bits;
+  return readPrimaryHeaderBits(APPLICATION_PROCESS_IDENTIFIER_OFFSET,
+                               APPLICATION_PROCESS_IDENTIFIER_LENGTH);
 }
 
 boolean ESATCCSDSPacket::readBoolean()
@@ -162,12 +144,12 @@ boolean ESATCCSDSPacket::readBoolean()
 
 byte ESATCCSDSPacket::readByte()
 {
-  const unsigned long nextReadPosition = readPosition + 1;
-  if (nextReadPosition >= bufferLength)
+  const long nextReadPosition = readPosition + 1;
+  if (nextReadPosition >= packetDataBufferLength)
   {
     return 0;
   }
-  const byte datum = buffer[readPosition];
+  const byte datum = packetData[readPosition];
   readPosition = nextReadPosition;
   return datum;
 }
@@ -189,64 +171,59 @@ unsigned long ESATCCSDSPacket::readLong()
 
 word ESATCCSDSPacket::readPacketDataLength()
 {
-  if (bufferLength < PRIMARY_HEADER_LENGTH)
-  {
-    return 0;
-  }
-  return word(buffer[packetDataLengthOffset],
-              buffer[packetDataLengthOffset+1]);
+  return word(primaryHeader[PACKET_DATA_LENGTH_OFFSET],
+              primaryHeader[PACKET_DATA_LENGTH_OFFSET + 1]);
 }
 
 word ESATCCSDSPacket::readPacketSequenceCount()
 {
-  if (bufferLength < PRIMARY_HEADER_LENGTH)
-  {
-    return 0;
-  }
-  return readBits(packetSequenceCountOffset,
-                  packetSequenceCountLength);
+  return readPrimaryHeaderBits(PACKET_SEQUENCE_COUNT_OFFSET,
+                               PACKET_SEQUENCE_COUNT_LENGTH);
 }
 
 ESATCCSDSPacket::PacketType ESATCCSDSPacket::readPacketType()
 {
-  if (bufferLength < PRIMARY_HEADER_LENGTH)
-  {
-    return ESATCCSDSPacket::PacketType(0);
-  }
-  const word bits = readBits(packetTypeOffset,
-                             packetTypeLength);
+  const word bits = readPrimaryHeaderBits(PACKET_TYPE_OFFSET,
+                                          PACKET_TYPE_LENGTH);
   return ESATCCSDSPacket::PacketType(bits);
 }
 
 byte ESATCCSDSPacket::readPacketVersionNumber()
 {
-  if (bufferLength < PRIMARY_HEADER_LENGTH)
+  return readPrimaryHeaderBits(PACKET_VERSION_NUMBER_OFFSET,
+                               PACKET_VERSION_NUMBER_LENGTH);
+}
+
+word ESATCCSDSPacket::readPrimaryHeaderBits(const byte offset,
+                                            const byte length)
+{
+  word bits = 0;
+  for (int position = 0; position < length; position++)
   {
-    return 0;
+    const byte sourceByte = (offset + position) / 8;
+    if (sourceByte >= PRIMARY_HEADER_LENGTH)
+    {
+      return 0;
+    }
+    const byte sourceBit = 8 - ((offset + position) % 8) - 1;
+    const byte targetBit = length - position - 1;
+    const boolean bitValue = bitRead(primaryHeader[sourceByte], sourceBit);
+    bitWrite(bits, targetBit, bitValue);
   }
-  return readBits(packetVersionNumberOffset,
-                  packetVersionNumberLength);
+  return bits;
 }
 
 ESATCCSDSPacket::SecondaryHeaderFlag ESATCCSDSPacket::readSecondaryHeaderFlag()
 {
-  if (bufferLength < PRIMARY_HEADER_LENGTH)
-  {
-    return ESATCCSDSPacket::SecondaryHeaderFlag(0);
-  }
-  const word bits = readBits(secondaryHeaderFlagOffset,
-                             secondaryHeaderFlagLength);
+  const word bits = readPrimaryHeaderBits(SECONDARY_HEADER_FLAG_OFFSET,
+                                          SECONDARY_HEADER_FLAG_LENGTH);
   return ESATCCSDSPacket::SecondaryHeaderFlag(bits);
 }
 
 ESATCCSDSPacket::SequenceFlags ESATCCSDSPacket::readSequenceFlags()
 {
-  if (bufferLength < PRIMARY_HEADER_LENGTH)
-  {
-    return ESATCCSDSPacket::SequenceFlags(0);
-  }
-  const word bits = readBits(sequenceFlagsOffset,
-                             sequenceFlagsLength);
+  const word bits = readPrimaryHeaderBits(SEQUENCE_FLAGS_OFFSET,
+                                          SEQUENCE_FLAGS_LENGTH);
   return ESATCCSDSPacket::SequenceFlags(bits);
 }
 
@@ -259,36 +236,14 @@ word ESATCCSDSPacket::readWord()
 
 void ESATCCSDSPacket::rewind()
 {
-  readPosition = PRIMARY_HEADER_LENGTH;
+  readPosition = 0;
 }
 
 void ESATCCSDSPacket::writeApplicationProcessIdentifier(const word applicationProcessIdentifier)
 {
-  if (bufferLength < PRIMARY_HEADER_LENGTH)
-  {
-    return;
-  }
-  writeBits(applicationProcessIdentifierOffset,
-            applicationProcessIdentifierLength,
-            applicationProcessIdentifier);
-}
-
-void ESATCCSDSPacket::writeBits(const byte offset,
-                                const byte length,
-                                const word bits)
-{
-  for (int position = 0; position < length; position++)
-  {
-    const byte targetByte = (offset + position) / 8;
-    if (targetByte >= bufferLength)
-    {
-      return;
-    }
-    const byte targetBit = 8 - ((offset + position) % 8) - 1;
-    const byte sourceBit = length - position - 1;
-    const boolean bitValue = bitRead(bits, sourceBit);
-    bitWrite(buffer[targetByte], targetBit, bitValue);
-  }
+  writePrimaryHeaderBits(APPLICATION_PROCESS_IDENTIFIER_OFFSET,
+                         APPLICATION_PROCESS_IDENTIFIER_LENGTH,
+                         applicationProcessIdentifier);
 }
 
 void ESATCCSDSPacket::writeBoolean(const boolean datum)
@@ -306,10 +261,9 @@ void ESATCCSDSPacket::writeBoolean(const boolean datum)
 void ESATCCSDSPacket::writeByte(const byte datum)
 {
   const word packetDataLength = readPacketDataLength();
-  const long packetLength = packetDataLength + PRIMARY_HEADER_LENGTH;
-  if (packetLength < bufferLength)
+  if (packetDataLength < packetDataBufferLength)
   {
-    buffer[PRIMARY_HEADER_LENGTH + packetDataLength] = datum;
+    packetData[packetDataLength] = datum;
     writePacketDataLength(packetDataLength + 1);
   }
 }
@@ -330,67 +284,61 @@ void ESATCCSDSPacket::writeLong(const unsigned long datum)
 
 void ESATCCSDSPacket::writePacketDataLength(const word packetDataLength)
 {
-  if (bufferLength < PRIMARY_HEADER_LENGTH)
-  {
-    return;
-  }
-  buffer[packetDataLengthOffset] = highByte(packetDataLength);
-  buffer[packetDataLengthOffset + 1] = lowByte(packetDataLength);
+  primaryHeader[PACKET_DATA_LENGTH_OFFSET] = highByte(packetDataLength);
+  primaryHeader[PACKET_DATA_LENGTH_OFFSET + 1] = lowByte(packetDataLength);
 }
 
 void ESATCCSDSPacket::writePacketSequenceCount(const word packetSequenceCount)
 {
-  if (bufferLength < PRIMARY_HEADER_LENGTH)
-  {
-    return;
-  }
-  writeBits(packetSequenceCountOffset,
-            packetSequenceCountLength,
-            packetSequenceCount);
+  writePrimaryHeaderBits(PACKET_SEQUENCE_COUNT_OFFSET,
+                         PACKET_SEQUENCE_COUNT_LENGTH,
+                         packetSequenceCount);
 }
 
 void ESATCCSDSPacket::writePacketType(const ESATCCSDSPacket::PacketType packetType)
 {
-  if (bufferLength < PRIMARY_HEADER_LENGTH)
-  {
-    return;
-  }
-  writeBits(packetTypeOffset,
-            packetTypeLength,
-            packetType);
+  writePrimaryHeaderBits(PACKET_TYPE_OFFSET,
+                         PACKET_TYPE_LENGTH,
+                         packetType);
 }
 
 void ESATCCSDSPacket::writePacketVersionNumber(const byte packetVersionNumber)
 {
-  if (bufferLength < PRIMARY_HEADER_LENGTH)
+  writePrimaryHeaderBits(PACKET_VERSION_NUMBER_OFFSET,
+                         PACKET_VERSION_NUMBER_LENGTH,
+                         packetVersionNumber);
+}
+
+void ESATCCSDSPacket::writePrimaryHeaderBits(const byte offset,
+                                             const byte length,
+                                             const word bits)
+{
+  for (int position = 0; position < length; position++)
   {
-    return;
+    const byte targetByte = (offset + position) / 8;
+    if (targetByte >= PRIMARY_HEADER_LENGTH)
+    {
+      return;
+    }
+    const byte targetBit = 8 - ((offset + position) % 8) - 1;
+    const byte sourceBit = length - position - 1;
+    const boolean bitValue = bitRead(bits, sourceBit);
+    bitWrite(primaryHeader[targetByte], targetBit, bitValue);
   }
-  writeBits(packetVersionNumberOffset,
-            packetVersionNumberLength,
-            packetVersionNumber);
 }
 
 void ESATCCSDSPacket::writeSecondaryHeaderFlag(const ESATCCSDSPacket::SecondaryHeaderFlag secondaryHeaderFlag)
 {
-  if (bufferLength < PRIMARY_HEADER_LENGTH)
-  {
-    return;
-  }
-  writeBits(secondaryHeaderFlagOffset,
-            secondaryHeaderFlagLength,
-            secondaryHeaderFlag);
+  writePrimaryHeaderBits(SECONDARY_HEADER_FLAG_OFFSET,
+                         SECONDARY_HEADER_FLAG_LENGTH,
+                         secondaryHeaderFlag);
 }
 
 void ESATCCSDSPacket::writeSequenceFlags(const SequenceFlags sequenceFlags)
 {
-  if (bufferLength < PRIMARY_HEADER_LENGTH)
-  {
-    return;
-  }
-  writeBits(sequenceFlagsOffset,
-            sequenceFlagsLength,
-            sequenceFlags);
+  writePrimaryHeaderBits(SEQUENCE_FLAGS_OFFSET,
+                         SEQUENCE_FLAGS_LENGTH,
+                         sequenceFlags);
 }
 
 void ESATCCSDSPacket::writeWord(const word datum)

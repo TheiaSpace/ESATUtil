@@ -59,18 +59,21 @@ class ESATCCSDSPacket
     // Length of the primary header.
     static const byte PRIMARY_HEADER_LENGTH = 6;
 
-    // Buffer with the raw packet data.
-    byte* const buffer;
+    // Buffer with the raw packet data field.
+    byte* const packetData;
 
-    // Buffer length in bytes.
-    const word bufferLength;
+    // Packet data buffer length in bytes.
+    const word packetDataBufferLength;
 
-    // Instantiate a new packet backed by the given buffer.
-    // The buffer must be at least 6 bytes long plus the amount
-    // of space necessary for storing the packet data field.
+    // Buffer with the raw primary header.
+    byte primaryHeader[PRIMARY_HEADER_LENGTH];
+
+    // Instantiate a new packet backed with the packet data field
+    // (packet payload) by the given buffer.
+    // The buffer must be at least 1 byte long.
     ESATCCSDSPacket(byte buffer[], word bufferLength);
 
-    // Clear the packet by setting all buffer bytes to 0.
+    // Clear the packet by setting all bytes to 0.
     void clear();
 
     // Read the CCSDS application process identifier.
@@ -80,17 +83,17 @@ class ESATCCSDSPacket
     // subsystem should have its own application process identifier).
     word readApplicationProcessIdentifier();
 
-    // Read the next boolean (an 8-bit entry) from the packet payload.
+    // Read the next boolean (an 8-bit entry) from the packet data.
     boolean readBoolean();
 
-    // Read the next 8-bit integer from the packet payload.
+    // Read the next 8-bit integer from the packet data.
     byte readByte();
 
     // Read the next IEEE 754 single-precision floating-point number
-    // from the packet payload.
+    // from the packet data.
     float readFloat();
 
-    // Read the next 32-bit integer from the packet payload.
+    // Read the next 32-bit integer from the packet data.
     unsigned long readLong();
 
     // Return the packet data length (expressed in octets).
@@ -121,7 +124,7 @@ class ESATCCSDSPacket
     // This field is part of the primary header.
     SequenceFlags readSequenceFlags();
 
-    // Read the next 16-bit integer from the packet payload.
+    // Read the next 16-bit integer from the packet data.
     word readWord();
 
     // Move the read pointer back to the start of the packet data
@@ -135,20 +138,20 @@ class ESATCCSDSPacket
     // subsystem should have its own application process identifier).
     void writeApplicationProcessIdentifier(word applicationProcessIdentifier);
 
-    // Append a boolean to the packet buffer.
+    // Append a boolean to the packet data.
     // This increments the packet data length by 1.
     void writeBoolean(boolean datum);
 
-    // Append an 8-bit integer to the packet buffer.
+    // Append an 8-bit integer to the packet data.
     // This increments the packet data length by 1.
     void writeByte(byte datum);
 
     // Append an IEEE 754 single-precision floating-point number to
-    // the packet buffer.
+    // the packet data.
     // This increments the packet data length by 4.
     void writeFloat(float datum);
 
-    // Append a 32-bit integer to the packet buffer.
+    // Append a 32-bit integer to the packet data.
     // This increments the packet data length by 4.
     void writeLong(unsigned long datum);
 
@@ -181,36 +184,36 @@ class ESATCCSDSPacket
     // This field is part of the primary header.
     void writeSequenceFlags(SequenceFlags sequenceFlags);
 
-    // Append a 16-bit integer to the packet buffer.
+    // Append a 16-bit integer to the packet data.
     // This increments the packet data length by 2.
     void writeWord(word datum);
 
   private:
     // Structure of the primary header.
     // The following offsets and lengths are expressed in bits:
-    static const byte packetVersionNumberOffset = 0;
-    static const byte packetVersionNumberLength = 3;
-    static const byte packetTypeOffset =
-      packetVersionNumberOffset + packetVersionNumberLength;
-    static const byte packetTypeLength = 1;
-    static const byte secondaryHeaderFlagOffset =
-      packetTypeOffset + packetTypeLength;
-    static const byte secondaryHeaderFlagLength = 1;
-    static const byte applicationProcessIdentifierOffset =
-      secondaryHeaderFlagOffset + secondaryHeaderFlagLength;
-    static const byte applicationProcessIdentifierLength = 11;
-    static const byte sequenceFlagsOffset =
-      applicationProcessIdentifierOffset
-      + applicationProcessIdentifierLength;
-    static const byte sequenceFlagsLength = 2;
-    static const byte packetSequenceCountOffset =
-      sequenceFlagsOffset + sequenceFlagsLength;
-    static const byte packetSequenceCountLength = 14;
+    static const byte PACKET_VERSION_NUMBER_OFFSET = 0;
+    static const byte PACKET_VERSION_NUMBER_LENGTH = 3;
+    static const byte PACKET_TYPE_OFFSET =
+      PACKET_VERSION_NUMBER_OFFSET + PACKET_VERSION_NUMBER_LENGTH;
+    static const byte PACKET_TYPE_LENGTH = 1;
+    static const byte SECONDARY_HEADER_FLAG_OFFSET =
+      PACKET_TYPE_OFFSET + PACKET_TYPE_LENGTH;
+    static const byte SECONDARY_HEADER_FLAG_LENGTH = 1;
+    static const byte APPLICATION_PROCESS_IDENTIFIER_OFFSET =
+      SECONDARY_HEADER_FLAG_OFFSET + SECONDARY_HEADER_FLAG_LENGTH;
+    static const byte APPLICATION_PROCESS_IDENTIFIER_LENGTH = 11;
+    static const byte SEQUENCE_FLAGS_OFFSET =
+      APPLICATION_PROCESS_IDENTIFIER_OFFSET
+      + APPLICATION_PROCESS_IDENTIFIER_LENGTH;
+    static const byte SEQUENCE_FLAGS_LENGTH = 2;
+    static const byte PACKET_SEQUENCE_COUNT_OFFSET =
+      SEQUENCE_FLAGS_OFFSET + SEQUENCE_FLAGS_LENGTH;
+    static const byte PACKET_SEQUENCE_COUNT_LENGTH = 14;
     // The following offset is expressed in bytes:
-    static const byte packetDataLengthOffset = 4;
+    static const byte PACKET_DATA_LENGTH_OFFSET = 4;
 
     // Position of the next read operation.
-    unsigned long readPosition;
+    word readPosition;
 
     // Return the bits of a floating-point number packed into a 32-bit
     // integer.
@@ -220,11 +223,11 @@ class ESATCCSDSPacket
     // 32-bit integer.
     float longToFloat(unsigned long bits);
 
-    // Read up to 16 bits at a given offset.
-    word readBits(byte offset, byte length);
+    // Read up to 16 bits at a given offset from the primary header.
+    word readPrimaryHeaderBits(byte offset, byte length);
 
-    // Write up to 16 bits at a given bit offset.
-    void writeBits(byte offset, byte length, word bits);
+    // Write up to 16 bits at a given bit offset on the primary header.
+    void writePrimaryHeaderBits(byte offset, byte length, word bits);
 };
 
 #endif
