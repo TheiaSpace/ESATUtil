@@ -219,6 +219,7 @@ boolean ESATCCSDSPacket::readFrom(Stream& input)
   {
     return false;
   }
+  return true;
 }
 
 unsigned long ESATCCSDSPacket::readLong()
