@@ -280,7 +280,11 @@ boolean ESATI2CMaster::writeTelecommandPrimaryHeader(TwoWire& bus,
     (void) bus.write(packet.primaryHeader[i]);
   }
   const byte writeStatus = bus.endTransmission();
-  if (writeStatus != 0)
+  if (writeStatus == 0)
+  {
+    return true;
+  }
+  else
   {
     return false;
   }
