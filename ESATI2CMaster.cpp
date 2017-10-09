@@ -89,8 +89,8 @@ boolean ESATI2CMaster::readTelecommandStatus(TwoWire& bus,
     {
       return false;
     }
-    const byte telecommandState = bus.read();
-    switch (telecommandState)
+    const byte telecommandStatus = bus.read();
+    switch (telecommandStatus)
     {
       case TELECOMMAND_NOT_PENDING:
         return true;
@@ -188,8 +188,8 @@ boolean ESATI2CMaster::readTelemetryStatus(TwoWire& bus,
     {
       return false;
     }
-    const byte telemetryState = bus.read();
-    switch (telemetryState)
+    const byte telemetryStatus = bus.read();
+    switch (telemetryStatus)
     {
       case TELEMETRY_NOT_REQUESTED:
         return false;
@@ -260,8 +260,8 @@ boolean ESATI2CMaster::writeTelecommandPacketData(TwoWire& bus,
     {
       (void) bus.write(packet.readByte());
     }
-    const byte packetDataStatus = bus.endTransmission();
-    if (packetDataStatus != 0)
+    const byte writeStatus = bus.endTransmission();
+    if (writeStatus != 0)
     {
       return false;
     }
