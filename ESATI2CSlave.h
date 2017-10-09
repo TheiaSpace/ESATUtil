@@ -121,8 +121,8 @@ class ESATI2CSlave
     // Telecommand packet buffer.
     ESATCCSDSPacket telecommand;
 
-    // Length of the telecommand packet data.
-    long telecommandPacketDataLength;
+    // Number of received telecommand packet data bytes.
+    long telecommandPacketDataBytesReceived;
 
     // State of the telecommand reception state machine.
     volatile TelecommandState telecommandState;

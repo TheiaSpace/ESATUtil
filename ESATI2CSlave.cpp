@@ -55,8 +55,9 @@ void ESATI2CSlave::handleTelecommandPacketDataReception(const byte message[],
   for (long i = 0; i < messageLength; i++)
   {
     telecommand.writeByte(message[i]);
-    telecommand.updatePacketDataLength();
-    if (telecommand.readPacketDataLength() >= telecommandPacketDataLength)
+    telecommandPacketDataBytesReceived = telecommandPacketDataBytesReceived + 1;
+    if (telecommandPacketDataBytesReceived
+        >= telecommand.readPacketDataLength())
     {
       telecommandState = TELECOMMAND_PENDING;
       receiveState = IDLE;
@@ -90,8 +91,8 @@ void ESATI2CSlave::handleTelecommandPrimaryHeaderReception(const byte message[],
     requestState = IDLE;
     return;
   }
-  telecommandPacketDataLength = telecommand.readPacketDataLength();
   telecommand.rewind();
+  telecommandPacketDataBytesReceived = 0;
   receiveState = HANDLE_TELECOMMAND_PACKET_DATA;
   requestState = IDLE;
 }
