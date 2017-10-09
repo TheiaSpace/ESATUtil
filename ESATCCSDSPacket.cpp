@@ -422,6 +422,27 @@ void ESATCCSDSPacket::writeSequenceFlags(const SequenceFlags sequenceFlags)
                          sequenceFlags);
 }
 
+boolean ESATCCSDSPacket::writeTo(Stream& output)
+{
+  for (byte i = 0; i < PRIMARY_HEADER_LENGTH; i++)
+  {
+    const size_t bytesWritten = output.write(primaryHeader[i]);
+    if (bytesWritten != 1)
+    {
+      return false;
+    }
+  }
+  rewind();
+  while (!endOfPacketDataReached())
+  {
+    const size_t bytesWritten = output.write(readByte());
+    if (bytesWritten != 1)
+    {
+      return false;
+    }
+  }
+}
+
 void ESATCCSDSPacket::writeWord(const word datum)
 {
   writeByte(highByte(datum));

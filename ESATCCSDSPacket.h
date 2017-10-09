@@ -211,6 +211,10 @@ class ESATCCSDSPacket
     // This field is part of the primary header.
     void writeSequenceFlags(SequenceFlags sequenceFlags);
 
+    // Write the raw contents of the packet to an output stream.
+    // Return true on success; otherwise return false.
+    boolean writeTo(Stream& output);
+
     // Append a 16-bit integer to the packet data.
     // This increments the packet data length by 2.
     void writeWord(word datum);
