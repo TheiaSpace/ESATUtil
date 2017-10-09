@@ -428,6 +428,7 @@ boolean ESATCCSDSPacket::writeTo(Stream& output)
       return false;
     }
   }
+  return true;
 }
 
 void ESATCCSDSPacket::writeWord(const word datum)
