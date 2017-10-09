@@ -86,7 +86,6 @@ void ESATI2CSlave::handleTelecommandPrimaryHeaderReception(const byte message[],
   }
   if (telecommand.readPacketType() != telecommand.TELECOMMAND)
   {
-    telecommand.writePacketDataLength(0);
     receiveState = IDLE;
     requestState = IDLE;
     return;
@@ -189,7 +188,6 @@ void ESATI2CSlave::handleTelemetryVectorPacketDataRequest()
     (void) bus->write(telemetry.readByte());
     if (telemetry.endOfPacketDataReached())
     {
-      telemetry.writePacketDataLength(0);
       requestState = IDLE;
       telemetryState = TELEMETRY_NOT_REQUESTED;
     }
