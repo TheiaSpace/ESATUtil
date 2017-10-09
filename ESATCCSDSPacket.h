@@ -63,7 +63,7 @@ class ESATCCSDSPacket
     byte* packetData;
 
     // Packet data buffer length in bytes.
-    word packetDataBufferLength;
+    unsigned long packetDataBufferLength;
 
     // Buffer with the raw primary header.
     byte primaryHeader[PRIMARY_HEADER_LENGTH];
@@ -75,7 +75,7 @@ class ESATCCSDSPacket
     // Instantiate a new packet backed with the packet data field
     // (packet payload) by the given buffer.
     // The buffer must be at least 1 byte long.
-    ESATCCSDSPacket(byte buffer[], word bufferLength);
+    ESATCCSDSPacket(byte buffer[], unsigned long bufferLength);
 
     // Clear the packet by setting all bytes to 0.
     void clear();

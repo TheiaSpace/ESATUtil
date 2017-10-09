@@ -28,7 +28,7 @@ ESATCCSDSPacket::ESATCCSDSPacket():
 }
 
 ESATCCSDSPacket::ESATCCSDSPacket(byte* const buffer,
-                                 const word bufferLength):
+                                 const unsigned long bufferLength):
   hasData(false),
   primaryHeader({0, 0, 0, 0, 0, 0}),
   packetData(buffer),
