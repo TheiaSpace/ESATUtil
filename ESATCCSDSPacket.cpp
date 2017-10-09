@@ -420,7 +420,8 @@ void ESATCCSDSPacket::writeCharPacket(char cPacket[])
   char cbyte[3];
   cbyte[2] = '\0';
   int bufferByte;
-  for(unsigned long indx = 0; indx < bufferLength; indx++){
+  unsigned long  packetLength = readPacketLength();
+  for(unsigned long indx = 0; indx < packetLength; indx++){
     if(cPacket[indx*2]=='\0')
     {
       break;
