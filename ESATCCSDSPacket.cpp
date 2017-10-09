@@ -69,7 +69,7 @@ boolean ESATCCSDSPacket::copyTo(ESATCCSDSPacket& target)
 
 boolean ESATCCSDSPacket::endOfPacketDataReached()
 {
-  if (readPosition >= readPacketDataLength())
+  if (readPosition >= (readPacketDataLength() - 1))
   {
     return true;
   }
