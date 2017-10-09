@@ -37,25 +37,6 @@ void ESATI2CSlave::begin(TwoWire& i2cInterface,
   bus->onRequest(requestEvent);
 }
 
-void ESATI2CSlave::copyPacket(ESATCCSDSPacket& source,
-                              ESATCCSDSPacket& destination)
-{
-  destination.clear();
-  const word packetDataLength = source.readPacketDataLength();
-  if (destination.packetDataBufferLength < packetDataLength)
-  {
-    return;
-  }
-  for (byte i = 0; i < telecommand.PRIMARY_HEADER_LENGTH; i++)
-  {
-    destination.primaryHeader[i] = source.primaryHeader[i];
-  }
-  for (word i = 0; i < packetDataLength; i++)
-  {
-    destination.packetData[i] = source.packetData[i];
-  }
-}
-
 void ESATI2CSlave::handleTelecommandPacketDataReception(const byte message[],
                                                         const int messageLength)
 {
@@ -233,16 +214,9 @@ boolean ESATI2CSlave::readTelecommand(ESATCCSDSPacket& packet)
 {
   if (telecommandState == TELECOMMAND_PENDING)
   {
-    copyPacket(telecommand, packet);
+    boolean successfulCopy = telecommand.copyTo(packet);
     telecommandState = TELECOMMAND_NOT_PENDING;
-    if (packet.readPacketDataLength() > 0)
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
+    return successfulCopy;
   }
   else
   {
@@ -347,15 +321,18 @@ void ESATI2CSlave::writeTelemetry(ESATCCSDSPacket& packet)
   (void) packet.readByte();
   (void) packet.readByte();
   const byte packetIdentifier = packet.readByte();
-  if (packetIdentifier == telemetryPacketIdentifier)
-  {
-    copyPacket(packet, telemetry);
-    telemetryState = TELEMETRY_READY;
-  }
-  else
+  if (packetIdentifier != telemetryPacketIdentifier)
   {
     telemetryState = TELEMETRY_INVALID;
+    return;
   }
+  const boolean successfulCopy =  packet.copyTo(telemetry);
+  if (!successfulCopy)
+  {
+    telemetryState = TELEMETRY_INVALID;
+    return;
+  }
+  telemetryState = TELEMETRY_READY;
 }
 
 ESATI2CSlave I2CSlave;

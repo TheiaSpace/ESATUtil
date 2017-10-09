@@ -136,13 +136,6 @@ class ESATI2CSlave
     // State of the telemetry request state machine.
     volatile TelemetryState telemetryState;
 
-    // Copy the contents of a  CCSDS packet.
-    // Leave the destination packet empty if it wasn't possible
-    // to perform the copy operation due to a small destination
-    // packet data buffer length.
-    void copyPacket(ESATCCSDSPacket& source,
-                    ESATCCSDSPacket& destination);
-
     // Handle a write to TELECOMMAND_PACKET_DATA.
     void handleTelecommandPacketDataReception(const byte message[],
                                               int messageLength);
