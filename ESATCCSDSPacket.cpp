@@ -201,6 +201,28 @@ float ESATCCSDSPacket::readFloat()
   return longToFloat(bits);
 }
 
+boolean ESATCCSDSPacket::readFrom(Stream& input)
+{
+  const size_t primaryHeaderBytesRead =
+    input.readBytes((char*) primaryHeader,
+                    PRIMARY_HEADER_LENGTH);
+  if (primaryHeaderBytesRead != PRIMARY_HEADER_LENGTH)
+  {
+    return false;
+  }
+  const long packetDataLength = readPacketDataLength();
+  if (packetDataBufferLength < packetDataLength)
+  {
+    return false;
+  }
+  const size_t packetDataBytesRead =
+    input.readBytes((char*) packetData, packetDataLength);
+  if (packetDataBytesRead != packetDataLength)
+  {
+    return false;
+  }
+}
+
 unsigned long ESATCCSDSPacket::readLong()
 {
   const unsigned long firstByte = readByte();

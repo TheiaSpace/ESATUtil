@@ -106,6 +106,10 @@ class ESATCCSDSPacket
     // from the packet data.
     float readFloat();
 
+    // Fill the packet with incoming data from an input stream.
+    // Return true on success; false otherwise.
+    boolean readFrom(Stream& input);
+
     // Read the next 32-bit integer from the packet data.
     unsigned long readLong();
 
