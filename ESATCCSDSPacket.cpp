@@ -28,7 +28,7 @@ ESATCCSDSPacket::ESATCCSDSPacket(byte* const byteBuffer,
 
 void ESATCCSDSPacket::clear()
 {
-  for (int position = 0; position < bufferLength; position++)
+  for (word position = 0; position < bufferLength; position++)
   {
     buffer[position] = 0;
   }
@@ -303,6 +303,11 @@ void ESATCCSDSPacket::writeBoolean(const boolean datum)
   }
 }
 
+unsigned long ESATCCSDSPacket::readPacketLength(){
+  const word packetDataLength = readPacketDataLength();
+  return (unsigned long)packetDataLength + PRIMARY_HEADER_LENGTH;
+}
+
 void ESATCCSDSPacket::writeByte(const byte datum)
 {
   const word packetDataLength = readPacketDataLength();
@@ -398,3 +403,54 @@ void ESATCCSDSPacket::writeWord(const word datum)
   writeByte(highByte(datum));
   writeByte(lowByte(datum));
 }
+
+void ESATCCSDSPacket::readCharPacket(char cPacket[])
+{  
+  strcpy(cPacket,"");
+  char cbyte[3];
+  word packetDataLength = readPacketDataLength();
+  for (word position = 0; position < packetDataLength; position++)
+  {
+    sprintf(cbyte,"%02X",buffer[position]);
+    strcat(cPacket,cbyte);
+  } 
+}
+void ESATCCSDSPacket::writeCharPacket(char cPacket[])
+{  
+  char cbyte[3];
+  cbyte[2] = '\0';
+  int bufferByte;
+  for(unsigned long indx = 0; indx < bufferLength; indx++){
+    if(cPacket[indx*2]=='\0')
+    {
+      break;
+    }
+    else
+    {
+      cbyte[0] = cPacket[indx*2];
+    }
+    if(cPacket[indx*2 + 1]=='\0')
+    {
+      break;
+    }
+    else
+    {
+      cbyte[1] = cPacket[indx*2 + 1];
+    }
+    sscanf(cbyte,"%2x",&bufferByte);
+    buffer[indx] = (byte)bufferByte;
+  }
+}
+word ESATCCSDSPacket::readBytesAvailable()
+{
+  unsigned long  packetLength = readPacketLength();
+  if(readPosition >= packetLength)
+  {
+    return 0;
+  }
+  else
+  {
+    return packetLength - readPosition;
+  }
+}
+

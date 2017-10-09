@@ -98,6 +98,10 @@ class ESATCCSDSPacket
     // The packet data length includes the secondary header
     // and the user data/packet payload.
     word readPacketDataLength();
+    
+    // Return the packet length, including the primary and secondary 
+    // header and the data P/L (expressed in octets).
+    unsigned long readPacketLength();
 
     // Read the CCSDS packet sequence count.
     // This field is part of the primary header.
@@ -184,6 +188,18 @@ class ESATCCSDSPacket
     // Append a 16-bit integer to the packet buffer.
     // This increments the packet data length by 2.
     void writeWord(word datum);
+    
+    // Read the packet as a char array 
+    // Use (readPacketLength()*2 + 1) value to initialize cPacket
+    void readCharPacket(char cPacket[]);
+    
+    // write the packet as a char array 
+    // Use (readPacketLength()*2 + 1) value to initialize cPacket
+    void writeCharPacket(char cPacket[]);
+    
+    // read how many bytes there are still to be read
+    word readBytesAvailable();
+    
 
   private:
     // Structure of the primary header.
