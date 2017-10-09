@@ -205,6 +205,7 @@ void ESATI2CSlave::handleTelemetryVectorPrimaryHeaderRequest()
   {
     (void) bus->write(telemetry.primaryHeader[i]);
   }
+  telemetry.rewind();
   requestState = HANDLE_TELEMETRY_VECTOR_PACKET_DATA;
 }
 
