@@ -18,6 +18,43 @@
 
 #include "ESATI2CMaster.h"
 
+boolean ESATI2CMaster::readTelecommandStatus(TwoWire& bus,
+                                             const byte address,
+                                             const byte tries,
+                                             const word millisecondsBetweenRetries)
+{
+  for (int i = 0; i < tries; i++)
+  {
+    bus.beginTransmission(address);
+    (void) bus.write(TELECOMMAND_STATUS);
+    const byte writeStatus = bus.endTransmission();
+    if (writeStatus != 0)
+    {
+      return false;
+    }
+    const byte bytesToRead = 1;
+    const byte bytesRead = bus.requestFrom(address, bytesToRead);
+    if (bytesRead != bytesToRead)
+    {
+      return false;
+    }
+    const byte telecommandStatus = bus.read();
+    switch (telecommandStatus)
+    {
+      case TELECOMMAND_NOT_PENDING:
+        return true;
+        break;
+      case TELECOMMAND_PENDING:
+        delay(millisecondsBetweenRetries);
+        break;
+      default:
+        return false;
+        break;
+    }
+  }
+  return false;
+}
+
 boolean ESATI2CMaster::readTelemetry(TwoWire& bus,
                                      const byte address,
                                      const byte packetIdentifier,
@@ -67,43 +104,6 @@ boolean ESATI2CMaster::readTelemetry(TwoWire& bus,
     return false;
   }
   return true;
-}
-
-boolean ESATI2CMaster::readTelecommandStatus(TwoWire& bus,
-                                             const byte address,
-                                             const byte tries,
-                                             const word millisecondsBetweenRetries)
-{
-  for (int i = 0; i < tries; i++)
-  {
-    bus.beginTransmission(address);
-    (void) bus.write(TELECOMMAND_STATUS);
-    const byte writeStatus = bus.endTransmission();
-    if (writeStatus != 0)
-    {
-      return false;
-    }
-    const byte bytesToRead = 1;
-    const byte bytesRead = bus.requestFrom(address, bytesToRead);
-    if (bytesRead != bytesToRead)
-    {
-      return false;
-    }
-    const byte telecommandStatus = bus.read();
-    switch (telecommandStatus)
-    {
-      case TELECOMMAND_NOT_PENDING:
-        return true;
-        break;
-      case TELECOMMAND_PENDING:
-        delay(millisecondsBetweenRetries);
-        break;
-      default:
-        return false;
-        break;
-    }
-  }
-  return false;
 }
 
 boolean ESATI2CMaster::readTelemetryPacketData(TwoWire& bus,
