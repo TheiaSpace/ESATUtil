@@ -25,7 +25,7 @@
 // These are simple packets following CCSDS Recommendation 133.0-B-1:
 // Space Packet Protocol.  They contain a 6-byte primary header
 // followed by a series of octets (at least 1) with the packet data.
-class ESATCCSDSPacket
+class ESATCCSDSPacket: public Printable
 {
   public:
     // Packet type: either telemetry or telecommand.
@@ -89,12 +89,15 @@ class ESATCCSDSPacket
     // packet.  Otherwise return false.
     boolean endOfPacketDataReached();
 
+    // Print the packet in human-readable form.
+    size_t printTo(Print& output) const;
+
     // Read the CCSDS application process identifier.
     // This field is part of the primary header.
     // There should be one application process identifier per logical
     // subsystem (e.g., the attitude determination and control
     // subsystem should have its own application process identifier).
-    word readApplicationProcessIdentifier();
+    word readApplicationProcessIdentifier() const;
 
     // Read the next boolean (an 8-bit entry) from the packet data.
     boolean readBoolean();
@@ -118,29 +121,29 @@ class ESATCCSDSPacket
     // The packet data length includes the secondary header
     // and the user data/packet payload.
     // It can go from 1 to 65536.
-    long readPacketDataLength();
+    long readPacketDataLength() const;
 
     // Read the CCSDS packet sequence count.
     // This field is part of the primary header.
-    word readPacketSequenceCount();
+    word readPacketSequenceCount() const;
 
     // Read the CCSDS packet type: either telemetry or telecommand.
     // This field is part of the primary header.
-    PacketType readPacketType();
+    PacketType readPacketType() const;
 
     // Return the CCSDS packet version number.
     // This field is part of the primary header.
     // There is a packet sequence count for every application process
     // and it should be incremented every time a new packet is generated.
-    byte readPacketVersionNumber();
+    byte readPacketVersionNumber() const;
 
     // Read the CCSDS secondary header flag.
     // This field is part of the primary header.
-    SecondaryHeaderFlag readSecondaryHeaderFlag();
+    SecondaryHeaderFlag readSecondaryHeaderFlag() const;
 
     // Read the CCSDS sequence flags.
     // This field is part of the primary header.
-    SequenceFlags readSequenceFlags();
+    SequenceFlags readSequenceFlags() const;
 
     // Read the next 16-bit integer from the packet data.
     word readWord();
@@ -251,7 +254,7 @@ class ESATCCSDSPacket
     float longToFloat(unsigned long bits);
 
     // Read up to 16 bits at a given offset from the primary header.
-    word readPrimaryHeaderBits(byte offset, byte length);
+    word readPrimaryHeaderBits(byte offset, byte length) const;
 
     // Write up to 16 bits at a given bit offset on the primary header.
     void writePrimaryHeaderBits(byte offset, byte length, word bits);
