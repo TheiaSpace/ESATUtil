@@ -111,13 +111,14 @@ boolean ESATI2CMaster::readTelemetryPacketData(TwoWire& bus,
                                                ESATCCSDSPacket& packet)
 {
   const long packetDataLength = packet.readPacketDataLength();
-  packet.writePacketDataLength(0);
-  while (packet.readPacketDataLength() < packetDataLength)
+  packet.rewind();
+  long totalBytesRead = 0;
+  while (totalBytesRead < packetDataLength)
   {
     byte bytesToRead = I2C_CHUNK_LENGTH;
-    if ((packet.readPacketDataLength() + bytesToRead) > packetDataLength)
+    if ((totalBytesRead + bytesToRead) > packetDataLength)
     {
-      bytesToRead = packetDataLength - packet.readPacketDataLength();
+      bytesToRead = packetDataLength - totalBytesRead;
     }
     const byte bytesRead = bus.requestFrom(address, bytesToRead);
     if (bytesRead != bytesToRead)
@@ -128,6 +129,7 @@ boolean ESATI2CMaster::readTelemetryPacketData(TwoWire& bus,
     {
       packet.writeByte(bus.read());
     }
+    totalBytesRead = totalBytesRead + bytesRead;
   }
   return true;
 }
