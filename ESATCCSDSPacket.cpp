@@ -183,13 +183,12 @@ boolean ESATCCSDSPacket::readBoolean()
 
 byte ESATCCSDSPacket::readByte()
 {
-  const long nextPosition = position + 1;
-  if (nextPosition >= packetDataBufferLength)
+  if (position >= packetDataBufferLength)
   {
     return 0;
   }
   const byte datum = packetData[position];
-  position = nextPosition;
+  position = position + 1;
   return datum;
 }
 
