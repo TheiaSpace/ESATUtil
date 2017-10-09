@@ -54,7 +54,7 @@ void ESATI2CSlave::handleTelecommandPacketDataReception(const byte message[],
   }
   for (long i = 0; i < messageLength; i++)
   {
-    telecommand.writeByte(i);
+    telecommand.writeByte(message[i]);
     if (telecommand.readPacketDataLength()
         >= telecommandPacketDataLength)
     {
