@@ -27,16 +27,12 @@
 class ESATI2CMaster
 {
   public:
-    // Set up the master to communicate through the given I2C interface.
-    // The I2C interface must be initiated before we start sending and
-    // receiving data.
-    void begin(TwoWire& i2cInterface);
-
     // Read a telemetry packet from the device at the given address.
     // Retry several times, waiting several milliseconds, if the
     // telemetry is not ready.
     // Return true on success; otherwise return false.
-    boolean readTelemetry(byte address,
+    boolean readTelemetry(TwoWire& bus,
+                          byte address,
                           byte packetIdentifier,
                           ESATCCSDSPacket& packet,
                           byte tries,
@@ -46,7 +42,8 @@ class ESATI2CMaster
     // Retry several times, waiting several milliseconds, if the
     // telecommand queue is full.
     // Return true on success; otherwise return false.
-    boolean writeTelecommand(byte address,
+    boolean writeTelecommand(TwoWire& bus,
+                             byte address,
                              ESATCCSDSPacket& packet,
                              byte tries,
                              word millisecondsBetweenRetries);
@@ -83,49 +80,53 @@ class ESATI2CMaster
     // I2C messages will be sent in chunks of up to 16 bytes.
     static const byte I2C_CHUNK_LENGTH = 16;
 
-    // I2C slave interface.
-    TwoWire* bus;
-
     // Read the telecommand status from the given address.
     // Retry several times if the queue is not free,
     // waiting several milliseconds between retries.
     // Return true if the telecommand queue is free; otherwise return false.
-    boolean readTelecommandStatus(byte address,
+    boolean readTelecommandStatus(TwoWire& bus,
+                                  byte address,
                                   byte tries,
                                   word millisecondsBetweenRetries);
 
     // Read the packet data from the given address.
     // Return true on success; otherwise return false.
-    boolean readTelemetryPacketData(byte address,
+    boolean readTelemetryPacketData(TwoWire& bus,
+                                    byte address,
                                     ESATCCSDSPacket& packet);
 
     // Read the packet primary header from the given address.
     // Return true on success; otherwise return false.
-    boolean readTelemetryPrimaryHeader(byte address,
+    boolean readTelemetryPrimaryHeader(TwoWire& bus,
+                                       byte address,
                                        ESATCCSDSPacket& packet);
 
     // Read the telemetry status from the given address.
     // Retry several times if the telemetry is not ready,
     // waiting several milliseconds between retries.
     // Return true if the telemetry is ready; otherwise return false.
-    boolean readTelemetryStatus(byte address,
+    boolean readTelemetryStatus(TwoWire& bus,
+                                byte address,
                                 byte tries,
                                 word millisecondsBetweenRetries);
 
     // Write the packet data to the given address.
     // Return true on success; otherwise return false.
-    boolean writeTelecommandPacketData(byte address,
+    boolean writeTelecommandPacketData(TwoWire& bus,
+                                       byte address,
                                        ESATCCSDSPacket& packet);
 
     // Write the primary header to the given address.
     // Return true on success; otherwise return false.
-    boolean writeTelecommandPrimaryHeader(byte address,
+    boolean writeTelecommandPrimaryHeader(TwoWire& bus,
+                                          byte address,
                                           ESATCCSDSPacket& packet);
 
     // Write a telemetry request for a packet identifier to the given
     // address.
     // Return true on success; otherwise return false.
-    boolean writeTelemetryRequest(byte address,
+    boolean writeTelemetryRequest(TwoWire& bus,
+                                  byte address,
                                   byte packetIdentifier);
 };
 

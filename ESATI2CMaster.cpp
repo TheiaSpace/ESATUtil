@@ -18,39 +18,42 @@
 
 #include "ESATI2CMaster.h"
 
-void ESATI2CMaster::begin(TwoWire& i2cInterface)
-{
-  bus = &i2cInterface;
-}
-
-boolean ESATI2CMaster::readTelemetry(const byte address,
+boolean ESATI2CMaster::readTelemetry(TwoWire& bus,
+                                     const byte address,
                                      const byte packetIdentifier,
                                      ESATCCSDSPacket& packet,
                                      const byte tries,
                                      const word millisecondsBetweenRetries)
 {
   const boolean telemetryRequestCorrect =
-    writeTelemetryRequest(address, packetIdentifier);
+    writeTelemetryRequest(bus,
+                          address,
+                          packetIdentifier);
   if (!telemetryRequestCorrect)
   {
     return false;
   }
   const boolean telemetryReady =
-    readTelemetryStatus(address,
-                       tries,
-                       millisecondsBetweenRetries);
+    readTelemetryStatus(bus,
+                        address,
+                        tries,
+                        millisecondsBetweenRetries);
   if (!telemetryReady)
   {
     return false;
   }
   const boolean primaryHeaderCorrect =
-    readTelemetryPrimaryHeader(address, packet);
+    readTelemetryPrimaryHeader(bus,
+                               address,
+                               packet);
   if (!primaryHeaderCorrect)
   {
     return false;
   }
   const boolean packetDataCorrect =
-    readTelemetryPacketData(address, packet);
+    readTelemetryPacketData(bus,
+                            address,
+                            packet);
   if (!packetDataCorrect)
   {
     return false;
@@ -66,26 +69,27 @@ boolean ESATI2CMaster::readTelemetry(const byte address,
   return true;
 }
 
-boolean ESATI2CMaster::readTelecommandStatus(const byte address,
+boolean ESATI2CMaster::readTelecommandStatus(TwoWire& bus,
+                                             const byte address,
                                              const byte tries,
                                              const word millisecondsBetweenRetries)
 {
   for (int i = 0; i < tries; i++)
   {
-    bus->beginTransmission(address);
-    (void) bus->write(TELECOMMAND_STATUS);
-    const byte writeStatus = bus->endTransmission();
+    bus.beginTransmission(address);
+    (void) bus.write(TELECOMMAND_STATUS);
+    const byte writeStatus = bus.endTransmission();
     if (writeStatus != 0)
     {
       return false;
     }
     const byte bytesToRead = 1;
-    const byte bytesRead = bus->requestFrom(address, bytesToRead);
+    const byte bytesRead = bus.requestFrom(address, bytesToRead);
     if (bytesRead != bytesToRead)
     {
       return false;
     }
-    const byte telecommandState = bus->read();
+    const byte telecommandState = bus.read();
     switch (telecommandState)
     {
       case TELECOMMAND_NOT_PENDING:
@@ -102,7 +106,8 @@ boolean ESATI2CMaster::readTelecommandStatus(const byte address,
   return false;
 }
 
-boolean ESATI2CMaster::readTelemetryPacketData(const byte address,
+boolean ESATI2CMaster::readTelemetryPacketData(TwoWire& bus,
+                                               const byte address,
                                                ESATCCSDSPacket& packet)
 {
   const long packetDataLength = packet.readPacketDataLength();
@@ -114,38 +119,39 @@ boolean ESATI2CMaster::readTelemetryPacketData(const byte address,
     {
       bytesToRead = packetDataLength - packet.readPacketDataLength();
     }
-    const byte bytesRead = bus->requestFrom(address, bytesToRead);
+    const byte bytesRead = bus.requestFrom(address, bytesToRead);
     if (bytesRead != bytesToRead)
     {
       return false;
     }
     for (byte i = 0; i < bytesRead; i++)
     {
-      packet.writeByte(bus->read());
+      packet.writeByte(bus.read());
     }
   }
   return true;
 }
 
-boolean ESATI2CMaster::readTelemetryPrimaryHeader(const byte address,
+boolean ESATI2CMaster::readTelemetryPrimaryHeader(TwoWire& bus,
+                                                  const byte address,
                                                   ESATCCSDSPacket& packet)
 {
-  bus->beginTransmission(address);
-  (void) bus->write(TELEMETRY_VECTOR);
-  const byte writeStatus = bus->endTransmission();
+  bus.beginTransmission(address);
+  (void) bus.write(TELEMETRY_VECTOR);
+  const byte writeStatus = bus.endTransmission();
   if (writeStatus != 0)
   {
     return false;
   }
   const byte headerBytesRead =
-    bus->requestFrom(address, packet.PRIMARY_HEADER_LENGTH);
+    bus.requestFrom(address, packet.PRIMARY_HEADER_LENGTH);
   if (headerBytesRead != packet.PRIMARY_HEADER_LENGTH)
   {
     return false;
   }
   for (byte i = 0; i < packet.PRIMARY_HEADER_LENGTH; i++)
   {
-    packet.primaryHeader[i] = bus->read();
+    packet.primaryHeader[i] = bus.read();
   }
   if (packet.readPacketType() != packet.TELEMETRY)
   {
@@ -162,26 +168,27 @@ boolean ESATI2CMaster::readTelemetryPrimaryHeader(const byte address,
   return true;
 }
 
-boolean ESATI2CMaster::readTelemetryStatus(const byte address,
+boolean ESATI2CMaster::readTelemetryStatus(TwoWire& bus,
+                                           const byte address,
                                            const byte tries,
                                            const word millisecondsBetweenRetries)
 {
   for (int i = 0; i < tries; i++)
   {
-    bus->beginTransmission(address);
-    (void) bus->write(TELEMETRY_STATUS);
-    const byte writeStatus = bus->endTransmission();
+    bus.beginTransmission(address);
+    (void) bus.write(TELEMETRY_STATUS);
+    const byte writeStatus = bus.endTransmission();
     if (writeStatus != 0)
     {
       return false;
     }
     const byte bytesToRead = 1;
-    const byte bytesRead = bus->requestFrom(address, bytesToRead);
+    const byte bytesRead = bus.requestFrom(address, bytesToRead);
     if (bytesRead != bytesToRead)
     {
       return false;
     }
-    const byte telemetryState = bus->read();
+    const byte telemetryState = bus.read();
     switch (telemetryState)
     {
       case TELEMETRY_NOT_REQUESTED:
@@ -207,13 +214,15 @@ boolean ESATI2CMaster::readTelemetryStatus(const byte address,
   return false;
 }
 
-boolean ESATI2CMaster::writeTelecommand(const byte address,
+boolean ESATI2CMaster::writeTelecommand(TwoWire& bus,
+                                        const byte address,
                                         ESATCCSDSPacket& packet,
                                         const byte tries,
                                         const word millisecondsBetweenRetries)
 {
   const boolean telecommandStatusCorrect =
-    readTelecommandStatus(address,
+    readTelecommandStatus(bus,
+                          address,
                           tries,
                           millisecondsBetweenRetries);
   if (!telecommandStatusCorrect)
@@ -221,32 +230,37 @@ boolean ESATI2CMaster::writeTelecommand(const byte address,
     return false;
   }
   const boolean telecommandPrimaryHeaderCorrect =
-    writeTelecommandPrimaryHeader(address, packet);
+    writeTelecommandPrimaryHeader(bus,
+                                  address,
+                                  packet);
   if (!telecommandPrimaryHeaderCorrect)
   {
     return false;
   }
   const boolean telecommandPacketDataCorrect =
-    writeTelecommandPacketData(address, packet);
+    writeTelecommandPacketData(bus,
+                               address,
+                               packet);
   return telecommandPacketDataCorrect;
 }
 
-boolean ESATI2CMaster::writeTelecommandPacketData(const byte address,
+boolean ESATI2CMaster::writeTelecommandPacketData(TwoWire& bus,
+                                                  const byte address,
                                                   ESATCCSDSPacket& packet)
 {
   packet.rewind();
   while (!packet.endOfPacketDataReached())
   {
-    bus->beginTransmission(address);
-    (void) bus->write(TELECOMMAND_PACKET_DATA);
+    bus.beginTransmission(address);
+    (void) bus.write(TELECOMMAND_PACKET_DATA);
     const byte bytesToWrite = I2C_CHUNK_LENGTH - 1;
     for (byte i = 0;
          i < bytesToWrite, !packet.endOfPacketDataReached();
          i++)
     {
-      (void) bus->write(packet.readByte());
+      (void) bus.write(packet.readByte());
     }
-    const byte packetDataStatus = bus->endTransmission();
+    const byte packetDataStatus = bus.endTransmission();
     if (packetDataStatus != 0)
     {
       return false;
@@ -255,29 +269,31 @@ boolean ESATI2CMaster::writeTelecommandPacketData(const byte address,
   return true;
 }
 
-boolean ESATI2CMaster::writeTelecommandPrimaryHeader(const byte address,
+boolean ESATI2CMaster::writeTelecommandPrimaryHeader(TwoWire& bus,
+                                                     const byte address,
                                                      ESATCCSDSPacket& packet)
 {
-  bus->beginTransmission(address);
-  (void) bus->write(TELECOMMAND_PRIMARY_HEADER);
+  bus.beginTransmission(address);
+  (void) bus.write(TELECOMMAND_PRIMARY_HEADER);
   for (byte i = 0; i < packet.PRIMARY_HEADER_LENGTH; i++)
   {
-    (void) bus->write(packet.primaryHeader[i]);
+    (void) bus.write(packet.primaryHeader[i]);
   }
-  const byte writeStatus = bus->endTransmission();
+  const byte writeStatus = bus.endTransmission();
   if (writeStatus != 0)
   {
     return false;
   }
 }
 
-boolean ESATI2CMaster::writeTelemetryRequest(const byte address,
+boolean ESATI2CMaster::writeTelemetryRequest(TwoWire& bus,
+                                             const byte address,
                                              const byte packetIdentifier)
 {
-  bus->beginTransmission(address);
-  (void) bus->write(TELEMETRY_REQUEST);
-  (void) bus->write(packetIdentifier);
-  const byte writeStatus = bus->endTransmission();
+  bus.beginTransmission(address);
+  (void) bus.write(TELEMETRY_REQUEST);
+  (void) bus.write(packetIdentifier);
+  const byte writeStatus = bus.endTransmission();
   if (writeStatus == 0)
   {
     return true;
