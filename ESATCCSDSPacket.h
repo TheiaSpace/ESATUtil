@@ -80,6 +80,11 @@ class ESATCCSDSPacket
     // Clear the packet by setting all bytes to 0.
     void clear();
 
+    // Copy the whole packet contents to a target packet.
+    // The copy will fail if the target packet data buffer is too small.
+    // Return true on successful copy; otherwise return false.
+    boolean copyTo(ESATCCSDSPacket& target);
+
     // Return true if the last read operation reached the end of the
     // packet.  Otherwise return false.
     boolean endOfPacketDataReached();

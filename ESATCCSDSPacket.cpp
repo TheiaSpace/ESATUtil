@@ -50,6 +50,23 @@ void ESATCCSDSPacket::clear()
   hasData = false;
 }
 
+boolean ESATCCSDSPacket::copyTo(ESATCCSDSPacket& target)
+{
+  if (target.packetDataBufferLength < readPacketDataLength())
+  {
+    return false;
+  }
+  for (byte i = 0; i < PRIMARY_HEADER_LENGTH; i++)
+  {
+    target.primaryHeader[i] = primaryHeader[i];
+  }
+  rewind();
+  while (!endOfPacketDataReached())
+  {
+    target.writeByte(readByte());
+  }
+}
+
 boolean ESATCCSDSPacket::endOfPacketDataReached()
 {
   if (readPosition >= readPacketDataLength())
