@@ -63,6 +63,7 @@ boolean ESATCCSDSPacket::copyTo(ESATCCSDSPacket& target)
   {
     target.writeByte(readByte());
   }
+  return true;
 }
 
 boolean ESATCCSDSPacket::endOfPacketDataReached()
