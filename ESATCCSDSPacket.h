@@ -76,6 +76,12 @@ class ESATCCSDSPacket: public Printable
     // Useful for just generating a primary header.
     // The primary header starts with a raw value of all zeros.
     // The read/write pointer starts at 0.
+    // The packet data buffer is null and should be assigned
+    // together with the packet data buffer length before
+    // using the packet data.
+    // The packet data buffer length is set to 0 and should be
+    // assigned together with the packet data buffer before using
+    // the packet data.
     ESATCCSDSPacket();
 
     // Instantiate a new packet backed with the packet data field
