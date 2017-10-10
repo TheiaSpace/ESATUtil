@@ -64,9 +64,12 @@ class ESATCCSDSPacket: public Printable
     static const byte PRIMARY_HEADER_LENGTH = 6;
 
     // Buffer with the raw packet data field.
+    // The variable packetDataBufferLength should be equal
+    // to the capacity of this buffer.
     byte* packetData;
 
     // Packet data buffer length in bytes.
+    // Its value should be equal to the capacity of packetData.
     unsigned long packetDataBufferLength;
 
     // Buffer with the raw primary header.
