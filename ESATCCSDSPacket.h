@@ -74,11 +74,15 @@ class ESATCCSDSPacket: public Printable
 
     // Instantiate a CCSDS packet with no packet data field.
     // Useful for just generating a primary header.
+    // The primary header starts with a raw value of all zeros.
+    // The read/write pointer starts at 0.
     ESATCCSDSPacket();
 
     // Instantiate a new packet backed with the packet data field
     // (packet payload) by the given buffer.
     // The buffer must be at least 1 byte long.
+    // The primary header starts with a raw value of all zeros.
+    // The read/write pointer starts at 0.
     ESATCCSDSPacket(byte buffer[], unsigned long bufferLength);
 
     // Clear the packet by setting all bytes to 0.
