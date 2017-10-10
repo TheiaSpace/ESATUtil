@@ -308,6 +308,12 @@ size_t ESATCCSDSPacket::printTo(Print& output) const
   return bytesWritten;
 }
 
+unsigned long ESATCCSDSPacket::availableBytesToRead()
+{
+  unsigned long packetDataLength = readPacketDataLength();
+  return packetDataLength - position;
+}
+
 word ESATCCSDSPacket::readApplicationProcessIdentifier() const
 {
   return readPrimaryHeaderBits(APPLICATION_PROCESS_IDENTIFIER_OFFSET,

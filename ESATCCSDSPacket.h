@@ -112,6 +112,10 @@ class ESATCCSDSPacket: public Printable
     // This leaves the read/byte pointer untouched.
     size_t printTo(Print& output) const;
 
+    // Return the number of bytes that are still in the packet Data
+    // to be read
+    unsigned long availableBytesToRead();
+    
     // Return the CCSDS application process identifier.
     // This field is part of the primary header.
     // There should be one application process identifier per logical
