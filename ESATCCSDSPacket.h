@@ -339,7 +339,7 @@ class ESATCCSDSPacket: public Printable
     // when the packet data buffer is smaller than the packet
     // data length.
     // This leaves the read/byte pointer untouched.
-    boolean writeTo(Stream& output);
+    boolean writeTo(Stream& output) const;
 
     // Append a 32-bit unsigned integer to the packet data.
     // This increments the packet data length by 4.

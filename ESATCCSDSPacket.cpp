@@ -621,7 +621,7 @@ void ESATCCSDSPacket::writeSequenceFlags(const SequenceFlags sequenceFlags)
                          sequenceFlags);
 }
 
-boolean ESATCCSDSPacket::writeTo(Stream& output)
+boolean ESATCCSDSPacket::writeTo(Stream& output) const
 {
   for (byte i = 0; i < PRIMARY_HEADER_LENGTH; i++)
   {
