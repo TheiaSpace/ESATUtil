@@ -27,6 +27,8 @@
 // followed by a series of octets (at least 1) with the packet data.
 // Multi-byte data are stored in big-endian order: the first byte is
 // the most significant, the last byte is the least significant.
+// Signed integers are stored in two's complement format.
+// Floating-point numbers are stored in IEEE 754 format.
 class ESATCCSDSPacket: public Printable
 {
   public:
@@ -99,19 +101,27 @@ class ESATCCSDSPacket: public Printable
     // There should be one application process identifier per logical
     // subsystem (e.g., the attitude determination and control
     // subsystem should have its own application process identifier).
+    // The application process identifier is a 14-bit unsigned integer,
+    // most significant bit first.
     word readApplicationProcessIdentifier() const;
 
     // Read the next boolean (an 8-bit entry) from the packet data.
+    // The raw datum is stored as a 0 for false and as any other
+    // 8-bit number for true.
     boolean readBoolean();
 
     // Read the next 8-bit signed integer from the packet data.
+    // The raw datum is stored in two's complement format.
     signed char readChar();
 
     // Read the next 8-bit unsigned integer from the packet data.
     byte readByte();
 
-    // Read the next IEEE 754 single-precision floating-point number
+    // Read the next single-precision floating-point number
     // from the packet data.
+    // The raw datum is stored in big-endian byte order, IEEE 754
+    // format, single-precision (32-bit, binary32).
+    // Denormal numbers are not properly handled.
     float readFloat();
 
     // Fill the packet with incoming data from an input stream.
@@ -119,9 +129,13 @@ class ESATCCSDSPacket: public Printable
     boolean readFrom(Stream& input);
 
     // Read the next 16-bit signed integer from the packet data.
+    // The raw datum is stored in big-endian byte order,
+    // two's complement format.
     int readInt();
 
     // Read the next 32-bit signed integer from the packet data.
+    // The raw datum is stored in bin-endian byte order,
+    // two's complement format.
     long readLong();
 
     // Return the packet data length (expressed in octets).
@@ -129,34 +143,54 @@ class ESATCCSDSPacket: public Printable
     // The packet data length includes the secondary header
     // and the user data/packet payload.
     // It can go from 1 to 65536.
+    // The raw datum is stored as a 16-bit unsigned integer
+    // in big-endian byte order, as the actual packet data
+    // length minus 1.
     long readPacketDataLength() const;
 
     // Read the CCSDS packet sequence count.
     // This field is part of the primary header.
+    // The raw datum is stored as a 14-bit unsigned integer,
+    // most significant bit first.
     word readPacketSequenceCount() const;
 
     // Read the CCSDS packet type: either telemetry or telecommand.
     // This field is part of the primary header.
+    // The raw datum is stored as a bit:
+    // 0 for TELEMETRY, 1 for TELECOMMAND.
     PacketType readPacketType() const;
 
     // Return the CCSDS packet version number.
     // This field is part of the primary header.
     // There is a packet sequence count for every application process
     // and it should be incremented every time a new packet is generated.
+    // The raw datum is stored as a 3-bit unsigned integer, most
+    // significant bit first.
     byte readPacketVersionNumber() const;
 
     // Read the CCSDS secondary header flag.
     // This field is part of the primary header.
+    // The raw datum is stored as a bit:
+    // 0 for SECONDARY_HEADER_IS_NOT_PRESENT,
+    // 1 for SECONDARY_HEADER_IS_PRESENT.
     SecondaryHeaderFlag readSecondaryHeaderFlag() const;
 
     // Read the CCSDS sequence flags.
     // This field is part of the primary header.
+    // The raw datum is stored as a 2-bit unsigned integer, most
+    // significant bit first:
+    // 0 for CONTINUATION_SEGMENT_OF_USER_DATA,
+    // 1 for FIRST_SEGMENT_OF_USER_DATA,
+    // 2 for LAST_SEGMENT_OF_USER_DATA,
+    // 3 for UNSEGMENTED_USER_DATA.
     SequenceFlags readSequenceFlags() const;
 
     // Read the next 32-bit unsigned integer from the packet data.
+    // The raw datum is stored in big-endian byte order.
     unsigned long readUnsignedLong();
 
     // Read the next 16-bit unsigned integer from the packet data.
+    // The raw datum is stored in big-endian byte order.
     word readWord();
 
     // Move the read/write pointer back to the start of the packet data
@@ -165,6 +199,11 @@ class ESATCCSDSPacket: public Printable
 
     // Update the packet data length to match the number of bytes written
     // to the packet data (the position of the next write operation).
+    // The raw datum is stored as a 16-bit unsigned integer in
+    // big-endian byte order, as the actual packet data length minus 1.
+    // If the number of bytes written to the packet is 0, the packet
+    // data length will be erroneous, but empty CCSDS packets
+    // are forbidden by the standard.
     void updatePacketDataLength();
 
     // Write the CCSDS application process identifier.
@@ -172,9 +211,13 @@ class ESATCCSDSPacket: public Printable
     // There should be one application process identifier per logical
     // subsystem (e.g., the attitude determination and control
     // subsystem should have its own application process identifier).
+    // The raw datum is stored as an 11-bit unsigned integer,
+    // most significant bit first.
     void writeApplicationProcessIdentifier(word applicationProcessIdentifier);
 
     // Append a boolean to the packet data.
+    // The raw datum is stored as an 8-bit unsigned integer:
+    // 0 for false, 1 for true.
     // This increments the packet data length by 1.
     void writeBoolean(boolean datum);
 
@@ -185,45 +228,81 @@ class ESATCCSDSPacket: public Printable
     // Append an 8-bit signed integer to the packet data.
     void writeChar(signed char datum);
 
-    // Append an IEEE 754 single-precision floating-point number to
-    // the packet data.
-    // This increments the packet data length by 4.
+    // Append a floating-point number to the packet data.
+    // The raw datum is stored in big-endian byte order, IEEE 754
+    // format, single-precision (32-bit, binary32).
+    // Denormal numbers are not properly handled.
     void writeFloat(float datum);
 
     // Append a 16-bit signed integer to the packet data.
+    // The raw datum is stored in big-endian byte order,
+    // two's complement format.
     void writeInt(int datum);
 
     // Append a 32-bit signed integer to the packet data.
+    // The raw datum is stored in big-endian byte order,
+    // two's complement format.
     void writeLong(long datum);
 
     // Write the packet data length (expressed in octets).
     // This field is part of the primary header.
     // The packet data length includes the secondary header
     // and the user data/packet payload.
-    // It can go from 1 to 65536.
+    // It can go from 1 to 65536 (both included).
+    // The raw datum is stored as a 16-bit unsigned integer
+    // in big-endian byte order, as the actual packet data
+    // length minus 1.  As valid packet data lengths go from
+    // 1 to 65536 (both included), the behaviour when given
+    // an argument outside of that interval is undefined.
     void writePacketDataLength(long packetDataLength);
 
     // Read the CCSDS packet sequence count.
     // This field is part of the primary header.
     // There is a packet sequence count for every application process
     // and it should be incremented every time a new packet is generated.
+    // The raw datum is stored as a 14-bit unsigned integer,
+    // most significant bit first.
     void writePacketSequenceCount(word packetSequenceCount);
 
     // Write the CCSDS packet type: wether telemetry or telecommand.
     // This field is part of the primary header.
+    // The raw datum is stored as a bit:
+    // 0 for TELEMETRY, 1 for TELECOMMAND.
+    // The behaviour with arguments other than TELEMETRY or TELECOMMAND
+    // is undefined.
     void writePacketType(PacketType packetType);
 
     // Write the CCSDS packet version number.
     // This field is part of the primary header.
     // Should be 0.
+    // The packet version number can go from 0 to 7 (both included).
+    // The raw datum is stored as a 3-bit unsigned integer, most
+    // significant bit first.
+    // As valid packet version numbers go from 0 to 7 (both included),
+    // the behaviour when given an argument outside of that interval
+    // is undefined.
     void writePacketVersionNumber(byte packetVersionNumber);
 
     // Write the CCSDS secondary header flag.
     // This field is part of the primary header.
+    // The raw datum is stored as a bit:
+    // 0 for SECONDARY_HEADER_IS_NOT_PRESENT,
+    // 1 for SECONDARY_HEADER_IS_PRESENT.
+    // The behaviour with arguments other than SECONDARY_HEADER_IS_NOT_PRESENT
+    // or SECONDARY_HEADER_IS_PRESENT is undefined.
     void writeSecondaryHeaderFlag(SecondaryHeaderFlag secondaryHeaderFlag);
 
     // Write the CCSDS sequence flags.
     // This field is part of the primary header.
+    // The raw datum is stored as a 2-bit unsigned integer,
+    // most significant bit first:
+    // 0 for CONTINUATION_SEGMENT_OF_USER_DATA,
+    // 1 for FIRST_SEGMENT_OF_USER_DATA,
+    // 2 for LAST_SEGMENT_OF_USER_DATA,
+    // 3 for UNSEGMENTED_USER_DATA.
+    // The behaviour with arguments other than
+    // CONTINUATION_SEGMENT_OF_USER_DATA, FIRST_SEGMENT_OF_USER_DATA,
+    // LAST_SEGMENT_OF_USER_DATA or UNSEGMENTED_USER_DATA is undefined.
     void writeSequenceFlags(SequenceFlags sequenceFlags);
 
     // Write the raw contents of the packet to an output stream.
@@ -232,10 +311,12 @@ class ESATCCSDSPacket: public Printable
 
     // Append a 32-bit unsigned integer to the packet data.
     // This increments the packet data length by 4.
+    // The raw datum is stored in big-endian byte order.
     void writeUnsignedLong(unsigned long datum);
 
     // Append a 16-bit unsigned integer to the packet data.
     // This increments the packet data length by 2.
+    // The raw datum is stored in big-endian byte order.
     void writeWord(word datum);
 
   private:
