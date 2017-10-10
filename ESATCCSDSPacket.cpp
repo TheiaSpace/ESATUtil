@@ -621,7 +621,7 @@ void ESATCCSDSPacket::writeSequenceFlags(const SequenceFlags sequenceFlags)
                          sequenceFlags);
 }
 
-boolean ESATCCSDSPacket::writeTo(Stream& output)
+boolean ESATCCSDSPacket::writeTo(Stream& output) const
 {
   for (byte i = 0; i < PRIMARY_HEADER_LENGTH; i++)
   {
@@ -631,10 +631,14 @@ boolean ESATCCSDSPacket::writeTo(Stream& output)
       return false;
     }
   }
-  rewind();
-  while (!endOfPacketDataReached())
+  const long packetDataLength = readPacketDataLength();
+  if (packetDataLength > packetDataBufferLength)
   {
-    const size_t bytesWritten = output.write(readByte());
+    return false;
+  }
+  for (long i = 0; i < packetDataLength; i++)
+  {
+    const size_t bytesWritten = output.write(packetData[i]);
     if (bytesWritten != 1)
     {
       return false;

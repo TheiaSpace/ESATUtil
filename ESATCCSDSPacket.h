@@ -27,6 +27,8 @@
 // followed by a series of octets (at least 1) with the packet data.
 // Multi-byte data are stored in big-endian order: the first byte is
 // the most significant, the last byte is the least significant.
+// Signed integers are stored in two's complement format.
+// Floating-point numbers are stored in IEEE 754 format.
 class ESATCCSDSPacket: public Printable
 {
   public:
@@ -62,9 +64,12 @@ class ESATCCSDSPacket: public Printable
     static const byte PRIMARY_HEADER_LENGTH = 6;
 
     // Buffer with the raw packet data field.
+    // The variable packetDataBufferLength must be equal
+    // to the capacity of this buffer.
     byte* packetData;
 
     // Packet data buffer length in bytes.
+    // Its value must be equal to the capacity of packetData.
     unsigned long packetDataBufferLength;
 
     // Buffer with the raw primary header.
@@ -72,11 +77,23 @@ class ESATCCSDSPacket: public Printable
 
     // Instantiate a CCSDS packet with no packet data field.
     // Useful for just generating a primary header.
+    // The primary header starts with a raw value of all zeros.
+    // The read/write pointer starts at 0.
+    // The packet data buffer is null and must be assigned
+    // together with the packet data buffer length before
+    // using the packet data.
+    // The packet data buffer length is set to 0 and must be
+    // assigned together with the packet data buffer before using
+    // the packet data.
     ESATCCSDSPacket();
 
     // Instantiate a new packet backed with the packet data field
-    // (packet payload) by the given buffer.
+    // (packet payload) given by the given buffer.
     // The buffer must be at least 1 byte long.
+    // The packet data buffer length will have the value of passed
+    // buffer length, which must match the actual buffer length.
+    // The primary header starts with a raw value of all zeros.
+    // The read/write pointer starts at 0.
     ESATCCSDSPacket(byte buffer[], unsigned long bufferLength);
 
     // Clear the packet by setting all bytes to 0.
@@ -91,37 +108,75 @@ class ESATCCSDSPacket: public Printable
     // packet.  Otherwise return false.
     boolean endOfPacketDataReached();
 
-    // Print the packet in human-readable form.
+    // Print the packet in human-readable (JSON) form.
+    // This leaves the read/byte pointer untouched.
     size_t printTo(Print& output) const;
 
-    // Read the CCSDS application process identifier.
+    // Return the CCSDS application process identifier.
     // This field is part of the primary header.
     // There should be one application process identifier per logical
     // subsystem (e.g., the attitude determination and control
     // subsystem should have its own application process identifier).
+    // The application process identifier is a 14-bit unsigned integer,
+    // most significant bit first.
     word readApplicationProcessIdentifier() const;
 
-    // Read the next boolean (an 8-bit entry) from the packet data.
+    // Return the next boolean (an 8-bit entry) from the packet data.
+    // The raw datum is stored as a 0 for false and as any other
+    // 8-bit number for true.
+    // This advances the read/byte pointer by 1, but limited to the
+    // packet data buffer length.
+    // The return value is undefined if there are fewer than 1 bytes
+    // before reaching the end of the packet data buffer.
     boolean readBoolean();
 
-    // Read the next 8-bit signed integer from the packet data.
+    // Return the next 8-bit signed integer from the packet data.
+    // The raw datum is stored in two's complement format.
+    // This advances the read/byte pointer by 1, but limited
+    // to the packet data buffer length.
+    // The return value is undefined if there are fewer than 1 byte
+    // before reaching the end of the packet data buffer.
     signed char readChar();
 
-    // Read the next 8-bit unsigned integer from the packet data.
+    // Return the next 8-bit unsigned integer from the packet data.
+    // This advances the read/byte pointer by 1, but limited
+    // to the packet data buffer length.
+    // The return value is undefined if there are fewer than 1 byte
+    // before reaching the end of the packet data buffer.
     byte readByte();
 
-    // Read the next IEEE 754 single-precision floating-point number
+    // Return the next single-precision floating-point number
     // from the packet data.
+    // The raw datum is stored in big-endian byte order, IEEE 754
+    // format, single-precision (32-bit, binary32).
+    // Denormal numbers are not properly handled.
+    // This advances the read/byte pointer by 4, but limited to the
+    // packet data buffer length.
+    // The return value is undefined if there are fewer than 4 bytes
+    // before reaching the end of the packet data buffer.
     float readFloat();
 
     // Fill the packet with incoming data from an input stream.
     // Return true on success; false otherwise.
+    // This leaves the read/byte pointer untouched.
     boolean readFrom(Stream& input);
 
-    // Read the next 16-bit signed integer from the packet data.
+    // Return the next 16-bit signed integer from the packet data.
+    // The raw datum is stored in big-endian byte order,
+    // two's complement format.
+    // This advances the read/byte pointer by 2, but limited to the
+    // packet data buffer length.
+    // The return value is undefined if there are fewer than 2 bytes
+    // before reaching the end of the packet data buffer.
     int readInt();
 
-    // Read the next 32-bit signed integer from the packet data.
+    // Return the next 32-bit signed integer from the packet data.
+    // The raw datum is stored in bin-endian byte order,
+    // two's complement format.
+    // This advances the read/byte pointer by 4, but limited to the
+    // packet data buffer length.
+    // The return value is undefined if there are fewer than 4 bytes
+    // before reaching the end of the packet data buffer.
     long readLong();
 
     // Return the packet data length (expressed in octets).
@@ -129,42 +184,82 @@ class ESATCCSDSPacket: public Printable
     // The packet data length includes the secondary header
     // and the user data/packet payload.
     // It can go from 1 to 65536.
+    // The raw datum is stored as a 16-bit unsigned integer
+    // in big-endian byte order, as the actual packet data
+    // length minus 1.
+    // This leaves the read/byte pointer untouched.
     long readPacketDataLength() const;
 
-    // Read the CCSDS packet sequence count.
+    // Return the CCSDS packet sequence count.
     // This field is part of the primary header.
+    // There is a packet sequence count for every application process
+    // and it should be incremented every time a new packet is generated.
+    // The raw datum is stored as a 14-bit unsigned integer,
+    // most significant bit first.
+    // This leaves the read/byte pointer untouched.
     word readPacketSequenceCount() const;
 
-    // Read the CCSDS packet type: either telemetry or telecommand.
+    // Return the CCSDS packet type: either telemetry or telecommand.
     // This field is part of the primary header.
+    // The raw datum is stored as a bit:
+    // 0 for TELEMETRY, 1 for TELECOMMAND.
+    // This leaves the read/byte pointer untouched.
     PacketType readPacketType() const;
 
     // Return the CCSDS packet version number.
     // This field is part of the primary header.
-    // There is a packet sequence count for every application process
-    // and it should be incremented every time a new packet is generated.
+    // The raw datum is stored as a 3-bit unsigned integer, most
+    // significant bit first.
+    // This leaves the read/byte pointer untouched.
     byte readPacketVersionNumber() const;
 
-    // Read the CCSDS secondary header flag.
+    // Return the CCSDS secondary header flag.
     // This field is part of the primary header.
+    // The raw datum is stored as a bit:
+    // 0 for SECONDARY_HEADER_IS_NOT_PRESENT,
+    // 1 for SECONDARY_HEADER_IS_PRESENT.
+    // This leaves the read/byte pointer untouched.
     SecondaryHeaderFlag readSecondaryHeaderFlag() const;
 
-    // Read the CCSDS sequence flags.
+    // Return the CCSDS sequence flags.
     // This field is part of the primary header.
+    // The raw datum is stored as a 2-bit unsigned integer, most
+    // significant bit first:
+    // 0 for CONTINUATION_SEGMENT_OF_USER_DATA,
+    // 1 for FIRST_SEGMENT_OF_USER_DATA,
+    // 2 for LAST_SEGMENT_OF_USER_DATA,
+    // 3 for UNSEGMENTED_USER_DATA.
+    // This leaves the read/byte pointer untouched.
     SequenceFlags readSequenceFlags() const;
 
-    // Read the next 32-bit unsigned integer from the packet data.
+    // Return the next 32-bit unsigned integer from the packet data.
+    // The raw datum is stored in big-endian byte order.
+    // This advances the read/byte pointer by 4, but limited to the
+    // packet data buffer length.
+    // The return value is undefined if there are fewer than 4 bytes
+    // before reaching the end of the packet data buffer.
     unsigned long readUnsignedLong();
 
-    // Read the next 16-bit unsigned integer from the packet data.
+    // Return the next 16-bit unsigned integer from the packet data.
+    // The raw datum is stored in big-endian byte order.
+    // This advances the read/byte pointer by 2, but limited to the
+    // packet data buffer length.
+    // The return value is undefined if there are fewer than 2 bytes
+    // before reaching the end of the packet data buffer.
     word readWord();
 
-    // Move the read/write pointer back to the start of the packet data
-    // field (packet payload).
+    // Move the read/write pointer to 0: back to the start of the
+    // packet data field (packet payload).
     void rewind();
 
     // Update the packet data length to match the number of bytes written
     // to the packet data (the position of the next write operation).
+    // The raw datum is stored as a 16-bit unsigned integer in
+    // big-endian byte order, as the actual packet data length minus 1.
+    // If the number of bytes written to the packet is 0, the packet
+    // data length will be erroneous, but empty CCSDS packets
+    // are forbidden by the standard.
+    // This leaves the read/byte pointer untouched.
     void updatePacketDataLength();
 
     // Write the CCSDS application process identifier.
@@ -172,70 +267,159 @@ class ESATCCSDSPacket: public Printable
     // There should be one application process identifier per logical
     // subsystem (e.g., the attitude determination and control
     // subsystem should have its own application process identifier).
+    // The raw datum is stored as an 11-bit unsigned integer,
+    // most significant bit first.
+    // This leaves the read/byte pointer untouched.
     void writeApplicationProcessIdentifier(word applicationProcessIdentifier);
 
     // Append a boolean to the packet data.
-    // This increments the packet data length by 1.
+    // The raw datum is stored as an 8-bit unsigned integer:
+    // 0 for false, 1 for true.
+    // This advances the read/byte pointer by 1, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 1 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
     void writeBoolean(boolean datum);
 
     // Append an 8-bit unsigned integer to the packet data.
-    // This increments the packet data length by 1.
+    // This advances the read/byte pointer by 1, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 1 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
     void writeByte(byte datum);
 
     // Append an 8-bit signed integer to the packet data.
+    // This advances the read/byte pointer by 1, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 1 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
     void writeChar(signed char datum);
 
-    // Append an IEEE 754 single-precision floating-point number to
-    // the packet data.
-    // This increments the packet data length by 4.
+    // Append a floating-point number to the packet data.
+    // The raw datum is stored in big-endian byte order, IEEE 754
+    // format, single-precision (32-bit, binary32).
+    // Denormal numbers are not properly handled.
+    // This advances the read/byte pointer by 4, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 4 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
     void writeFloat(float datum);
 
     // Append a 16-bit signed integer to the packet data.
+    // The raw datum is stored in big-endian byte order,
+    // two's complement format.
+    // This advances the read/byte pointer by 2, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 2 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
     void writeInt(int datum);
 
     // Append a 32-bit signed integer to the packet data.
+    // The raw datum is stored in big-endian byte order,
+    // two's complement format.
+    // This advances the read/byte pointer by 4, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 4 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
     void writeLong(long datum);
 
     // Write the packet data length (expressed in octets).
     // This field is part of the primary header.
     // The packet data length includes the secondary header
     // and the user data/packet payload.
-    // It can go from 1 to 65536.
+    // It can go from 1 to 65536 (both included).
+    // The raw datum is stored as a 16-bit unsigned integer
+    // in big-endian byte order, as the actual packet data
+    // length minus 1.  As valid packet data lengths go from
+    // 1 to 65536 (both included), the behaviour when given
+    // an argument outside of that interval is undefined.
+    // This leaves the read/byte pointer untouched.
     void writePacketDataLength(long packetDataLength);
 
     // Read the CCSDS packet sequence count.
     // This field is part of the primary header.
     // There is a packet sequence count for every application process
     // and it should be incremented every time a new packet is generated.
+    // The raw datum is stored as a 14-bit unsigned integer,
+    // most significant bit first.
+    // This leaves the read/byte pointer untouched.
     void writePacketSequenceCount(word packetSequenceCount);
 
     // Write the CCSDS packet type: wether telemetry or telecommand.
     // This field is part of the primary header.
+    // The raw datum is stored as a bit:
+    // 0 for TELEMETRY, 1 for TELECOMMAND.
+    // The behaviour with arguments other than TELEMETRY or TELECOMMAND
+    // is undefined.
+    // This leaves the read/byte pointer untouched.
     void writePacketType(PacketType packetType);
 
     // Write the CCSDS packet version number.
     // This field is part of the primary header.
     // Should be 0.
+    // The packet version number can go from 0 to 7 (both included).
+    // The raw datum is stored as a 3-bit unsigned integer, most
+    // significant bit first.
+    // As valid packet version numbers go from 0 to 7 (both included),
+    // the behaviour when given an argument outside of that interval
+    // is undefined.
+    // This leaves the read/byte pointer untouched.
     void writePacketVersionNumber(byte packetVersionNumber);
 
     // Write the CCSDS secondary header flag.
     // This field is part of the primary header.
+    // The raw datum is stored as a bit:
+    // 0 for SECONDARY_HEADER_IS_NOT_PRESENT,
+    // 1 for SECONDARY_HEADER_IS_PRESENT.
+    // The behaviour with arguments other than SECONDARY_HEADER_IS_NOT_PRESENT
+    // or SECONDARY_HEADER_IS_PRESENT is undefined.
+    // This leaves the read/byte pointer untouched.
     void writeSecondaryHeaderFlag(SecondaryHeaderFlag secondaryHeaderFlag);
 
     // Write the CCSDS sequence flags.
     // This field is part of the primary header.
+    // The raw datum is stored as a 2-bit unsigned integer,
+    // most significant bit first:
+    // 0 for CONTINUATION_SEGMENT_OF_USER_DATA,
+    // 1 for FIRST_SEGMENT_OF_USER_DATA,
+    // 2 for LAST_SEGMENT_OF_USER_DATA,
+    // 3 for UNSEGMENTED_USER_DATA.
+    // The behaviour with arguments other than
+    // CONTINUATION_SEGMENT_OF_USER_DATA, FIRST_SEGMENT_OF_USER_DATA,
+    // LAST_SEGMENT_OF_USER_DATA or UNSEGMENTED_USER_DATA is undefined.
+    // This leaves the read/byte pointer untouched.
     void writeSequenceFlags(SequenceFlags sequenceFlags);
 
     // Write the raw contents of the packet to an output stream.
     // Return true on success; otherwise return false.
-    boolean writeTo(Stream& output);
+    // The operation will fail on write errors, but also
+    // when the packet data buffer is smaller than the packet
+    // data length.
+    // This leaves the read/byte pointer untouched.
+    boolean writeTo(Stream& output) const;
 
     // Append a 32-bit unsigned integer to the packet data.
-    // This increments the packet data length by 4.
+    // The raw datum is stored in big-endian byte order.
+    // This advances the read/byte pointer by 4, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 4 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
     void writeUnsignedLong(unsigned long datum);
 
     // Append a 16-bit unsigned integer to the packet data.
-    // This increments the packet data length by 2.
+    // The raw datum is stored in big-endian byte order.
+    // This advances the read/byte pointer by 2, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 2 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
     void writeWord(word datum);
 
   private:
