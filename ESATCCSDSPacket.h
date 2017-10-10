@@ -97,7 +97,7 @@ class ESATCCSDSPacket: public Printable
     // This leaves the read/byte pointer untouched.
     size_t printTo(Print& output) const;
 
-    // Read the CCSDS application process identifier.
+    // Return the CCSDS application process identifier.
     // This field is part of the primary header.
     // There should be one application process identifier per logical
     // subsystem (e.g., the attitude determination and control
@@ -106,22 +106,22 @@ class ESATCCSDSPacket: public Printable
     // most significant bit first.
     word readApplicationProcessIdentifier() const;
 
-    // Read the next boolean (an 8-bit entry) from the packet data.
+    // Return the next boolean (an 8-bit entry) from the packet data.
     // The raw datum is stored as a 0 for false and as any other
     // 8-bit number for true.
     // This advances the read/byte pointer by 1.
     boolean readBoolean();
 
-    // Read the next 8-bit signed integer from the packet data.
+    // Return the next 8-bit signed integer from the packet data.
     // The raw datum is stored in two's complement format.
     // This advances the read/byte pointer by 1.
     signed char readChar();
 
-    // Read the next 8-bit unsigned integer from the packet data.
+    // Return the next 8-bit unsigned integer from the packet data.
     // This advances the read/byte pointer by 1.
     byte readByte();
 
-    // Read the next single-precision floating-point number
+    // Return the next single-precision floating-point number
     // from the packet data.
     // The raw datum is stored in big-endian byte order, IEEE 754
     // format, single-precision (32-bit, binary32).
@@ -134,13 +134,13 @@ class ESATCCSDSPacket: public Printable
     // This leaves the read/byte pointer untouched.
     boolean readFrom(Stream& input);
 
-    // Read the next 16-bit signed integer from the packet data.
+    // Return the next 16-bit signed integer from the packet data.
     // The raw datum is stored in big-endian byte order,
     // two's complement format.
     // This advances the read/byte pointer by 2.
     int readInt();
 
-    // Read the next 32-bit signed integer from the packet data.
+    // Return the next 32-bit signed integer from the packet data.
     // The raw datum is stored in bin-endian byte order,
     // two's complement format.
     // This advances the read/byte pointer by 4.
@@ -157,7 +157,7 @@ class ESATCCSDSPacket: public Printable
     // This leaves the read/byte pointer untouched.
     long readPacketDataLength() const;
 
-    // Read the CCSDS packet sequence count.
+    // Return the CCSDS packet sequence count.
     // This field is part of the primary header.
     // There is a packet sequence count for every application process
     // and it should be incremented every time a new packet is generated.
@@ -166,7 +166,7 @@ class ESATCCSDSPacket: public Printable
     // This leaves the read/byte pointer untouched.
     word readPacketSequenceCount() const;
 
-    // Read the CCSDS packet type: either telemetry or telecommand.
+    // Return the CCSDS packet type: either telemetry or telecommand.
     // This field is part of the primary header.
     // The raw datum is stored as a bit:
     // 0 for TELEMETRY, 1 for TELECOMMAND.
@@ -180,7 +180,7 @@ class ESATCCSDSPacket: public Printable
     // This leaves the read/byte pointer untouched.
     byte readPacketVersionNumber() const;
 
-    // Read the CCSDS secondary header flag.
+    // Return the CCSDS secondary header flag.
     // This field is part of the primary header.
     // The raw datum is stored as a bit:
     // 0 for SECONDARY_HEADER_IS_NOT_PRESENT,
@@ -188,7 +188,7 @@ class ESATCCSDSPacket: public Printable
     // This leaves the read/byte pointer untouched.
     SecondaryHeaderFlag readSecondaryHeaderFlag() const;
 
-    // Read the CCSDS sequence flags.
+    // Return the CCSDS sequence flags.
     // This field is part of the primary header.
     // The raw datum is stored as a 2-bit unsigned integer, most
     // significant bit first:
@@ -199,12 +199,12 @@ class ESATCCSDSPacket: public Printable
     // This leaves the read/byte pointer untouched.
     SequenceFlags readSequenceFlags() const;
 
-    // Read the next 32-bit unsigned integer from the packet data.
+    // Return the next 32-bit unsigned integer from the packet data.
     // The raw datum is stored in big-endian byte order.
     // This advances the read/byte pointer by 4.
     unsigned long readUnsignedLong();
 
-    // Read the next 16-bit unsigned integer from the packet data.
+    // Return the next 16-bit unsigned integer from the packet data.
     // The raw datum is stored in big-endian byte order.
     // This advances the read/byte pointer by 2.
     word readWord();
