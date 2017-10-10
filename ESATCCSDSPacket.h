@@ -104,6 +104,9 @@ class ESATCCSDSPacket: public Printable
     // Read the next boolean (an 8-bit entry) from the packet data.
     boolean readBoolean();
 
+    // Read the next 8-bit signed integer from the packet data.
+    signed char readChar();
+
     // Read the next 8-bit unsigned integer from the packet data.
     byte readByte();
 
@@ -114,6 +117,12 @@ class ESATCCSDSPacket: public Printable
     // Fill the packet with incoming data from an input stream.
     // Return true on success; false otherwise.
     boolean readFrom(Stream& input);
+
+    // Read the next 16-bit signed integer from the packet data.
+    int readInt();
+
+    // Read the next 32-bit signed integer from the packet data.
+    long readLong();
 
     // Return the packet data length (expressed in octets).
     // This field is part of the primary header.
@@ -173,10 +182,19 @@ class ESATCCSDSPacket: public Printable
     // This increments the packet data length by 1.
     void writeByte(byte datum);
 
+    // Append an 8-bit signed integer to the packet data.
+    void writeChar(signed char datum);
+
     // Append an IEEE 754 single-precision floating-point number to
     // the packet data.
     // This increments the packet data length by 4.
     void writeFloat(float datum);
+
+    // Append a 16-bit signed integer to the packet data.
+    void writeInt(int datum);
+
+    // Append a 32-bit signed integer to the packet data.
+    void writeLong(long datum);
 
     // Write the packet data length (expressed in octets).
     // This field is part of the primary header.
