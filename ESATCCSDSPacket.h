@@ -109,16 +109,25 @@ class ESATCCSDSPacket: public Printable
     // Return the next boolean (an 8-bit entry) from the packet data.
     // The raw datum is stored as a 0 for false and as any other
     // 8-bit number for true.
-    // This advances the read/byte pointer by 1.
+    // This advances the read/byte pointer by 1, but limited to the
+    // packet data buffer length.
+    // The return value is undefined if there are fewer than 1 bytes
+    // before reaching the end of the packet data buffer.
     boolean readBoolean();
 
     // Return the next 8-bit signed integer from the packet data.
     // The raw datum is stored in two's complement format.
-    // This advances the read/byte pointer by 1.
+    // This advances the read/byte pointer by 1, but limited
+    // to the packet data buffer length.
+    // The return value is undefined if there are fewer than 1 byte
+    // before reaching the end of the packet data buffer.
     signed char readChar();
 
     // Return the next 8-bit unsigned integer from the packet data.
-    // This advances the read/byte pointer by 1.
+    // This advances the read/byte pointer by 1, but limited
+    // to the packet data buffer length.
+    // The return value is undefined if there are fewer than 1 byte
+    // before reaching the end of the packet data buffer.
     byte readByte();
 
     // Return the next single-precision floating-point number
@@ -126,7 +135,10 @@ class ESATCCSDSPacket: public Printable
     // The raw datum is stored in big-endian byte order, IEEE 754
     // format, single-precision (32-bit, binary32).
     // Denormal numbers are not properly handled.
-    // This advances the read/byte pointer by 4.
+    // This advances the read/byte pointer by 4, but limited to the
+    // packet data buffer length.
+    // The return value is undefined if there are fewer than 4 bytes
+    // before reaching the end of the packet data buffer.
     float readFloat();
 
     // Fill the packet with incoming data from an input stream.
@@ -137,13 +149,19 @@ class ESATCCSDSPacket: public Printable
     // Return the next 16-bit signed integer from the packet data.
     // The raw datum is stored in big-endian byte order,
     // two's complement format.
-    // This advances the read/byte pointer by 2.
+    // This advances the read/byte pointer by 2, but limited to the
+    // packet data buffer length.
+    // The return value is undefined if there are fewer than 2 bytes
+    // before reaching the end of the packet data buffer.
     int readInt();
 
     // Return the next 32-bit signed integer from the packet data.
     // The raw datum is stored in bin-endian byte order,
     // two's complement format.
-    // This advances the read/byte pointer by 4.
+    // This advances the read/byte pointer by 4, but limited to the
+    // packet data buffer length.
+    // The return value is undefined if there are fewer than 4 bytes
+    // before reaching the end of the packet data buffer.
     long readLong();
 
     // Return the packet data length (expressed in octets).
@@ -201,12 +219,18 @@ class ESATCCSDSPacket: public Printable
 
     // Return the next 32-bit unsigned integer from the packet data.
     // The raw datum is stored in big-endian byte order.
-    // This advances the read/byte pointer by 4.
+    // This advances the read/byte pointer by 4, but limited to the
+    // packet data buffer length.
+    // The return value is undefined if there are fewer than 4 bytes
+    // before reaching the end of the packet data buffer.
     unsigned long readUnsignedLong();
 
     // Return the next 16-bit unsigned integer from the packet data.
     // The raw datum is stored in big-endian byte order.
-    // This advances the read/byte pointer by 2.
+    // This advances the read/byte pointer by 2, but limited to the
+    // packet data buffer length.
+    // The return value is undefined if there are fewer than 2 bytes
+    // before reaching the end of the packet data buffer.
     word readWord();
 
     // Move the read/write pointer to 0: back to the start of the
@@ -236,34 +260,58 @@ class ESATCCSDSPacket: public Printable
     // Append a boolean to the packet data.
     // The raw datum is stored as an 8-bit unsigned integer:
     // 0 for false, 1 for true.
-    // This advances the read/byte pointer by 1.
+    // This advances the read/byte pointer by 1, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 1 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
     void writeBoolean(boolean datum);
 
     // Append an 8-bit unsigned integer to the packet data.
-    // This advances the read/byte pointer by 1.
+    // This advances the read/byte pointer by 1, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 1 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
     void writeByte(byte datum);
 
     // Append an 8-bit signed integer to the packet data.
-    // This advances the read/byte pointer by 1.
+    // This advances the read/byte pointer by 1, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 1 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
     void writeChar(signed char datum);
 
     // Append a floating-point number to the packet data.
     // The raw datum is stored in big-endian byte order, IEEE 754
     // format, single-precision (32-bit, binary32).
     // Denormal numbers are not properly handled.
-    // This advances the read/byte pointer by 4.
+    // This advances the read/byte pointer by 4, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 4 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
     void writeFloat(float datum);
 
     // Append a 16-bit signed integer to the packet data.
     // The raw datum is stored in big-endian byte order,
     // two's complement format.
-    // This advances the read/byte pointer by 2.
+    // This advances the read/byte pointer by 2, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 2 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
     void writeInt(int datum);
 
     // Append a 32-bit signed integer to the packet data.
     // The raw datum is stored in big-endian byte order,
     // two's complement format.
-    // This advances the read/byte pointer by 4.
+    // This advances the read/byte pointer by 4, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 4 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
     void writeLong(long datum);
 
     // Write the packet data length (expressed in octets).
@@ -342,16 +390,21 @@ class ESATCCSDSPacket: public Printable
     boolean writeTo(Stream& output) const;
 
     // Append a 32-bit unsigned integer to the packet data.
-    // This increments the packet data length by 4.
     // The raw datum is stored in big-endian byte order.
-    // This advances the read/byte pointer by 1.
-    // This advances the read/byte pointer by 4.
+    // This advances the read/byte pointer by 4, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 4 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
     void writeUnsignedLong(unsigned long datum);
 
     // Append a 16-bit unsigned integer to the packet data.
-    // This increments the packet data length by 2.
     // The raw datum is stored in big-endian byte order.
-    // This advances the read/byte pointer by 2.
+    // This advances the read/byte pointer by 2, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 2 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
     void writeWord(word datum);
 
   private:
