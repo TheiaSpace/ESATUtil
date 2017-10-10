@@ -85,8 +85,10 @@ class ESATCCSDSPacket: public Printable
     ESATCCSDSPacket();
 
     // Instantiate a new packet backed with the packet data field
-    // (packet payload) by the given buffer.
+    // (packet payload) given by the given buffer.
     // The buffer must be at least 1 byte long.
+    // The packet data buffer length will have the value of passed
+    // buffer length, which should match the actual buffer length.
     // The primary header starts with a raw value of all zeros.
     // The read/write pointer starts at 0.
     ESATCCSDSPacket(byte buffer[], unsigned long bufferLength);
