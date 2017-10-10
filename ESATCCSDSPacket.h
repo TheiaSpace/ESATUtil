@@ -102,7 +102,7 @@ class ESATCCSDSPacket: public Printable
     // Read the next boolean (an 8-bit entry) from the packet data.
     boolean readBoolean();
 
-    // Read the next 8-bit integer from the packet data.
+    // Read the next 8-bit unsigned integer from the packet data.
     byte readByte();
 
     // Read the next IEEE 754 single-precision floating-point number
@@ -142,10 +142,10 @@ class ESATCCSDSPacket: public Printable
     // This field is part of the primary header.
     SequenceFlags readSequenceFlags() const;
 
-    // Read the next 32-bit integer from the packet data.
+    // Read the next 32-bit unsigned integer from the packet data.
     unsigned long readUnsignedLong();
 
-    // Read the next 16-bit integer from the packet data.
+    // Read the next 16-bit unsigned integer from the packet data.
     word readWord();
 
     // Move the read/write pointer back to the start of the packet data
@@ -167,7 +167,7 @@ class ESATCCSDSPacket: public Printable
     // This increments the packet data length by 1.
     void writeBoolean(boolean datum);
 
-    // Append an 8-bit integer to the packet data.
+    // Append an 8-bit unsigned integer to the packet data.
     // This increments the packet data length by 1.
     void writeByte(byte datum);
 
@@ -210,11 +210,11 @@ class ESATCCSDSPacket: public Printable
     // Return true on success; otherwise return false.
     boolean writeTo(Stream& output);
 
-    // Append a 32-bit integer to the packet data.
+    // Append a 32-bit unsigned integer to the packet data.
     // This increments the packet data length by 4.
     void writeUnsignedLong(unsigned long datum);
 
-    // Append a 16-bit integer to the packet data.
+    // Append a 16-bit unsigned integer to the packet data.
     // This increments the packet data length by 2.
     void writeWord(word datum);
 
