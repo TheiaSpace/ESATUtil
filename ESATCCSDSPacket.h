@@ -108,7 +108,7 @@ class ESATCCSDSPacket: public Printable
     // packet.  Otherwise return false.
     boolean endOfPacketDataReached();
 
-    // Print the packet in human-readable form.
+    // Print the packet in human-readable (JSON) form.
     // This leaves the read/byte pointer untouched.
     size_t printTo(Print& output) const;
 
