@@ -25,6 +25,8 @@
 // These are simple packets following CCSDS Recommendation 133.0-B-1:
 // Space Packet Protocol.  They contain a 6-byte primary header
 // followed by a series of octets (at least 1) with the packet data.
+// Multi-byte data are stored in big-endian order: the first byte is
+// the most significant, the last byte is the least significant.
 class ESATCCSDSPacket: public Printable
 {
   public:
