@@ -340,7 +340,7 @@ byte ESATCCSDSPacket::readByte()
 
 float ESATCCSDSPacket::readFloat()
 {
-  const unsigned long bits = readLong();
+  const unsigned long bits = readUnsignedLong();
   return longToFloat(bits);
 }
 
@@ -365,15 +365,6 @@ boolean ESATCCSDSPacket::readFrom(Stream& input)
     return false;
   }
   return true;
-}
-
-unsigned long ESATCCSDSPacket::readLong()
-{
-  const unsigned long firstByte = readByte();
-  const unsigned long secondByte = readByte();
-  const unsigned long thirdByte = readByte();
-  const unsigned long fourthByte = readByte();
-  return (firstByte << 24) | (secondByte << 16) | (thirdByte << 8) | fourthByte;
 }
 
 long ESATCCSDSPacket::readPacketDataLength() const
@@ -434,6 +425,15 @@ ESATCCSDSPacket::SequenceFlags ESATCCSDSPacket::readSequenceFlags() const
   return ESATCCSDSPacket::SequenceFlags(bits);
 }
 
+unsigned long ESATCCSDSPacket::readUnsignedLong()
+{
+  const unsigned long firstByte = readByte();
+  const unsigned long secondByte = readByte();
+  const unsigned long thirdByte = readByte();
+  const unsigned long fourthByte = readByte();
+  return (firstByte << 24) | (secondByte << 16) | (thirdByte << 8) | fourthByte;
+}
+
 word ESATCCSDSPacket::readWord()
 {
   const byte highByte = readByte();
@@ -482,15 +482,7 @@ void ESATCCSDSPacket::writeByte(const byte datum)
 void ESATCCSDSPacket::writeFloat(const float datum)
 {
   const unsigned long bits = floatToLong(datum);
-  writeLong(bits);
-}
-
-void ESATCCSDSPacket::writeLong(const unsigned long datum)
-{
-  writeByte((datum >> 24) & B11111111);
-  writeByte((datum >> 16) & B11111111);
-  writeByte((datum >> 8) & B11111111);
-  writeByte(datum & B11111111);
+  writeUnsignedLong(bits);
 }
 
 void ESATCCSDSPacket::writePacketDataLength(const long packetDataLength)
@@ -574,6 +566,14 @@ boolean ESATCCSDSPacket::writeTo(Stream& output)
     }
   }
   return true;
+}
+
+void ESATCCSDSPacket::writeUnsignedLong(const unsigned long datum)
+{
+  writeByte((datum >> 24) & B11111111);
+  writeByte((datum >> 16) & B11111111);
+  writeByte((datum >> 8) & B11111111);
+  writeByte(datum & B11111111);
 }
 
 void ESATCCSDSPacket::writeWord(const word datum)

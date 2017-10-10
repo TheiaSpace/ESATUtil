@@ -113,9 +113,6 @@ class ESATCCSDSPacket: public Printable
     // Return true on success; false otherwise.
     boolean readFrom(Stream& input);
 
-    // Read the next 32-bit integer from the packet data.
-    unsigned long readLong();
-
     // Return the packet data length (expressed in octets).
     // This field is part of the primary header.
     // The packet data length includes the secondary header
@@ -144,6 +141,9 @@ class ESATCCSDSPacket: public Printable
     // Read the CCSDS sequence flags.
     // This field is part of the primary header.
     SequenceFlags readSequenceFlags() const;
+
+    // Read the next 32-bit integer from the packet data.
+    unsigned long readUnsignedLong();
 
     // Read the next 16-bit integer from the packet data.
     word readWord();
@@ -175,10 +175,6 @@ class ESATCCSDSPacket: public Printable
     // the packet data.
     // This increments the packet data length by 4.
     void writeFloat(float datum);
-
-    // Append a 32-bit integer to the packet data.
-    // This increments the packet data length by 4.
-    void writeLong(unsigned long datum);
 
     // Write the packet data length (expressed in octets).
     // This field is part of the primary header.
@@ -213,6 +209,10 @@ class ESATCCSDSPacket: public Printable
     // Write the raw contents of the packet to an output stream.
     // Return true on success; otherwise return false.
     boolean writeTo(Stream& output);
+
+    // Append a 32-bit integer to the packet data.
+    // This increments the packet data length by 4.
+    void writeUnsignedLong(unsigned long datum);
 
     // Append a 16-bit integer to the packet data.
     // This increments the packet data length by 2.
