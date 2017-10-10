@@ -631,10 +631,14 @@ boolean ESATCCSDSPacket::writeTo(Stream& output)
       return false;
     }
   }
-  rewind();
-  while (!endOfPacketDataReached())
+  const long packetDataLength = readPacketDataLength();
+  if (packetDataLength > packetDataBufferLength)
   {
-    const size_t bytesWritten = output.write(readByte());
+    return false;
+  }
+  for (long i = 0; i < packetDataLength; i++)
+  {
+    const size_t bytesWritten = output.write(packetData[i]);
     if (bytesWritten != 1)
     {
       return false;
