@@ -338,9 +338,22 @@ byte ESATCCSDSPacket::readByte()
   return datum;
 }
 
+signed char ESATCCSDSPacket::readChar()
+{
+  const byte datum = readByte();
+  if (datum > 127)
+  {
+    return -((signed char) ((~datum) + 1));
+  }
+  else
+  {
+    return datum;
+  }
+}
+
 float ESATCCSDSPacket::readFloat()
 {
-  const unsigned long bits = readLong();
+  const unsigned long bits = readUnsignedLong();
   return longToFloat(bits);
 }
 
@@ -367,13 +380,30 @@ boolean ESATCCSDSPacket::readFrom(Stream& input)
   return true;
 }
 
-unsigned long ESATCCSDSPacket::readLong()
+int ESATCCSDSPacket::readInt()
 {
-  const unsigned long firstByte = readByte();
-  const unsigned long secondByte = readByte();
-  const unsigned long thirdByte = readByte();
-  const unsigned long fourthByte = readByte();
-  return (firstByte << 24) | (secondByte << 16) | (thirdByte << 8) | fourthByte;
+  const word datum = readWord();
+  if (datum > 32767U)
+  {
+    return -int((~datum) + 1U);
+  }
+  else
+  {
+    return datum;
+  }
+}
+
+long ESATCCSDSPacket::readLong()
+{
+  const unsigned long datum = readUnsignedLong();
+  if (datum > 2147483647UL)
+  {
+    return -long((~datum) + 1UL);
+  }
+  else
+  {
+    return datum;
+  }
 }
 
 long ESATCCSDSPacket::readPacketDataLength() const
@@ -434,6 +464,15 @@ ESATCCSDSPacket::SequenceFlags ESATCCSDSPacket::readSequenceFlags() const
   return ESATCCSDSPacket::SequenceFlags(bits);
 }
 
+unsigned long ESATCCSDSPacket::readUnsignedLong()
+{
+  const unsigned long firstByte = readByte();
+  const unsigned long secondByte = readByte();
+  const unsigned long thirdByte = readByte();
+  const unsigned long fourthByte = readByte();
+  return (firstByte << 24) | (secondByte << 16) | (thirdByte << 8) | fourthByte;
+}
+
 word ESATCCSDSPacket::readWord()
 {
   const byte highByte = readByte();
@@ -479,18 +518,46 @@ void ESATCCSDSPacket::writeByte(const byte datum)
   }
 }
 
+void ESATCCSDSPacket::writeChar(const signed char datum)
+{
+  if (datum < 0)
+  {
+    writeByte(~((byte) -(datum + 1)));
+  }
+  else
+  {
+    writeByte(datum);
+  }
+}
+
 void ESATCCSDSPacket::writeFloat(const float datum)
 {
   const unsigned long bits = floatToLong(datum);
-  writeLong(bits);
+  writeUnsignedLong(bits);
 }
 
-void ESATCCSDSPacket::writeLong(const unsigned long datum)
+void ESATCCSDSPacket::writeInt(const int datum)
 {
-  writeByte((datum >> 24) & B11111111);
-  writeByte((datum >> 16) & B11111111);
-  writeByte((datum >> 8) & B11111111);
-  writeByte(datum & B11111111);
+  if (datum < 0)
+  {
+    writeWord(~((word) -(datum + 1)));
+  }
+  else
+  {
+    writeWord(datum);
+  }
+}
+
+void ESATCCSDSPacket::writeLong(const long datum)
+{
+  if (datum < 0)
+  {
+    writeUnsignedLong(~((unsigned long) -(datum + 1)));
+  }
+  else
+  {
+    writeUnsignedLong(datum);
+  }
 }
 
 void ESATCCSDSPacket::writePacketDataLength(const long packetDataLength)
@@ -574,6 +641,14 @@ boolean ESATCCSDSPacket::writeTo(Stream& output)
     }
   }
   return true;
+}
+
+void ESATCCSDSPacket::writeUnsignedLong(const unsigned long datum)
+{
+  writeByte((datum >> 24) & B11111111);
+  writeByte((datum >> 16) & B11111111);
+  writeByte((datum >> 8) & B11111111);
+  writeByte(datum & B11111111);
 }
 
 void ESATCCSDSPacket::writeWord(const word datum)
