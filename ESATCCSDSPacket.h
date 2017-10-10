@@ -150,6 +150,8 @@ class ESATCCSDSPacket: public Printable
 
     // Read the CCSDS packet sequence count.
     // This field is part of the primary header.
+    // There is a packet sequence count for every application process
+    // and it should be incremented every time a new packet is generated.
     // The raw datum is stored as a 14-bit unsigned integer,
     // most significant bit first.
     word readPacketSequenceCount() const;
@@ -162,8 +164,6 @@ class ESATCCSDSPacket: public Printable
 
     // Return the CCSDS packet version number.
     // This field is part of the primary header.
-    // There is a packet sequence count for every application process
-    // and it should be incremented every time a new packet is generated.
     // The raw datum is stored as a 3-bit unsigned integer, most
     // significant bit first.
     byte readPacketVersionNumber() const;
