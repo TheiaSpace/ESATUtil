@@ -335,6 +335,9 @@ class ESATCCSDSPacket: public Printable
 
     // Write the raw contents of the packet to an output stream.
     // Return true on success; otherwise return false.
+    // The operation will fail on write errors, but also
+    // when the packet data buffer is smaller than the packet
+    // data length.
     // This leaves the read/byte pointer untouched.
     boolean writeTo(Stream& output);
 
