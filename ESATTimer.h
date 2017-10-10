@@ -19,7 +19,7 @@
 #ifndef ESATTimer_h
 #define ESATTimer_h
 
-#include <Energia.h>
+#include <Arduino.h>
 
 class ESATTimer
 {
