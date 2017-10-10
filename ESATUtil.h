@@ -19,7 +19,7 @@
 #ifndef ESATUtil_h
 #define ESATUtil_h
 
-#include <Energia.h>
+#include <Arduino.h>
 
 class ESATUtil
 {
