@@ -21,43 +21,66 @@
 #ifndef ESATTimestamp_h
 #define ESATTimestamp_h
 
+// Timestamp representation:
+// calendar date plus time of day with second resolution.
 class ESATTimestamp
 {
   public:
-    // the timestamp length + 1
+    // The timestamp length + 1.
     static const byte CHAR_TIMESTAMP_LENGTH = 20;
 
-    // the date length + 1
+    // The date length + 1.
     static const byte CHAR_DATE_LENGTH = 9;
 
+    // Timestamp validity statuses.
     static const byte INVALID_TIMESTAMP = 1;
     static const byte VALID_TIMESTAMP = 2;
 
+    // Last two digits of the year (from 0 to 99).
     byte year;
 
+    // Month number (from 1 to 12).
     byte month;
 
+    // Day of the month (from 1 to 31).
     byte day;
 
+    // Hours (from 0 to 23).
     byte hours;
 
+    // Minutes (from 0 to 59).
     byte minutes;
 
+    // Seconds (from 0 to 59).
     byte seconds;
 
+    // Instantiate a new timestamp.
     ESATTimestamp();
 
+    // Compare this timestamp to another timestamp.  Return:
+    // THIS_IS_LOWER if the argument happens before this timestamp;
+    // THIS_IS_HIGHER if the argument happens after this timestamp;
+    // THIS_IS_EQUAL if the arguments coincides with this timestamp.
     byte compare(ESATTimestamp timestamp);
 
-    // util to get the date from the timestamp
+    // Format the date part of the timestamp as text without hyphens/dashes.
+    // Write the formatted text to the date character buffer argument,
+    // which must be at least CHAR_DATE_LENGTH characters long.
     void getDateWithoutDashes(char date[]);
 
+    // Increment the day by 1.
     void incrementDay();
 
+    // Format the timestamp as human-readable text.
+    // Write the formatted text to the timestamp character buffer
+    // argument, which must be at least CHAR_TIMESTAMP_LENGTH
+    // characters long.
     void toStringTimeStamp(char timestamp[]);
 
+    // Update the time and date with those taken from the argument timestamp.
     void update(ESATTimestamp timestamp);
 
+    // Update the time and date with the argument values.
     void update(byte year,
                 byte month,
                 byte day,
@@ -65,21 +88,40 @@ class ESATTimestamp
                 byte minutes,
                 byte seconds);
 
+    // Update the time and date with the formatted timestamp character
+    // buffer argument, which must be at least CHAR_TIMESTAMP_LENGTH
+    // characters long.
     byte update(char timestamp[]);
 
+    // Return true if the argument timestamp happens before this timestamp.
     boolean operator>(ESATTimestamp timestamp);
 
+    // Return true if the argument timestamp happens before this
+    // timestamp or coincides with this timestamp; otherwise return
+    // false.
     boolean operator>=(ESATTimestamp timestamp);
 
+    // Return true if the argument timestamp happens after this
+    // timestamp; otherwise return false.
     boolean operator<(ESATTimestamp timestamp);
 
+    // Return true if the argument timestamp happens after this
+    // timestamp or coincides with this timestamp; otherwise return
+    // false.
     boolean operator<=(ESATTimestamp timestamp);
 
+    // Return true if the argument timestamp coincides with this timestamp;
+    // otherwise return false.
     boolean operator==(ESATTimestamp timestamp);
 
   private:
+    // Comparison result: when this timestamp happens after another timestamp.
     static const byte THIS_IS_HIGHER = 1;
+
+    // Comparison result: when this timestamp happens before another timestamp.
     static const byte THIS_IS_LOWER = 2;
+
+    // Comparison result: when this timestamp coincides with another timestamp.
     static const byte THIS_IS_EQUAL = 3;
 };
 
