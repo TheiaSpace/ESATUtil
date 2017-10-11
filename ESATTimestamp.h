@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
  
-#include <Energia.h>
+#include <Arduino.h>
 
 #ifndef ESATTimestamp_h
 #define ESATTimestamp_h
