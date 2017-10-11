@@ -96,6 +96,10 @@ class ESATCCSDSPacket: public Printable
     // The read/write pointer starts at 0.
     ESATCCSDSPacket(byte buffer[], unsigned long bufferLength);
 
+    // Return the number of unread bytes in the packet data (the
+    // packet data length minus the position of the read pointer).
+    unsigned long availableBytesToRead() const;
+
     // Clear the packet by setting all bytes to 0.
     void clear();
 
@@ -106,16 +110,12 @@ class ESATCCSDSPacket: public Printable
 
     // Return true if the last read operation reached the end of the
     // packet.  Otherwise return false.
-    boolean endOfPacketDataReached();
+    boolean endOfPacketDataReached() const;
 
     // Print the packet in human-readable (JSON) form.
     // This leaves the read/byte pointer untouched.
     size_t printTo(Print& output) const;
 
-    // Return the number of bytes that are still in the packet Data
-    // to be read
-    unsigned long availableBytesToRead();
-    
     // Return the CCSDS application process identifier.
     // This field is part of the primary header.
     // There should be one application process identifier per logical

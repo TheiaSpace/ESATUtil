@@ -35,6 +35,12 @@ ESATCCSDSPacket::ESATCCSDSPacket(byte* const buffer,
 {
 }
 
+unsigned long ESATCCSDSPacket::availableBytesToRead() const
+{
+  unsigned long packetDataLength = readPacketDataLength();
+  return packetDataLength - position;
+}
+
 void ESATCCSDSPacket::clear()
 {
   for (byte i = 0; i < PRIMARY_HEADER_LENGTH; i++)
@@ -66,7 +72,7 @@ boolean ESATCCSDSPacket::copyTo(ESATCCSDSPacket& target)
   return true;
 }
 
-boolean ESATCCSDSPacket::endOfPacketDataReached()
+boolean ESATCCSDSPacket::endOfPacketDataReached() const
 {
   if (position >= readPacketDataLength())
   {
@@ -306,12 +312,6 @@ size_t ESATCCSDSPacket::printTo(Print& output) const
     bytesWritten
     + output.println(String("}"));
   return bytesWritten;
-}
-
-unsigned long ESATCCSDSPacket::availableBytesToRead()
-{
-  unsigned long packetDataLength = readPacketDataLength();
-  return packetDataLength - position;
 }
 
 word ESATCCSDSPacket::readApplicationProcessIdentifier() const
