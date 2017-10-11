@@ -30,19 +30,19 @@ ESATTimestamp::ESATTimestamp()
   day = 0;
 }
 
-void ESATTimestamp::update(byte Year,
-                           byte Month,
-                           byte Day,
-                           byte Hour,
-                           byte Minute,
-                           byte Second)
+void ESATTimestamp::update(byte newYear,
+                           byte newMonth,
+                           byte newDay,
+                           byte newHours,
+                           byte newMinutes,
+                           byte newSeconds)
 {
-  hours = Hour;
-  minutes = Minute;
-  seconds = Second;
-  year = Year;
-  month = Month;
-  day = Day;
+  hours = newHours;
+  minutes = newMinutes;
+  seconds = newSeconds;
+  year = newYear;
+  month = newMonth;
+  day = newDay;
 }
 
 byte ESATTimestamp::update(char time[])

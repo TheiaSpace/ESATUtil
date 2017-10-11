@@ -32,12 +32,12 @@ class ESATTimestamp
 
     ESATTimestamp();
 
-    void update(byte Year,
-                byte Month,
-                byte Day,
-                byte Hour,
-                byte Minute,
-                byte Second);
+    void update(byte year,
+                byte month,
+                byte day,
+                byte hours,
+                byte minutes,
+                byte seconds);
 
     byte update(char timestamp[]);
 
