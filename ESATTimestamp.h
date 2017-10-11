@@ -15,7 +15,7 @@
  * along with Theia Space's ESAT OBC library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
- 
+
 #include <Arduino.h>
 
 #ifndef ESATTimestamp_h
@@ -26,37 +26,61 @@ class ESATTimestamp
   public:
     // the timestamp length + 1
     static const byte charTimestampLength = 20;
+
     // the date length + 1
     static const byte charDateLength = 9;
+
     ESATTimestamp();
-    void update(byte Year, byte Month, byte Day, 
-                byte Hour, byte Minute, byte Second);
+
+    void update(byte Year,
+                byte Month,
+                byte Day,
+                byte Hour,
+                byte Minute,
+                byte Second);
+
     byte update(char timestamp[]);
+
     void update(ESATTimestamp timeStamp);
+
     void incrementDay();
+
     byte compare(ESATTimestamp timestamp);
+
     boolean operator>(ESATTimestamp timeStamp);
+
     boolean operator>=(ESATTimestamp timeStamp);
+
     boolean operator<(ESATTimestamp timeStamp);
+
     boolean operator<=(ESATTimestamp timeStamp);
+
     boolean operator==(ESATTimestamp timeStamp);
-    void toStringTimeStamp(char timestamp[]);    
+
+    void toStringTimeStamp(char timestamp[]);
+
     // util to get the date from the timestamp
     void getDateWithoutDashes(char date[]);
+
     byte hours;
+
     byte minutes;
+
     byte seconds;
+
     byte year;
+
     byte month;
+
     byte day;
+
     static const byte INVALID_TIMESTAMP = 1;
     static const byte VALID_TIMESTAMP = 2;
-  private:  
+
+  private:
     static const byte THIS_IS_HIGHER = 1;
     static const byte THIS_IS_LOWER = 2;
     static const byte THIS_IS_EQUAL = 3;
-
-    
 };
 
 #endif
