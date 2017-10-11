@@ -96,8 +96,8 @@ class ESATCCSDSPacket: public Printable
     // The read/write pointer starts at 0.
     ESATCCSDSPacket(byte buffer[], unsigned long bufferLength);
 
-    // Return the number of bytes that are still in the packet Data
-    // to be read
+    // Return the number of unread bytes in the packet data (the
+    // packet data length minus the position of the read pointer).
     unsigned long availableBytesToRead();
 
     // Clear the packet by setting all bytes to 0.
