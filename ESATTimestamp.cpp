@@ -30,73 +30,6 @@ ESATTimestamp::ESATTimestamp()
   day = 0;
 }
 
-void ESATTimestamp::update(byte newYear,
-                           byte newMonth,
-                           byte newDay,
-                           byte newHours,
-                           byte newMinutes,
-                           byte newSeconds)
-{
-  hours = newHours;
-  minutes = newMinutes;
-  seconds = newSeconds;
-  year = newYear;
-  month = newMonth;
-  day = newDay;
-}
-
-byte ESATTimestamp::update(char time[])
-{
-  int theYear, theMonth, theDay, theHours, theMinutes, theSeconds;
-  int n = sscanf(time,
-                 "20%2u-%2u-%2uT%2u:%2u:%2u",
-                 &theYear,
-                 &theMonth,
-                 &theDay,
-                 &theHours,
-                 &theMinutes,
-                 &theSeconds);
-  if (n < 6)
-  {
-    return INVALID_TIMESTAMP;
-  }
-  year = (byte) theYear;
-  month = (byte) theMonth;
-  day = (byte) theDay;
-  hours = (byte) theHours;
-  minutes = (byte) theMinutes;
-  seconds = (byte) theSeconds;
-  return VALID_TIMESTAMP;
-}
-
-void ESATTimestamp::update(ESATTimestamp timestamp)
-{
-  year = timestamp.year;
-  month = timestamp.month;
-  day = timestamp.day;
-  hours = timestamp.hours;
-  minutes = timestamp.minutes;
-  seconds = timestamp.seconds;
-}
-
-void ESATTimestamp::incrementDay()
-{
-  day ++;
-  if (day > 31)
-  {
-    day = 1;
-    month++;
-    if (month > 12)
-    {
-      month = 1;
-      year++;
-    }
-  }
-  hours = 0;
-  minutes = 0;
-  seconds = 0;
-}
-
 byte ESATTimestamp::compare(ESATTimestamp timestamp)
 {
   if (timestamp.year > year)
@@ -151,6 +84,94 @@ byte ESATTimestamp::compare(ESATTimestamp timestamp)
   {
     return THIS_IS_EQUAL;
   }
+}
+
+void ESATTimestamp::getDateWithoutDashes(char timestamp[])
+{
+  sprintf(timestamp,
+          "20%02u%02u%02u",
+          year % 100,
+          month % 100,
+          day % 100);
+}
+
+void ESATTimestamp::incrementDay()
+{
+  day ++;
+  if (day > 31)
+  {
+    day = 1;
+    month++;
+    if (month > 12)
+    {
+      month = 1;
+      year++;
+    }
+  }
+  hours = 0;
+  minutes = 0;
+  seconds = 0;
+}
+
+void ESATTimestamp::toStringTimeStamp(char timestamp[])
+{
+  sprintf(timestamp,
+          "20%02u-%02u-%02uT%02u:%02u:%02u",
+          year % 100,
+          month % 100,
+          day % 100,
+          hours % 100,
+          minutes % 100,
+          seconds % 100);
+}
+
+void ESATTimestamp::update(ESATTimestamp timestamp)
+{
+  year = timestamp.year;
+  month = timestamp.month;
+  day = timestamp.day;
+  hours = timestamp.hours;
+  minutes = timestamp.minutes;
+  seconds = timestamp.seconds;
+}
+
+void ESATTimestamp::update(byte newYear,
+                           byte newMonth,
+                           byte newDay,
+                           byte newHours,
+                           byte newMinutes,
+                           byte newSeconds)
+{
+  hours = newHours;
+  minutes = newMinutes;
+  seconds = newSeconds;
+  year = newYear;
+  month = newMonth;
+  day = newDay;
+}
+
+byte ESATTimestamp::update(char time[])
+{
+  int theYear, theMonth, theDay, theHours, theMinutes, theSeconds;
+  int n = sscanf(time,
+                 "20%2u-%2u-%2uT%2u:%2u:%2u",
+                 &theYear,
+                 &theMonth,
+                 &theDay,
+                 &theHours,
+                 &theMinutes,
+                 &theSeconds);
+  if (n < 6)
+  {
+    return INVALID_TIMESTAMP;
+  }
+  year = (byte) theYear;
+  month = (byte) theMonth;
+  day = (byte) theDay;
+  hours = (byte) theHours;
+  minutes = (byte) theMinutes;
+  seconds = (byte) theSeconds;
+  return VALID_TIMESTAMP;
 }
 
 boolean ESATTimestamp::operator==(ESATTimestamp timestamp)
@@ -221,25 +242,4 @@ boolean ESATTimestamp::operator<=(ESATTimestamp timestamp)
   {
     return false;
   }
-}
-
-void ESATTimestamp::toStringTimeStamp(char timestamp[])
-{
-  sprintf(timestamp,
-          "20%02u-%02u-%02uT%02u:%02u:%02u",
-          year % 100,
-          month % 100,
-          day % 100,
-          hours % 100,
-          minutes % 100,
-          seconds % 100);
-}
-
-void ESATTimestamp::getDateWithoutDashes(char timestamp[])
-{
-  sprintf(timestamp,
-          "20%02u%02u%02u",
-          year % 100,
-          month % 100,
-          day % 100);
 }

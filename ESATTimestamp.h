@@ -25,12 +25,38 @@ class ESATTimestamp
 {
   public:
     // the timestamp length + 1
-    static const byte charTimestampLength = 20;
+    static const byte CHAR_TIMESTAMP_LENGTH = 20;
 
     // the date length + 1
-    static const byte charDateLength = 9;
+    static const byte CHAR_DATE_LENGTH = 9;
+
+    static const byte INVALID_TIMESTAMP = 1;
+    static const byte VALID_TIMESTAMP = 2;
+
+    byte year;
+
+    byte month;
+
+    byte day;
+
+    byte hours;
+
+    byte minutes;
+
+    byte seconds;
 
     ESATTimestamp();
+
+    byte compare(ESATTimestamp timestamp);
+
+    // util to get the date from the timestamp
+    void getDateWithoutDashes(char date[]);
+
+    void incrementDay();
+
+    void toStringTimeStamp(char timestamp[]);
+
+    void update(ESATTimestamp timestamp);
 
     void update(byte year,
                 byte month,
@@ -41,41 +67,15 @@ class ESATTimestamp
 
     byte update(char timestamp[]);
 
-    void update(ESATTimestamp timeStamp);
+    boolean operator>(ESATTimestamp timestamp);
 
-    void incrementDay();
+    boolean operator>=(ESATTimestamp timestamp);
 
-    byte compare(ESATTimestamp timestamp);
+    boolean operator<(ESATTimestamp timestamp);
 
-    boolean operator>(ESATTimestamp timeStamp);
+    boolean operator<=(ESATTimestamp timestamp);
 
-    boolean operator>=(ESATTimestamp timeStamp);
-
-    boolean operator<(ESATTimestamp timeStamp);
-
-    boolean operator<=(ESATTimestamp timeStamp);
-
-    boolean operator==(ESATTimestamp timeStamp);
-
-    void toStringTimeStamp(char timestamp[]);
-
-    // util to get the date from the timestamp
-    void getDateWithoutDashes(char date[]);
-
-    byte hours;
-
-    byte minutes;
-
-    byte seconds;
-
-    byte year;
-
-    byte month;
-
-    byte day;
-
-    static const byte INVALID_TIMESTAMP = 1;
-    static const byte VALID_TIMESTAMP = 2;
+    boolean operator==(ESATTimestamp timestamp);
 
   private:
     static const byte THIS_IS_HIGHER = 1;
