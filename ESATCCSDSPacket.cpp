@@ -35,7 +35,7 @@ ESATCCSDSPacket::ESATCCSDSPacket(byte* const buffer,
 {
 }
 
-unsigned long ESATCCSDSPacket::availableBytesToRead()
+unsigned long ESATCCSDSPacket::availableBytesToRead() const
 {
   unsigned long packetDataLength = readPacketDataLength();
   return packetDataLength - position;
@@ -72,7 +72,7 @@ boolean ESATCCSDSPacket::copyTo(ESATCCSDSPacket& target)
   return true;
 }
 
-boolean ESATCCSDSPacket::endOfPacketDataReached()
+boolean ESATCCSDSPacket::endOfPacketDataReached() const
 {
   if (position >= readPacketDataLength())
   {

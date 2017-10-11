@@ -98,7 +98,7 @@ class ESATCCSDSPacket: public Printable
 
     // Return the number of unread bytes in the packet data (the
     // packet data length minus the position of the read pointer).
-    unsigned long availableBytesToRead();
+    unsigned long availableBytesToRead() const;
 
     // Clear the packet by setting all bytes to 0.
     void clear();
@@ -110,7 +110,7 @@ class ESATCCSDSPacket: public Printable
 
     // Return true if the last read operation reached the end of the
     // packet.  Otherwise return false.
-    boolean endOfPacketDataReached();
+    boolean endOfPacketDataReached() const;
 
     // Print the packet in human-readable (JSON) form.
     // This leaves the read/byte pointer untouched.
