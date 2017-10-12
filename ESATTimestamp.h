@@ -1,18 +1,18 @@
 /*
- * This file is part of Theia Space's ESAT OBC library.
+ * This file is part of Theia Space's ESAT Util library.
  *
- * Theia Space's ESAT OBC library is free software: you can
+ * Theia Space's ESAT Util library is free software: you can
  * redistribute it and/or modify it under the terms of the GNU General
  * Public License as published by the Free Software Foundation, either
  * version 3 of the License, or (at your option) any later version.
  *
- * Theia Space's ESAT OBC library is distributed in the hope that it
+ * Theia Space's ESAT Util library is distributed in the hope that it
  * will be useful, but WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Theia Space's ESAT OBC library.  If not, see
+ * along with Theia Space's ESAT Util library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
 
@@ -56,12 +56,6 @@ class ESATTimestamp
 
     // Instantiate a new timestamp.
     ESATTimestamp();
-
-    // Compare this timestamp to another timestamp.  Return:
-    // THIS_IS_LOWER if the argument happens before this timestamp;
-    // THIS_IS_HIGHER if the argument happens after this timestamp;
-    // THIS_IS_EQUAL if the arguments coincides with this timestamp.
-    byte compare(ESATTimestamp timestamp);
 
     // Format the date part of the timestamp as text without hyphens/dashes.
     // Write the formatted text to the date character buffer argument,
@@ -123,6 +117,12 @@ class ESATTimestamp
 
     // Comparison result: when this timestamp coincides with another timestamp.
     static const byte THIS_IS_EQUAL = 3;
+    
+    // Compare this timestamp to another timestamp.  Return:
+    // THIS_IS_LOWER if the argument happens before this timestamp;
+    // THIS_IS_HIGHER if the argument happens after this timestamp;
+    // THIS_IS_EQUAL if the arguments coincides with this timestamp.
+    byte compare(ESATTimestamp timestamp);
 };
 
 #endif
