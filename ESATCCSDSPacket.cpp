@@ -456,6 +456,17 @@ word ESATCCSDSPacket::readPrimaryHeaderBits(const byte offset,
   return bits;
 }
 
+ESATCCSDSSecondaryHeader ESATCCSDSPacket::readSecondaryHeader()
+{
+  ESATCCSDSSecondaryHeader datum;
+  datum.preamble = (ESATCCSDSSecondaryHeader::Preamble) readByte();
+  datum.timestamp = readTimestamp();
+  datum.majorVersionNumber = readByte();
+  datum.minorVersionNumber = readByte();
+  datum.patchVersionNumber = readByte();
+  datum.packetIdentifier = readByte();
+}
+
 ESATCCSDSPacket::SecondaryHeaderFlag ESATCCSDSPacket::readSecondaryHeaderFlag() const
 {
   const word bits = readPrimaryHeaderBits(SECONDARY_HEADER_FLAG_OFFSET,
@@ -623,6 +634,16 @@ void ESATCCSDSPacket::writePrimaryHeaderBits(const byte offset,
     const boolean bitValue = bitRead(bits, sourceBit);
     bitWrite(primaryHeader[targetByte], targetBit, bitValue);
   }
+}
+
+void ESATCCSDSPacket::writeSecondaryHeader(const ESATCCSDSSecondaryHeader datum)
+{
+  writeByte(datum.preamble);
+  writeTimestamp(datum.timestamp);
+  writeByte(datum.majorVersionNumber);
+  writeByte(datum.minorVersionNumber);
+  writeByte(datum.patchVersionNumber);
+  writeByte(datum.packetIdentifier);
 }
 
 void ESATCCSDSPacket::writeSecondaryHeaderFlag(const ESATCCSDSPacket::SecondaryHeaderFlag secondaryHeaderFlag)

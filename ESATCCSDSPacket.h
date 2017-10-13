@@ -20,6 +20,7 @@
 #define ESATCCSDSPacket_h
 
 #include <Arduino.h>
+#include <ESATCCSDSSecondaryHeader.h>
 #include <ESATTimestamp.h>
 
 // ESAT's CCSDS space packets.
@@ -218,6 +219,19 @@ class ESATCCSDSPacket: public Printable
     // This leaves the read/byte pointer untouched.
     byte readPacketVersionNumber() const;
 
+    // Return the next secondary header from the packet data.
+    // The raw datum is stored in big-endian byte order, with the
+    // timestamp field encoded as a calendar segmented time code,
+    // month of year/day of month variation, 1 second resolution.
+    // The secondary header is intended to go right at the beginning
+    // of the packet data, but it is possible to read a secondary
+    // header from any point of the packet data if that's the user's need.
+    // This advances the read/byte pointer by 12, but limited to the
+    // packet data buffer length.
+    // The return value is undefined if there are fewer than 12 bytes before
+    // reaching the end of the packet data buffer.
+    ESATCCSDSSecondaryHeader readSecondaryHeader();
+
     // Return the CCSDS secondary header flag.
     // This field is part of the primary header.
     // The raw datum is stored as a bit:
@@ -386,6 +400,20 @@ class ESATCCSDSPacket: public Printable
     // is undefined.
     // This leaves the read/byte pointer untouched.
     void writePacketVersionNumber(byte packetVersionNumber);
+
+    // Append the secondary header to the packet data.
+    // The raw datum is stored in big-endian byte order, with the
+    // timestamp field encoded as a calendar segmented time code,
+    // month of year/day of month variation, 1 second resolution.
+    // The secondary header is intended to go right at the beginning
+    // of the packet data, but it is possible to append a secondary
+    // header at any point of the packet data if that's the user's need.
+    // This advances the read/byte pointer by 12, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 12 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
+    void writeSecondaryHeader(ESATCCSDSSecondaryHeader datum);
 
     // Write the CCSDS secondary header flag.
     // This field is part of the primary header.
