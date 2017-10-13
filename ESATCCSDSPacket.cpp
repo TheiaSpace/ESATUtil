@@ -465,6 +465,7 @@ ESATCCSDSSecondaryHeader ESATCCSDSPacket::readSecondaryHeader()
   datum.minorVersionNumber = readByte();
   datum.patchVersionNumber = readByte();
   datum.packetIdentifier = readByte();
+  return datum;
 }
 
 ESATCCSDSPacket::SecondaryHeaderFlag ESATCCSDSPacket::readSecondaryHeaderFlag() const
