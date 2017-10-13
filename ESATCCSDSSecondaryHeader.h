@@ -42,7 +42,7 @@ class ESATCCSDSSecondaryHeader
 
     // Number of bytes the secondary header takes when stored in CCSDS
     // packets.
-    const byte LENGTH = 12;
+    static const byte LENGTH = 12;
 
     // Preamble field that identifies the time code type.
     Preamble preamble;
