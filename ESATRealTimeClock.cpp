@@ -16,42 +16,43 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "ESATRTC.h"
+#include "ESATRealTimeClock.h"
 
-ESATRTC::ESATRTC()
+ESATRealTimeClock::ESATRealTimeClock()
 {
   running = false;
 }
-boolean ESATRTC::isRunning()
+
+void ESATRealTimeClock::begin(ESATTimestamp timestamp)
+{
+  setCurrentTime(timestamp);
+}
+
+boolean ESATRealTimeClock::isRunning()
 {
   return running;
 }
 
-void ESATRTC::setCurrentTime(ESATTimestamp Timestamp)
+ESATTimestamp ESATRealTimeClock::read()
 {
-  setSeconds = millis()/1000;
-  setTimestamp.update(Timestamp);
+  ESATTimestamp timestamp;
+  if (running)
+  {
+    timestamp.update(setTimestamp);
+    unsigned long theSeconds = (millis() / 1000) - setSeconds;
+    timestamp.addSeconds(theSeconds);
+  }
+  return timestamp;
+}
+
+void ESATRealTimeClock::setCurrentTime(ESATTimestamp timestamp)
+{
+  setSeconds = millis() / 1000;
+  setTimestamp.update(timestamp);
   running = true;
 }
 
-void ESATRTC::begin(ESATTimestamp Timestamp)
+void ESATRealTimeClock::write(ESATTimestamp timestamp)
 {
-  setCurrentTime(Timestamp);
-}
-
-void ESATRTC::write(ESATTimestamp Timestamp)
-{
-  setCurrentTime(Timestamp);
-}
-
-ESATTimestamp ESATRTC::read()
-{
-  ESATTimestamp Timestamp;
-  if(running)
-  {
-    Timestamp.update(setTimestamp);
-    unsigned long theSeconds = millis()/1000 - setSeconds;
-    Timestamp.addSeconds(theSeconds);
-  }
-  return Timestamp;
+  setCurrentTime(timestamp);
 }
