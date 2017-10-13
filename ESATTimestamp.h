@@ -57,13 +57,21 @@ class ESATTimestamp
     // Instantiate a new timestamp.
     ESATTimestamp();
 
+    // Sum the specified days to the date 
+    // It takes into account the Gregorian calendar
+    void addDays(unsigned int days);
+
+    // Sum the specified seconds to the timestamp
+    // It takes into account the Gregorian calendar
+    void addSeconds(unsigned long seconds);
+    
     // Format the date part of the timestamp as text without hyphens/dashes.
     // Write the formatted text to the date character buffer argument,
     // which must be at least CHAR_DATE_LENGTH characters long.
     void getDateWithoutDashes(char date[]);
 
-    // Increment the day by 1.
-    void incrementDay();
+    // Increment the day by 1. Set hour in 00:00:00
+    void addDay();
 
     // Format the timestamp as human-readable text.
     // Write the formatted text to the timestamp character buffer
@@ -117,12 +125,20 @@ class ESATTimestamp
 
     // Comparison result: when this timestamp coincides with another timestamp.
     static const byte THIS_IS_EQUAL = 3;
-    
+
     // Compare this timestamp to another timestamp.  Return:
     // THIS_IS_LOWER if the argument happens before this timestamp;
     // THIS_IS_HIGHER if the argument happens after this timestamp;
     // THIS_IS_EQUAL if the arguments coincides with this timestamp.
     byte compare(ESATTimestamp timestamp);
+
+    // Return true if "divisor" is divisor of "dividend",
+    // otherwise return false
+    boolean isDivisor(unsigned int dividend, unsigned int divisor);
+
+    // Return true if "year" is a leap year,
+    // otherwise return false
+    boolean isLeapYear(unsigned int year);
 };
 
 #endif
