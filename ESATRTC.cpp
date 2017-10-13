@@ -18,7 +18,7 @@
 
 #include "ESATRTC.h"
 
-void ESATRTC::ESATRTC()
+ESATRTC::ESATRTC()
 {
   running = false;
   millisLastUpdate = 0;

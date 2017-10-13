@@ -54,7 +54,7 @@ class ESATRTC
     unsigned long millisLastUpdate;
     static const unsigned int MILLISECONDS_BETWEEN_UPDATES = 500;
     void setCurrentTime(ESATTimestamp Timestamp);
-    ESATTimestamp update();
+    void update();
 
 };
 
