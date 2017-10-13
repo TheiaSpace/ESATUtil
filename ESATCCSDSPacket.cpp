@@ -470,6 +470,18 @@ ESATCCSDSPacket::SequenceFlags ESATCCSDSPacket::readSequenceFlags() const
   return ESATCCSDSPacket::SequenceFlags(bits);
 }
 
+ESATTimestamp ESATCCSDSPacket::readTimestamp()
+{
+  ESATTimestamp datum;
+  datum.year = readWord();
+  datum.month = readByte();
+  datum.day = readByte();
+  datum.minutes = readByte();
+  datum.hours = readByte();
+  datum.seconds = readByte();
+  return datum;
+}
+
 unsigned long ESATCCSDSPacket::readUnsignedLong()
 {
   const unsigned long firstByte = readByte();
@@ -625,6 +637,16 @@ void ESATCCSDSPacket::writeSequenceFlags(const SequenceFlags sequenceFlags)
   writePrimaryHeaderBits(SEQUENCE_FLAGS_OFFSET,
                          SEQUENCE_FLAGS_LENGTH,
                          sequenceFlags);
+}
+
+void ESATCCSDSPacket::writeTimestamp(const ESATTimestamp datum)
+{
+  writeWord(datum.year);
+  writeByte(datum.month);
+  writeByte(datum.day);
+  writeByte(datum.hours);
+  writeByte(datum.minutes);
+  writeByte(datum.seconds);
 }
 
 boolean ESATCCSDSPacket::writeTo(Stream& output) const
