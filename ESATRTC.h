@@ -24,35 +24,41 @@
 
 // Software real-time clock.
 // Once itialized with the current timestamp, it provides a real-time
-// clock and calendar function.
+// clock and calendar function with second resolution.
 class ESATRTC
 {
   public:
-    // Instantiate a new RTC.
+    // Instantiate a new software real-time clock.
     ESATRTC();
 
-    // Returns true if the RTC was initialized and it is running,
-    // otherwise returns false
+    // Return true if the RTC was initialized and it is running,
+    // otherwise returns false.
     boolean isRunning();
 
-    // Method to initialize the RTC. The argumunt is used to set 
-    // the current time.
+    // Initiate the clock so it starts counting time.
+    // Set the clock to the given timestamp.
     void begin(ESATTimestamp Timestamp);
 
-    // Returns the current timestamp. If the RTC is not initialized 
-    // before calling this method,
-    // it returns 2000-00-00T00:00:00 as timestamp
+    // Return the current timestamp.
+    // If the RTC is not initialized before calling this method,
+    // return 2000-00-00T00:00:00.
     ESATTimestamp read();
 
-    // Method to update the current time
+    // Set the time to the given timestamp.
     void write(ESATTimestamp Timestamp);
 
   private:
+    // Timestamp given at the last time setting.
     ESATTimestamp setTimestamp;
-    unsigned long setSeconds;
-    boolean running;
-    void setCurrentTime(ESATTimestamp Timestamp);
 
+    // System uptime seconds at the last time setting.
+    unsigned long setSeconds;
+
+    // True if the clock is running; false otherwise.
+    boolean running;
+
+    // Set the time to the given timestamp.
+    void setCurrentTime(ESATTimestamp Timestamp);
 };
 
 #endif
