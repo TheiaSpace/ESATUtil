@@ -52,12 +52,15 @@ void ESATI2CSlave::handleTelecommandPacketDataReception(const byte message[],
     requestState = IDLE;
     return;
   }
-  for (long i = 0; i < messageLength; i++)
+  const long packetDataLength = telecommand.readPacketDataLength();
+  for (long i = 0;
+       (i < messageLength)
+         && (telecommandPacketDataBytesReceived < packetDataLength);
+       i++)
   {
-    telecommand.writeByte(message[i]);
+    telecommand.packetData[telecommandPacketDataBytesReceived] = message[i];
     telecommandPacketDataBytesReceived = telecommandPacketDataBytesReceived + 1;
-    if (telecommandPacketDataBytesReceived
-        >= telecommand.readPacketDataLength())
+    if (telecommandPacketDataBytesReceived >= packetDataLength)
     {
       telecommandState = TELECOMMAND_PENDING;
       receiveState = IDLE;
