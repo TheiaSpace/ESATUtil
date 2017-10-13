@@ -456,6 +456,17 @@ word ESATCCSDSPacket::readPrimaryHeaderBits(const byte offset,
   return bits;
 }
 
+ESATCCSDSSecondaryHeader ESATCCSDSPacket::readSecondaryHeader()
+{
+  ESATCCSDSSecondaryHeader datum;
+  datum.preamble = (ESATCCSDSSecondaryHeader::Preamble) readByte();
+  datum.timestamp = readTimestamp();
+  datum.majorVersionNumber = readByte();
+  datum.minorVersionNumber = readByte();
+  datum.patchVersionNumber = readByte();
+  datum.packetIdentifier = readByte();
+}
+
 ESATCCSDSPacket::SecondaryHeaderFlag ESATCCSDSPacket::readSecondaryHeaderFlag() const
 {
   const word bits = readPrimaryHeaderBits(SECONDARY_HEADER_FLAG_OFFSET,
@@ -468,6 +479,18 @@ ESATCCSDSPacket::SequenceFlags ESATCCSDSPacket::readSequenceFlags() const
   const word bits = readPrimaryHeaderBits(SEQUENCE_FLAGS_OFFSET,
                                           SEQUENCE_FLAGS_LENGTH);
   return ESATCCSDSPacket::SequenceFlags(bits);
+}
+
+ESATTimestamp ESATCCSDSPacket::readTimestamp()
+{
+  ESATTimestamp datum;
+  datum.year = readWord();
+  datum.month = readByte();
+  datum.day = readByte();
+  datum.minutes = readByte();
+  datum.hours = readByte();
+  datum.seconds = readByte();
+  return datum;
 }
 
 unsigned long ESATCCSDSPacket::readUnsignedLong()
@@ -613,6 +636,16 @@ void ESATCCSDSPacket::writePrimaryHeaderBits(const byte offset,
   }
 }
 
+void ESATCCSDSPacket::writeSecondaryHeader(const ESATCCSDSSecondaryHeader datum)
+{
+  writeByte(datum.preamble);
+  writeTimestamp(datum.timestamp);
+  writeByte(datum.majorVersionNumber);
+  writeByte(datum.minorVersionNumber);
+  writeByte(datum.patchVersionNumber);
+  writeByte(datum.packetIdentifier);
+}
+
 void ESATCCSDSPacket::writeSecondaryHeaderFlag(const ESATCCSDSPacket::SecondaryHeaderFlag secondaryHeaderFlag)
 {
   writePrimaryHeaderBits(SECONDARY_HEADER_FLAG_OFFSET,
@@ -625,6 +658,16 @@ void ESATCCSDSPacket::writeSequenceFlags(const SequenceFlags sequenceFlags)
   writePrimaryHeaderBits(SEQUENCE_FLAGS_OFFSET,
                          SEQUENCE_FLAGS_LENGTH,
                          sequenceFlags);
+}
+
+void ESATCCSDSPacket::writeTimestamp(const ESATTimestamp datum)
+{
+  writeWord(datum.year);
+  writeByte(datum.month);
+  writeByte(datum.day);
+  writeByte(datum.hours);
+  writeByte(datum.minutes);
+  writeByte(datum.seconds);
 }
 
 boolean ESATCCSDSPacket::writeTo(Stream& output) const
