@@ -50,11 +50,7 @@ class ESATRTC
 
   private:
     boolean running;
-    ESATTimestamp LastSavedTimestamp;
-    unsigned long millisLastUpdate;
-    static const unsigned int MILLISECONDS_BETWEEN_UPDATES = 500;
     void setCurrentTime(ESATTimestamp Timestamp);
-    void update();
 
 };
 

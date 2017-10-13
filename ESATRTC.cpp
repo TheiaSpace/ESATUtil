@@ -21,13 +21,12 @@
 ESATRTC::ESATRTC()
 {
   running = false;
-  millisLastUpdate = 0;
 }
 
 
 void ESATRTC::setCurrentTime(ESATTimestamp Timestamp)
 {
-  unsigned int year = Timestamp.year + 2000;
+  unsigned int year = (Timestamp.year + 2000);
   // Calendar mode selected
   // Clock stopped
   RTCCTL1 |= RTCMODE|RTCHOLD;
@@ -41,55 +40,43 @@ void ESATRTC::setCurrentTime(ESATTimestamp Timestamp)
   // None of the following register can be 0
   RTCDAY = Timestamp.day % 32;
   RTCMON = Timestamp.day % 13;
-  // Year divided in two registers (LOW and HIGH byte)
   // Year goes from 0 to 4095
-  RTCYEARL = year % 0x100;
-  RTCYEARH = (year/0x100) % 41;
+  RTCYEAR = year % 4096;
   // Start clock
   RTCCTL1 &= ~RTCHOLD;
   
   running = true;
 }
 
-void ESATRTC::update()
-{
-  byte lYear;
-  byte hYear;
-  // In case the timstamp is been updated we wait
-  // until it is ready to be read
-  while(!(RTCCTL1&RTCRDY));
-  // We read all the registers as soon as possible
-  LastSavedTimestamp.seconds = RTCSEC;
-  LastSavedTimestamp.minutes = RTCMIN;
-  LastSavedTimestamp.hours = RTCHOUR;
-  LastSavedTimestamp.day = RTCDAY;
-  LastSavedTimestamp.month = RTCMON;
-  lYear = RTCYEARL;
-  hYear = RTCYEARH;
-
-  LastSavedTimestamp.year = (byte)((lYear + (unsigned int)hYear * 0x100) - 2000);
-
-  millisLastUpdate = millis();
-}
-
 void ESATRTC::begin(ESATTimestamp Timestamp)
 {
-  write(Timestamp);
+  setCurrentTime(Timestamp);
 }
 
 void ESATRTC::write(ESATTimestamp Timestamp)
 {
   setCurrentTime(Timestamp);
-  update();
 }
 
 ESATTimestamp ESATRTC::read()
 {
+  ESATTimestamp Timestamp;
   if(running){
-    if(millis() > millisLastUpdate + MILLISECONDS_BETWEEN_UPDATES)
-    {
-      update();
-    }
+    byte lYear;
+    byte hYear;
+    // In case the timstamp is been updated we wait
+    // until it is ready to be read
+    // while(!(RTCCTL1&RTCRDY));
+    // We read all the registers as soon as possible
+    Timestamp.seconds = RTCSEC;
+    Timestamp.minutes = RTCMIN;
+    Timestamp.hours = RTCHOUR;
+    Timestamp.day = RTCDAY;
+    Timestamp.month = RTCMON;
+    lYear = RTCYEARL;
+    hYear = RTCYEARH;
+
+    Timestamp.year = (byte)((lYear + (unsigned int)hYear * 0x100) - 2000);
   }
-  return LastSavedTimestamp;
+  return Timestamp;
 }
