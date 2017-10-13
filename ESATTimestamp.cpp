@@ -30,6 +30,65 @@ ESATTimestamp::ESATTimestamp()
   day = 0;
 }
 
+void ESATTimestamp::addSeconds(unsigned long seconds)
+{
+  ESATTimestamp Timestamp;
+  Timestamp.update(*this);
+
+  unsigned int numOfDays =    ((seconds / 3600) / 24);
+  unsigned int numOfHours =   ((seconds / 3600) % 24);
+  unsigned int numOfMinutes = ((seconds / 60) % 60);
+  unsigned int numOfSeconds = (seconds % 60);
+  
+  numOfSeconds = numOfSeconds + Timestamp.seconds;
+  Timestamp.seconds = numOfSeconds % 60;
+  numOfMinutes = numOfMinutes + Timestamp.minutes + numOfSeconds / 60;
+  Timestamp.minutes = numOfMinutes % 60;
+  numOfHours = numOfHours + Timestamp.hours + numOfMinutes / 60;
+  Timestamp.hours = numOfHours % 24;
+  numOfDays = numOfDays + numOfHours / 24;
+  
+  update(Timestamp);
+  if(numOfDays > 0)
+  {
+    addDays(numOfDays);
+  }
+}
+
+void ESATTimestamp::addDays(unsigned int days)
+{
+  ESATTimestamp Timestamp;
+  Timestamp.update(*this);
+  byte monthDays[12] = {31,28,31,30,31,30, 31, 31, 30, 31, 30, 31};
+  if(isLeapYear(Timestamp.year))
+  {
+    monthDays[1] = 29;
+  }
+  for(unsigned int day = 0; day < days; day++)
+  {
+    Timestamp.day = Timestamp.day + 1;
+    if(Timestamp.day > monthDays[Timestamp.month - 1])
+    {
+      Timestamp.day = 1;
+      Timestamp.month = Timestamp.month + 1;
+      if(Timestamp.month > 12)
+      {
+        Timestamp.month = 1;
+        Timestamp.year = Timestamp.year + 1;
+        if(isLeapYear(Timestamp.year))
+        {
+          monthDays[1] = 29;
+        }
+        else
+        {
+          monthDays[1] = 28;
+        }
+      }
+    }
+  }
+  update(Timestamp);
+}
+
 byte ESATTimestamp::compare(ESATTimestamp timestamp)
 {
   if (timestamp.year > year)
@@ -95,22 +154,43 @@ void ESATTimestamp::getDateWithoutDashes(char timestamp[])
           day % 100);
 }
 
-void ESATTimestamp::incrementDay()
+void ESATTimestamp::addDay()
 {
-  day ++;
-  if (day > 31)
-  {
-    day = 1;
-    month++;
-    if (month > 12)
-    {
-      month = 1;
-      year++;
-    }
-  }
+  addDays(1);
   hours = 0;
   minutes = 0;
   seconds = 0;
+}
+
+boolean ESATTimestamp::isDivisor(unsigned int dividend, unsigned int divisor)
+{
+  return (dividend/divisor*divisor == dividend);
+}
+
+boolean ESATTimestamp::isLeapYear(unsigned int year)
+{
+  if(isDivisor(year,4))
+  {
+    if(isDivisor(year,100))
+    {
+      if(isDivisor(year,400))
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    else
+    {
+      return true;
+    }
+  }
+  else
+  {
+    return false;
+  }
 }
 
 void ESATTimestamp::toStringTimeStamp(char timestamp[])
