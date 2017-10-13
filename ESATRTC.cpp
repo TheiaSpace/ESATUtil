@@ -22,11 +22,14 @@ ESATRTC::ESATRTC()
 {
   running = false;
 }
-
+boolean ESATRTC::isRunning()
+{
+  return running;
+}
 
 void ESATRTC::setCurrentTime(ESATTimestamp Timestamp)
 {
-  setMillis = millis();
+  setSeconds = millis()/1000;
   setTimestamp.update(Timestamp);
   running = true;
 }
@@ -47,7 +50,8 @@ ESATTimestamp ESATRTC::read()
   if(running)
   {
     Timestamp.update(setTimestamp);
-    Timestamp.addSeconds(millis()/1000);
+    unsigned long theSeconds = millis()/1000 - setSeconds;
+    Timestamp.addSeconds(theSeconds);
   }
   return Timestamp;
 }

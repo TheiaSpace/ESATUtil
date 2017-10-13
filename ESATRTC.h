@@ -50,7 +50,7 @@ class ESATRTC
 
   private:
     ESATTimestamp setTimestamp;
-    unsigned long setMillis;
+    unsigned long setSeconds;
     boolean running;
     void setCurrentTime(ESATTimestamp Timestamp);
 
