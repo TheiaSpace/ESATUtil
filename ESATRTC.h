@@ -31,13 +31,13 @@ class ESATRTC
     // Instantiate a new software real-time clock.
     ESATRTC();
 
-    // Return true if the RTC was initialized and it is running,
-    // otherwise returns false.
-    boolean isRunning();
-
     // Initiate the clock so it starts counting time.
     // Set the clock to the given timestamp.
     void begin(ESATTimestamp timestamp);
+
+    // Return true if the RTC was initialized and it is running,
+    // otherwise returns false.
+    boolean isRunning();
 
     // Return the current timestamp.
     // If the RTC is not initialized before calling this method,
@@ -48,14 +48,14 @@ class ESATRTC
     void write(ESATTimestamp timestamp);
 
   private:
-    // Timestamp given at the last time setting.
-    ESATTimestamp setTimestamp;
+    // True if the clock is running; false otherwise.
+    boolean running;
 
     // System uptime seconds at the last time setting.
     unsigned long setSeconds;
 
-    // True if the clock is running; false otherwise.
-    boolean running;
+    // Timestamp given at the last time setting.
+    ESATTimestamp setTimestamp;
 
     // Set the time to the given timestamp.
     void setCurrentTime(ESATTimestamp timestamp);

@@ -22,26 +22,15 @@ ESATRTC::ESATRTC()
 {
   running = false;
 }
-boolean ESATRTC::isRunning()
-{
-  return running;
-}
-
-void ESATRTC::setCurrentTime(ESATTimestamp timestamp)
-{
-  setSeconds = millis()/1000;
-  setTimestamp.update(timestamp);
-  running = true;
-}
 
 void ESATRTC::begin(ESATTimestamp timestamp)
 {
   setCurrentTime(timestamp);
 }
 
-void ESATRTC::write(ESATTimestamp timestamp)
+boolean ESATRTC::isRunning()
 {
-  setCurrentTime(timestamp);
+  return running;
 }
 
 ESATTimestamp ESATRTC::read()
@@ -54,4 +43,16 @@ ESATTimestamp ESATRTC::read()
     timestamp.addSeconds(theSeconds);
   }
   return timestamp;
+}
+
+void ESATRTC::setCurrentTime(ESATTimestamp timestamp)
+{
+  setSeconds = millis()/1000;
+  setTimestamp.update(timestamp);
+  running = true;
+}
+
+void ESATRTC::write(ESATTimestamp timestamp)
+{
+  setCurrentTime(timestamp);
 }
