@@ -16,24 +16,24 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "ESATRTC.h"
+#include "ESATRealTimeClock.h"
 
-ESATRTC::ESATRTC()
+ESATRealTimeClock::ESATRealTimeClock()
 {
   running = false;
 }
 
-void ESATRTC::begin(ESATTimestamp timestamp)
+void ESATRealTimeClock::begin(ESATTimestamp timestamp)
 {
   setCurrentTime(timestamp);
 }
 
-boolean ESATRTC::isRunning()
+boolean ESATRealTimeClock::isRunning()
 {
   return running;
 }
 
-ESATTimestamp ESATRTC::read()
+ESATTimestamp ESATRealTimeClock::read()
 {
   ESATTimestamp timestamp;
   if (running)
@@ -45,14 +45,14 @@ ESATTimestamp ESATRTC::read()
   return timestamp;
 }
 
-void ESATRTC::setCurrentTime(ESATTimestamp timestamp)
+void ESATRealTimeClock::setCurrentTime(ESATTimestamp timestamp)
 {
   setSeconds = millis() / 1000;
   setTimestamp.update(timestamp);
   running = true;
 }
 
-void ESATRTC::write(ESATTimestamp timestamp)
+void ESATRealTimeClock::write(ESATTimestamp timestamp)
 {
   setCurrentTime(timestamp);
 }

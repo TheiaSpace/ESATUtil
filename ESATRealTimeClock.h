@@ -19,17 +19,17 @@
 #include <Arduino.h>
 #include "ESATTimestamp.h"
 
-#ifndef ESATRTC_h
-#define ESATRTC_h
+#ifndef ESATRealTimeclock_h
+#define ESATRealTimeClock_h
 
 // Software real-time clock.
 // Once itialized with the current timestamp, it provides a real-time
 // clock and calendar function with second resolution.
-class ESATRTC
+class ESATRealTimeClock
 {
   public:
     // Instantiate a new software real-time clock.
-    ESATRTC();
+    ESATRealTimeClock();
 
     // Initiate the clock so it starts counting time.
     // Set the clock to the given timestamp.
