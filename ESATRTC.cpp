@@ -27,31 +27,31 @@ boolean ESATRTC::isRunning()
   return running;
 }
 
-void ESATRTC::setCurrentTime(ESATTimestamp Timestamp)
+void ESATRTC::setCurrentTime(ESATTimestamp timestamp)
 {
   setSeconds = millis()/1000;
-  setTimestamp.update(Timestamp);
+  setTimestamp.update(timestamp);
   running = true;
 }
 
-void ESATRTC::begin(ESATTimestamp Timestamp)
+void ESATRTC::begin(ESATTimestamp timestamp)
 {
-  setCurrentTime(Timestamp);
+  setCurrentTime(timestamp);
 }
 
-void ESATRTC::write(ESATTimestamp Timestamp)
+void ESATRTC::write(ESATTimestamp timestamp)
 {
-  setCurrentTime(Timestamp);
+  setCurrentTime(timestamp);
 }
 
 ESATTimestamp ESATRTC::read()
 {
-  ESATTimestamp Timestamp;
+  ESATTimestamp timestamp;
   if(running)
   {
-    Timestamp.update(setTimestamp);
+    timestamp.update(setTimestamp);
     unsigned long theSeconds = millis()/1000 - setSeconds;
-    Timestamp.addSeconds(theSeconds);
+    timestamp.addSeconds(theSeconds);
   }
-  return Timestamp;
+  return timestamp;
 }

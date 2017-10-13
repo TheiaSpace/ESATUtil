@@ -37,7 +37,7 @@ class ESATRTC
 
     // Initiate the clock so it starts counting time.
     // Set the clock to the given timestamp.
-    void begin(ESATTimestamp Timestamp);
+    void begin(ESATTimestamp timestamp);
 
     // Return the current timestamp.
     // If the RTC is not initialized before calling this method,
@@ -45,7 +45,7 @@ class ESATRTC
     ESATTimestamp read();
 
     // Set the time to the given timestamp.
-    void write(ESATTimestamp Timestamp);
+    void write(ESATTimestamp timestamp);
 
   private:
     // Timestamp given at the last time setting.
@@ -58,7 +58,7 @@ class ESATRTC
     boolean running;
 
     // Set the time to the given timestamp.
-    void setCurrentTime(ESATTimestamp Timestamp);
+    void setCurrentTime(ESATTimestamp timestamp);
 };
 
 #endif
