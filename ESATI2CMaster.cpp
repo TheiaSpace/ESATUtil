@@ -257,7 +257,7 @@ boolean ESATI2CMaster::writeTelecommandPacketData(TwoWire& bus,
     (void) bus.write(TELECOMMAND_PACKET_DATA);
     const byte bytesToWrite = I2C_CHUNK_LENGTH - 1;
     for (byte i = 0;
-         i < bytesToWrite, !packet.endOfPacketDataReached();
+         (i < bytesToWrite) && !packet.endOfPacketDataReached();
          i++)
     {
       (void) bus.write(packet.readByte());
