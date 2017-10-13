@@ -22,10 +22,9 @@
 #ifndef ESATRTC_h
 #define ESATRTC_h
 
-
-// Real-time clock implemented using the RTC_A peripheral of the MCU
-// Once itialized with the current timestamp, provides a real-time
-// clock and calendar function
+// Software real-time clock.
+// Once itialized with the current timestamp, it provides a real-time
+// clock and calendar function.
 class ESATRTC
 {
   public:
