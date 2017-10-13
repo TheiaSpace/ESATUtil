@@ -36,10 +36,10 @@ boolean ESATRTC::isRunning()
 ESATTimestamp ESATRTC::read()
 {
   ESATTimestamp timestamp;
-  if(running)
+  if (running)
   {
     timestamp.update(setTimestamp);
-    unsigned long theSeconds = millis()/1000 - setSeconds;
+    unsigned long theSeconds = (millis() / 1000) - setSeconds;
     timestamp.addSeconds(theSeconds);
   }
   return timestamp;
@@ -47,7 +47,7 @@ ESATTimestamp ESATRTC::read()
 
 void ESATRTC::setCurrentTime(ESATTimestamp timestamp)
 {
-  setSeconds = millis()/1000;
+  setSeconds = millis() / 1000;
   setTimestamp.update(timestamp);
   running = true;
 }
