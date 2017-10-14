@@ -89,7 +89,7 @@ void ESATTimestamp::addDays(unsigned int days)
   update(Timestamp);
 }
 
-byte ESATTimestamp::compare(ESATTimestamp timestamp)
+byte ESATTimestamp::compare(const ESATTimestamp timestamp) const
 {
   if (timestamp.year > year)
   {
@@ -145,7 +145,7 @@ byte ESATTimestamp::compare(ESATTimestamp timestamp)
   }
 }
 
-void ESATTimestamp::getDateWithoutDashes(char timestamp[])
+void ESATTimestamp::getDateWithoutDashes(char timestamp[]) const
 {
   sprintf(timestamp,
           "20%02u%02u%02u",
@@ -162,12 +162,13 @@ void ESATTimestamp::addDay()
   seconds = 0;
 }
 
-boolean ESATTimestamp::isDivisor(unsigned int dividend, unsigned int divisor)
+boolean ESATTimestamp::isDivisor(const unsigned int dividend,
+                                 const unsigned int divisor) const
 {
   return (dividend/divisor*divisor == dividend);
 }
 
-boolean ESATTimestamp::isLeapYear(unsigned int year)
+boolean ESATTimestamp::isLeapYear(const unsigned int year) const
 {
   if(isDivisor(year,4))
   {
@@ -193,7 +194,7 @@ boolean ESATTimestamp::isLeapYear(unsigned int year)
   }
 }
 
-void ESATTimestamp::toStringTimeStamp(char timestamp[])
+void ESATTimestamp::toStringTimeStamp(char timestamp[]) const
 {
   sprintf(timestamp,
           "20%02u-%02u-%02uT%02u:%02u:%02u",
@@ -205,7 +206,7 @@ void ESATTimestamp::toStringTimeStamp(char timestamp[])
           seconds % 100);
 }
 
-void ESATTimestamp::update(ESATTimestamp timestamp)
+void ESATTimestamp::update(const ESATTimestamp timestamp)
 {
   year = timestamp.year;
   month = timestamp.month;
@@ -215,12 +216,12 @@ void ESATTimestamp::update(ESATTimestamp timestamp)
   seconds = timestamp.seconds;
 }
 
-void ESATTimestamp::update(byte newYear,
-                           byte newMonth,
-                           byte newDay,
-                           byte newHours,
-                           byte newMinutes,
-                           byte newSeconds)
+void ESATTimestamp::update(const byte newYear,
+                           const byte newMonth,
+                           const byte newDay,
+                           const byte newHours,
+                           const byte newMinutes,
+                           const byte newSeconds)
 {
   hours = newHours;
   minutes = newMinutes;
@@ -230,7 +231,7 @@ void ESATTimestamp::update(byte newYear,
   day = newDay;
 }
 
-byte ESATTimestamp::update(char time[])
+byte ESATTimestamp::update(const char time[])
 {
   int theYear, theMonth, theDay, theHours, theMinutes, theSeconds;
   int n = sscanf(time,
@@ -254,7 +255,7 @@ byte ESATTimestamp::update(char time[])
   return VALID_TIMESTAMP;
 }
 
-boolean ESATTimestamp::operator==(ESATTimestamp timestamp)
+boolean ESATTimestamp::operator==(const ESATTimestamp timestamp) const
 {
   if (compare(timestamp) == THIS_IS_EQUAL)
   {
@@ -266,7 +267,7 @@ boolean ESATTimestamp::operator==(ESATTimestamp timestamp)
   }
 }
 
-boolean ESATTimestamp::operator>(ESATTimestamp timestamp)
+boolean ESATTimestamp::operator>(const ESATTimestamp timestamp) const
 {
   if (compare(timestamp) == THIS_IS_HIGHER)
   {
@@ -278,7 +279,7 @@ boolean ESATTimestamp::operator>(ESATTimestamp timestamp)
   }
 }
 
-boolean ESATTimestamp::operator>=(ESATTimestamp timestamp)
+boolean ESATTimestamp::operator>=(const ESATTimestamp timestamp) const
 {
   byte result = compare(timestamp);
   if (result == THIS_IS_HIGHER)
@@ -295,7 +296,7 @@ boolean ESATTimestamp::operator>=(ESATTimestamp timestamp)
   }
 }
 
-boolean ESATTimestamp::operator<(ESATTimestamp timestamp)
+boolean ESATTimestamp::operator<(const ESATTimestamp timestamp) const
 {
   if (compare(timestamp) == THIS_IS_LOWER)
   {
@@ -307,7 +308,7 @@ boolean ESATTimestamp::operator<(ESATTimestamp timestamp)
   }
 }
 
-boolean ESATTimestamp::operator<=(ESATTimestamp timestamp)
+boolean ESATTimestamp::operator<=(const ESATTimestamp timestamp) const
 {
   byte result = compare(timestamp);
   if (result == THIS_IS_LOWER)

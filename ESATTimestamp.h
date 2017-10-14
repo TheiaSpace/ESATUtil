@@ -68,7 +68,7 @@ class ESATTimestamp
     // Format the date part of the timestamp as text without hyphens/dashes.
     // Write the formatted text to the date character buffer argument,
     // which must be at least CHAR_DATE_LENGTH characters long.
-    void getDateWithoutDashes(char date[]);
+    void getDateWithoutDashes(char date[]) const;
 
     // Increment the day by 1. Set hour in 00:00:00
     void addDay();
@@ -77,7 +77,7 @@ class ESATTimestamp
     // Write the formatted text to the timestamp character buffer
     // argument, which must be at least CHAR_TIMESTAMP_LENGTH
     // characters long.
-    void toStringTimeStamp(char timestamp[]);
+    void toStringTimeStamp(char timestamp[]) const;
 
     // Update the time and date with those taken from the argument timestamp.
     void update(ESATTimestamp timestamp);
@@ -93,28 +93,28 @@ class ESATTimestamp
     // Update the time and date with the formatted timestamp character
     // buffer argument, which must be at least CHAR_TIMESTAMP_LENGTH
     // characters long.
-    byte update(char timestamp[]);
+    byte update(const char timestamp[]);
 
     // Return true if the argument timestamp happens before this timestamp.
-    boolean operator>(ESATTimestamp timestamp);
+    boolean operator>(ESATTimestamp timestamp) const;
 
     // Return true if the argument timestamp happens before this
     // timestamp or coincides with this timestamp; otherwise return
     // false.
-    boolean operator>=(ESATTimestamp timestamp);
+    boolean operator>=(ESATTimestamp timestamp) const;
 
     // Return true if the argument timestamp happens after this
     // timestamp; otherwise return false.
-    boolean operator<(ESATTimestamp timestamp);
+    boolean operator<(ESATTimestamp timestamp) const;
 
     // Return true if the argument timestamp happens after this
     // timestamp or coincides with this timestamp; otherwise return
     // false.
-    boolean operator<=(ESATTimestamp timestamp);
+    boolean operator<=(ESATTimestamp timestamp) const;
 
     // Return true if the argument timestamp coincides with this timestamp;
     // otherwise return false.
-    boolean operator==(ESATTimestamp timestamp);
+    boolean operator==(ESATTimestamp timestamp) const;
 
   private:
     // Comparison result: when this timestamp happens after another timestamp.
@@ -130,15 +130,15 @@ class ESATTimestamp
     // THIS_IS_LOWER if the argument happens before this timestamp;
     // THIS_IS_HIGHER if the argument happens after this timestamp;
     // THIS_IS_EQUAL if the arguments coincides with this timestamp.
-    byte compare(ESATTimestamp timestamp);
+    byte compare(ESATTimestamp timestamp) const;
 
     // Return true if "divisor" is divisor of "dividend",
     // otherwise return false
-    boolean isDivisor(unsigned int dividend, unsigned int divisor);
+    boolean isDivisor(unsigned int dividend, unsigned int divisor) const;
 
     // Return true if "year" is a leap year,
     // otherwise return false
-    boolean isLeapYear(unsigned int year);
+    boolean isLeapYear(unsigned int year) const;
 };
 
 #endif
