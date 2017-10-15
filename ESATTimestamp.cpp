@@ -145,15 +145,6 @@ byte ESATTimestamp::compare(const ESATTimestamp timestamp) const
   }
 }
 
-void ESATTimestamp::getDateWithoutDashes(char timestamp[]) const
-{
-  sprintf(timestamp,
-          "20%02u%02u%02u",
-          year % 100,
-          month % 100,
-          day % 100);
-}
-
 void ESATTimestamp::addDay()
 {
   addDays(1);
@@ -194,18 +185,6 @@ boolean ESATTimestamp::isLeapYear(const unsigned int year) const
   }
 }
 
-void ESATTimestamp::toStringTimeStamp(char timestamp[]) const
-{
-  sprintf(timestamp,
-          "20%02u-%02u-%02uT%02u:%02u:%02u",
-          year % 100,
-          month % 100,
-          day % 100,
-          hours % 100,
-          minutes % 100,
-          seconds % 100);
-}
-
 void ESATTimestamp::update(const ESATTimestamp timestamp)
 {
   year = timestamp.year;
@@ -229,30 +208,6 @@ void ESATTimestamp::update(const byte newYear,
   year = newYear;
   month = newMonth;
   day = newDay;
-}
-
-byte ESATTimestamp::update(const char time[])
-{
-  int theYear, theMonth, theDay, theHours, theMinutes, theSeconds;
-  int n = sscanf(time,
-                 "20%2u-%2u-%2uT%2u:%2u:%2u",
-                 &theYear,
-                 &theMonth,
-                 &theDay,
-                 &theHours,
-                 &theMinutes,
-                 &theSeconds);
-  if (n < 6)
-  {
-    return INVALID_TIMESTAMP;
-  }
-  year = (byte) theYear;
-  month = (byte) theMonth;
-  day = (byte) theDay;
-  hours = (byte) theHours;
-  minutes = (byte) theMinutes;
-  seconds = (byte) theSeconds;
-  return VALID_TIMESTAMP;
 }
 
 boolean ESATTimestamp::operator==(const ESATTimestamp timestamp) const

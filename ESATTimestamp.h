@@ -26,12 +26,6 @@
 class ESATTimestamp
 {
   public:
-    // The timestamp length + 1.
-    static const byte CHAR_TIMESTAMP_LENGTH = 20;
-
-    // The date length + 1.
-    static const byte CHAR_DATE_LENGTH = 9;
-
     // Timestamp validity statuses.
     static const byte INVALID_TIMESTAMP = 1;
     static const byte VALID_TIMESTAMP = 2;
@@ -64,20 +58,9 @@ class ESATTimestamp
     // Sum the specified seconds to the timestamp
     // It takes into account the Gregorian calendar
     void addSeconds(unsigned long seconds);
-    
-    // Format the date part of the timestamp as text without hyphens/dashes.
-    // Write the formatted text to the date character buffer argument,
-    // which must be at least CHAR_DATE_LENGTH characters long.
-    void getDateWithoutDashes(char date[]) const;
 
     // Increment the day by 1. Set hour in 00:00:00
     void addDay();
-
-    // Format the timestamp as human-readable text.
-    // Write the formatted text to the timestamp character buffer
-    // argument, which must be at least CHAR_TIMESTAMP_LENGTH
-    // characters long.
-    void toStringTimeStamp(char timestamp[]) const;
 
     // Update the time and date with those taken from the argument timestamp.
     void update(ESATTimestamp timestamp);
@@ -89,11 +72,6 @@ class ESATTimestamp
                 byte hours,
                 byte minutes,
                 byte seconds);
-
-    // Update the time and date with the formatted timestamp character
-    // buffer argument, which must be at least CHAR_TIMESTAMP_LENGTH
-    // characters long.
-    byte update(const char timestamp[]);
 
     // Return true if the argument timestamp happens before this timestamp.
     boolean operator>(ESATTimestamp timestamp) const;
