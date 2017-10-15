@@ -22,7 +22,8 @@
 #define ESATTimestamp_h
 
 // Timestamp representation:
-// calendar date plus time of day with second resolution.
+// Gregorian calendar date plus time of day with second resolution.
+// Leap years are supported, but leap seconds aren't.
 class ESATTimestamp
 {
   public:
