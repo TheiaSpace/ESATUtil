@@ -16,24 +16,24 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "ESATRealTimeClock.h"
+#include "ESATSoftwareClock.h"
 
-ESATRealTimeClock::ESATRealTimeClock()
+ESATSoftwareClock::ESATSoftwareClock()
 {
   running = false;
 }
 
-void ESATRealTimeClock::begin(ESATTimestamp timestamp)
+void ESATSoftwareClock::begin(ESATTimestamp timestamp)
 {
   setCurrentTime(timestamp);
 }
 
-boolean ESATRealTimeClock::isRunning() const
+boolean ESATSoftwareClock::isRunning() const
 {
   return running;
 }
 
-ESATTimestamp ESATRealTimeClock::read() const
+ESATTimestamp ESATSoftwareClock::read() const
 {
   if (running)
   {
@@ -50,14 +50,14 @@ ESATTimestamp ESATRealTimeClock::read() const
   }
 }
 
-void ESATRealTimeClock::setCurrentTime(ESATTimestamp timestamp)
+void ESATSoftwareClock::setCurrentTime(ESATTimestamp timestamp)
 {
   setMilliseconds = millis();
   setTimestamp = timestamp;
   running = true;
 }
 
-void ESATRealTimeClock::write(ESATTimestamp timestamp)
+void ESATSoftwareClock::write(ESATTimestamp timestamp)
 {
   setCurrentTime(timestamp);
 }
