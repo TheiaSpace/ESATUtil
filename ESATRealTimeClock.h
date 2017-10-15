@@ -37,7 +37,7 @@ class ESATRealTimeClock
 
     // Return true if the RTC was initialized and it is running,
     // otherwise returns false.
-    boolean isRunning();
+    boolean isRunning() const;
 
     // Return the current timestamp.
     // If the RTC is not initialized before calling this method,

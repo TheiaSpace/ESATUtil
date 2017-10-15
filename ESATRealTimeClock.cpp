@@ -28,7 +28,7 @@ void ESATRealTimeClock::begin(ESATTimestamp timestamp)
   setCurrentTime(timestamp);
 }
 
-boolean ESATRealTimeClock::isRunning()
+boolean ESATRealTimeClock::isRunning() const
 {
   return running;
 }
