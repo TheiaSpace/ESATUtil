@@ -45,6 +45,8 @@ class ESATTimestamp
     byte seconds;
 
     // Instantiate a new timestamp with all fields set to 0.
+    // This null timestamp is invalid and its fields should
+    // be set to valid values before use.
     ESATTimestamp();
 
     // Instantiate a new timestamp with the given fields.
