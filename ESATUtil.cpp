@@ -18,6 +18,38 @@
 
 #include "ESATUtil.h"
 
+byte ESATUtil::decodeBinaryCodedDecimalByte(const byte number)
+{
+  const byte tens = constrain(number >> 4, 0, 9);
+  const byte ones = constrain(number, 0, 9);
+  return 10 * tens + ones;
+}
+
+word ESATUtil::decodeBinaryCodedDecimalWord(const word number)
+{
+  const word thousands = constrain(number >> 12, 0, 9);
+  const word hundreds = constrain(number >> 8, 0, 9);
+  const word tens = constrain(number >> 4, 0, 9);
+  const word ones = constrain(number, 0, 9);
+  return 1000 * thousands + 100 * hundreds + 10 * tens + ones;
+}
+
+byte ESATUtil::encodeBinaryCodedDecimalByte(const byte number)
+{
+  const byte tens = constrain(number / 10, 0, 9);
+  const byte ones = constrain(number, 0, 9);
+  return (tens << 4) | ones;
+}
+
+word ESATUtil::encodeBinaryCodedDecimalWord(const word number)
+{
+  const word thousands = constrain(number / 1000, 0, 9);
+  const word hundreds = constrain(number / 100, 0, 9);
+  const word tens = constrain(number / 10, 0, 9);
+  const word ones = constrain(number, 0, 9);
+  return (thousands << 12) | (hundreds << 8) | (tens << 4) | ones;
+}
+
 String ESATUtil::byteToHexadecimal(byte number)
 {
   String unpaddedText = String(int(number), HEX);
