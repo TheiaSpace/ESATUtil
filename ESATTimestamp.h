@@ -26,10 +26,6 @@
 class ESATTimestamp
 {
   public:
-    // Timestamp validity statuses.
-    static const byte INVALID_TIMESTAMP = 1;
-    static const byte VALID_TIMESTAMP = 2;
-
     // Last two digits of the year (from 0 to 99).
     byte year;
 
