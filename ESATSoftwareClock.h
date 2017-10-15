@@ -19,17 +19,17 @@
 #include <Arduino.h>
 #include "ESATTimestamp.h"
 
-#ifndef ESATRealTimeclock_h
-#define ESATRealTimeClock_h
+#ifndef ESATSoftwareClock_h
+#define ESATSoftwareClock_h
 
 // Software real-time clock.
 // Once itialized with the current timestamp, it provides a real-time
 // clock and calendar function with second resolution.
-class ESATRealTimeClock
+class ESATSoftwareClock
 {
   public:
     // Instantiate a new software real-time clock.
-    ESATRealTimeClock();
+    ESATSoftwareClock();
 
     // Initiate the clock so it starts counting time.
     // Set the clock to the given timestamp.
@@ -37,12 +37,12 @@ class ESATRealTimeClock
 
     // Return true if the RTC was initialized and it is running,
     // otherwise returns false.
-    boolean isRunning();
+    boolean isRunning() const;
 
     // Return the current timestamp.
     // If the RTC is not initialized before calling this method,
-    // return 2000-00-00T00:00:00.
-    ESATTimestamp read();
+    // return the invalid timestamp 0000-00-00T00:00:00.
+    ESATTimestamp read() const;
 
     // Set the time to the given timestamp.
     void write(ESATTimestamp timestamp);
@@ -51,8 +51,8 @@ class ESATRealTimeClock
     // True if the clock is running; false otherwise.
     boolean running;
 
-    // System uptime seconds at the last time setting.
-    unsigned long setSeconds;
+    // System uptime milliseconds at the last time setting.
+    unsigned long setMilliseconds;
 
     // Timestamp given at the last time setting.
     ESATTimestamp setTimestamp;
