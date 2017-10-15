@@ -25,37 +25,37 @@ class ESATUtil
 {
   public:
     // Decode a binary coded decimal 8-bit number.
-    byte decodeBinaryCodedDecimalByte(byte number);
+    byte decodeBinaryCodedDecimalByte(byte number) const;
 
     // Decode a binary coded decimal 16-bit number.
-    word decodeBinaryCodedDecimalWord(word number);
+    word decodeBinaryCodedDecimalWord(word number) const;
 
     // Encode an 8-bit number in binary coded decimal format.
-    byte encodeBinaryCodedDecimalByte(byte number);
+    byte encodeBinaryCodedDecimalByte(byte number) const;
 
     // Encode a 16-bit number in binary coded decimal format.
-    word encodeBinaryCodedDecimalWord(word number);
+    word encodeBinaryCodedDecimalWord(word number) const;
 
     // Return the hexadecimal representation of a one-byte number.
-    String byteToHexadecimal(byte number);
+    String byteToHexadecimal(byte number) const;
 
     // Convert a hexadecimal string to a byte.
-    byte hexadecimalToByte(String hexadecimalNumber);
+    byte hexadecimalToByte(String hexadecimalNumber) const;
 
     // Convert a hexadecimal string to a word.
-    word hexadecimalToWord(String hexadecimalNumber);
+    word hexadecimalToWord(String hexadecimalNumber) const;
 
     // Return the hexadecimal representation of a two-byte number.
-    String intToHexadecimal(unsigned int number);
+    String intToHexadecimal(unsigned int number) const;
 
     // Pad a string with a leading padding character to a given total length.
-    String pad(String text, char padding, unsigned int length);
+    String pad(String text, char padding, unsigned int length) const;
 
     // Swap the bytes of a word.
-    word swapWordBytes(word number);
+    word swapWordBytes(word number) const;
 
     // Return the hexadecimal representation of a two-byte number.
-    String wordToHexadecimal(word number);
+    String wordToHexadecimal(word number) const;
 };
 
 extern ESATUtil Util;
