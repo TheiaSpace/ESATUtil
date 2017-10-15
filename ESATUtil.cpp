@@ -134,14 +134,6 @@ word ESATUtil::hexadecimalToWord(const String hexadecimalNumber) const
   return number;
 }
 
-String ESATUtil::intToHexadecimal(const unsigned int number) const
-{
-  byte firstByte = byte(number >> 8);
-  byte secondByte = byte(number & 255);
-  String text = byteToHexadecimal(firstByte) + byteToHexadecimal(secondByte);
-  return text;
-}
-
 String ESATUtil::pad(const String text,
                      const char padding,
                      const unsigned int length) const

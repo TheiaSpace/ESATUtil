@@ -45,9 +45,6 @@ class ESATUtil
     // Convert a hexadecimal string to a word.
     word hexadecimalToWord(String hexadecimalNumber) const;
 
-    // Return the hexadecimal representation of a two-byte number.
-    String intToHexadecimal(unsigned int number) const;
-
     // Pad a string with a leading padding character to a given total length.
     String pad(String text, char padding, unsigned int length) const;
 
