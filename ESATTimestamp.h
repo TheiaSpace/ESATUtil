@@ -90,13 +90,9 @@ class ESATTimestamp
                 byte minutes,
                 byte seconds);
 
-    // Return true if the argument timestamp happens before this timestamp.
-    boolean operator>(ESATTimestamp timestamp) const;
-
-    // Return true if the argument timestamp happens before this
-    // timestamp or coincides with this timestamp; otherwise return
-    // false.
-    boolean operator>=(ESATTimestamp timestamp) const;
+    // Return true if the argument timestamp coincides with this timestamp;
+    // otherwise return false.
+    boolean operator==(ESATTimestamp timestamp) const;
 
     // Return true if the argument timestamp happens after this
     // timestamp; otherwise return false.
@@ -107,19 +103,22 @@ class ESATTimestamp
     // false.
     boolean operator<=(ESATTimestamp timestamp) const;
 
-    // Return true if the argument timestamp coincides with this timestamp;
-    // otherwise return false.
-    boolean operator==(ESATTimestamp timestamp) const;
+    // Return true if the argument timestamp happens before this timestamp.
+    boolean operator>(ESATTimestamp timestamp) const;
+
+    // Return true if the argument timestamp happens before this
+    // timestamp or coincides with this timestamp; otherwise return
+    // false.
+    boolean operator>=(ESATTimestamp timestamp) const;
 
   private:
-    // Comparison result: when this timestamp happens after another timestamp.
-    static const byte THIS_IS_HIGHER = 1;
-
-    // Comparison result: when this timestamp happens before another timestamp.
-    static const byte THIS_IS_LOWER = 2;
-
-    // Comparison result: when this timestamp coincides with another timestamp.
-    static const byte THIS_IS_EQUAL = 3;
+    // Comparison results.
+    enum ComparisonResult
+    {
+      THIS_IS_LOWER, // When this timestamp happens before another timestamp.
+      THIS_IS_EQUAL, // When this timestamp is identical to another timestamp.
+      THIS_IS_HIGHER, // When this timestamp happens after another timestamp.
+    };
 
     // Return the number of days of a month in a given year.
     static byte daysPerMonth(unsigned int year, byte month);
@@ -128,11 +127,52 @@ class ESATTimestamp
     // otherwise return false
     static boolean isLeapYear(unsigned int year);
 
-    // Compare this timestamp to another timestamp.  Return:
+    // Compare this timestamp to another timestamp taking into account
+    // day, hours, minutes and seconds.
+    // Return:
     // THIS_IS_LOWER if the argument happens before this timestamp;
     // THIS_IS_HIGHER if the argument happens after this timestamp;
     // THIS_IS_EQUAL if the arguments coincides with this timestamp.
-    byte compare(ESATTimestamp timestamp) const;
+    ComparisonResult compareDayTo(ESATTimestamp timestamp) const;
+
+    // Compare this timestamp to another timestamp taking into account
+    // hours, minutes and seconds.
+    // Return:
+    // THIS_IS_LOWER if the argument happens before this timestamp;
+    // THIS_IS_HIGHER if the argument happens after this timestamp;
+    // THIS_IS_EQUAL if the arguments coincides with this timestamp.
+    ComparisonResult compareHoursTo(ESATTimestamp timestamp) const;
+
+    // Compare this timestamp to another timestamp taking into account
+    // minutes and seconds.
+    // Return:
+    // THIS_IS_LOWER if the argument happens before this timestamp;
+    // THIS_IS_HIGHER if the argument happens after this timestamp;
+    // THIS_IS_EQUAL if the arguments coincides with this timestamp.
+    ComparisonResult compareMinutesTo(ESATTimestamp timestamp) const;
+
+    // Compare this timestamp to another timestamp taking into account
+    // month, day, hours, minutes and seconds.
+    // Return:
+    // THIS_IS_LOWER if the argument happens before this timestamp;
+    // THIS_IS_HIGHER if the argument happens after this timestamp;
+    // THIS_IS_EQUAL if the arguments coincides with this timestamp.
+    ComparisonResult compareMonthTo(ESATTimestamp timestamp) const;
+
+    // Compare this timestamp to another timestamp taking into account
+    // seconds.
+    // Return:
+    // THIS_IS_LOWER if the argument happens before this timestamp;
+    // THIS_IS_HIGHER if the argument happens after this timestamp;
+    // THIS_IS_EQUAL if the arguments coincides with this timestamp.
+    ComparisonResult compareSecondsTo(ESATTimestamp timestamp) const;
+
+    // Compare this timestamp to another timestamp.
+    // Return:
+    // THIS_IS_LOWER if the argument happens before this timestamp;
+    // THIS_IS_HIGHER if the argument happens after this timestamp;
+    // THIS_IS_EQUAL if the arguments coincides with this timestamp.
+    ComparisonResult compareTo(ESATTimestamp timestamp) const;
 };
 
 #endif
