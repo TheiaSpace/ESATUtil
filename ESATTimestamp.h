@@ -26,8 +26,8 @@
 class ESATTimestamp
 {
   public:
-    // Last two digits of the year (from 0 to 99).
-    byte year;
+    // Year (from 1 to 9999).
+    word year;
 
     // Month number (from 1 to 12).
     byte month;
