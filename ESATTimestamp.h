@@ -87,17 +87,6 @@ class ESATTimestamp
     // The month, day, hours, minutes and seconds stay untouched.
     void addYears(unsigned long years);
 
-    // Update the time and date with those taken from the argument timestamp.
-    void update(ESATTimestamp timestamp);
-
-    // Update the time and date with the argument values.
-    void update(byte year,
-                byte month,
-                byte day,
-                byte hours,
-                byte minutes,
-                byte seconds);
-
     // Return true if the argument timestamp coincides with this timestamp;
     // otherwise return false.
     boolean operator==(ESATTimestamp timestamp) const;

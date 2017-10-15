@@ -246,31 +246,6 @@ boolean ESATTimestamp::isLeapYear(const unsigned int year)
   return true;
 }
 
-void ESATTimestamp::update(const ESATTimestamp timestamp)
-{
-  year = timestamp.year;
-  month = timestamp.month;
-  day = timestamp.day;
-  hours = timestamp.hours;
-  minutes = timestamp.minutes;
-  seconds = timestamp.seconds;
-}
-
-void ESATTimestamp::update(const byte newYear,
-                           const byte newMonth,
-                           const byte newDay,
-                           const byte newHours,
-                           const byte newMinutes,
-                           const byte newSeconds)
-{
-  hours = newHours;
-  minutes = newMinutes;
-  seconds = newSeconds;
-  year = newYear;
-  month = newMonth;
-  day = newDay;
-}
-
 boolean ESATTimestamp::operator==(const ESATTimestamp timestamp) const
 {
   const ComparisonResult result = compareTo(timestamp);
