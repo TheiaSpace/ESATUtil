@@ -51,16 +51,33 @@ class ESATTimestamp
     // Instantiate a new timestamp.
     ESATTimestamp();
 
-    // Sum the specified days to the date 
-    // It takes into account the Gregorian calendar
-    void addDays(unsigned int days);
+    // Add a given number of days to the timestamp.
+    // The hours, minutes and seconds stay untouched.
+    // The month and year increase as needed.
+    void addDays(unsigned long days);
 
-    // Sum the specified seconds to the timestamp
-    // It takes into account the Gregorian calendar
+    // Add a given number of hours to the timestamp.
+    // The minutes and seconds stay untouched.
+    // The day, month and year increase as needed.
+    void addHours(unsigned long hours);
+
+    // Add a given number of minutes to the timestamp.
+    // The seconds stay untouched.
+    // The hours, day, month and year increase as needed.
+    void addMinutes(unsigned long minutes);
+
+    // Add a given number of months to the timestamp.
+    // The day, hours, minutes and seconds stay untouched.
+    // The year increases as needed.
+    void addMonths(unsigned long months);
+
+    // Add a given number of seconds to the timestamp.
+    // The minutes, hours, day, month and year increase as needed.
     void addSeconds(unsigned long seconds);
 
-    // Increment the day by 1. Set hour in 00:00:00
-    void addDay();
+    // Add a given number of years to the timestamp.
+    // The month, day, hours, minutes and seconds stay untouched.
+    void addYears(unsigned long years);
 
     // Update the time and date with those taken from the argument timestamp.
     void update(ESATTimestamp timestamp);
@@ -104,19 +121,18 @@ class ESATTimestamp
     // Comparison result: when this timestamp coincides with another timestamp.
     static const byte THIS_IS_EQUAL = 3;
 
+    // Return the number of days of a month in a given year.
+    static byte daysPerMonth(unsigned int year, byte month);
+
+    // Return true if "year" is a leap year,
+    // otherwise return false
+    static boolean isLeapYear(unsigned int year);
+
     // Compare this timestamp to another timestamp.  Return:
     // THIS_IS_LOWER if the argument happens before this timestamp;
     // THIS_IS_HIGHER if the argument happens after this timestamp;
     // THIS_IS_EQUAL if the arguments coincides with this timestamp.
     byte compare(ESATTimestamp timestamp) const;
-
-    // Return true if "divisor" is divisor of "dividend",
-    // otherwise return false
-    boolean isDivisor(unsigned int dividend, unsigned int divisor) const;
-
-    // Return true if "year" is a leap year,
-    // otherwise return false
-    boolean isLeapYear(unsigned int year) const;
 };
 
 #endif

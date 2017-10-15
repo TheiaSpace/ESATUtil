@@ -30,63 +30,55 @@ ESATTimestamp::ESATTimestamp()
   day = 0;
 }
 
-void ESATTimestamp::addSeconds(unsigned long seconds)
+void ESATTimestamp::addDays(const unsigned long daysToAdd)
 {
-  ESATTimestamp Timestamp;
-  Timestamp.update(*this);
-
-  unsigned int numOfDays =    ((seconds / 3600) / 24);
-  unsigned int numOfHours =   ((seconds / 3600) % 24);
-  unsigned int numOfMinutes = ((seconds / 60) % 60);
-  unsigned int numOfSeconds = (seconds % 60);
-  
-  numOfSeconds = numOfSeconds + Timestamp.seconds;
-  Timestamp.seconds = numOfSeconds % 60;
-  numOfMinutes = numOfMinutes + Timestamp.minutes + numOfSeconds / 60;
-  Timestamp.minutes = numOfMinutes % 60;
-  numOfHours = numOfHours + Timestamp.hours + numOfMinutes / 60;
-  Timestamp.hours = numOfHours % 24;
-  numOfDays = numOfDays + numOfHours / 24;
-  
-  update(Timestamp);
-  if(numOfDays > 0)
+  for (long i = 0; i < daysToAdd; i++)
   {
-    addDays(numOfDays);
+    const byte DAYS_PER_MONTH = daysPerMonth(year, month);
+    day = day + 1;
+    if (day >= DAYS_PER_MONTH)
+    {
+      addMonths(1);
+      day = 1;
+    }
   }
 }
 
-void ESATTimestamp::addDays(unsigned int days)
+void ESATTimestamp::addHours(const unsigned long hoursToAdd)
 {
-  ESATTimestamp Timestamp;
-  Timestamp.update(*this);
-  byte monthDays[12] = {31,28,31,30,31,30, 31, 31, 30, 31, 30, 31};
-  if(isLeapYear(Timestamp.year))
-  {
-    monthDays[1] = 29;
-  }
-  for(unsigned int day = 0; day < days; day++)
-  {
-    Timestamp.day = Timestamp.day + 1;
-    if(Timestamp.day > monthDays[Timestamp.month - 1])
-    {
-      Timestamp.day = 1;
-      Timestamp.month = Timestamp.month + 1;
-      if(Timestamp.month > 12)
-      {
-        Timestamp.month = 1;
-        Timestamp.year = Timestamp.year + 1;
-        if(isLeapYear(Timestamp.year))
-        {
-          monthDays[1] = 29;
-        }
-        else
-        {
-          monthDays[1] = 28;
-        }
-      }
-    }
-  }
-  update(Timestamp);
+  const byte HOURS_PER_DAY = 24;
+  const unsigned long daysToAdd = hoursToAdd / HOURS_PER_DAY;
+  addDays(daysToAdd);
+  hours = (hours + hoursToAdd) % HOURS_PER_DAY;
+}
+
+void ESATTimestamp::addMinutes(const unsigned long minutesToAdd)
+{
+  const byte MINUTES_PER_HOUR = 60;
+  const unsigned long hoursToAdd = minutesToAdd / MINUTES_PER_HOUR;
+  addHours(hoursToAdd);
+  minutes = (minutes + minutesToAdd) % MINUTES_PER_HOUR;
+}
+
+void ESATTimestamp::addMonths(const unsigned long monthsToAdd)
+{
+  const byte MONTHS_PER_YEAR = 12;
+  const unsigned long yearsToAdd = monthsToAdd / MONTHS_PER_YEAR;
+  addYears(yearsToAdd);
+  month = ((month + monthsToAdd - 1) % MONTHS_PER_YEAR) + 1;
+}
+
+void ESATTimestamp::addSeconds(const unsigned long secondsToAdd)
+{
+  const byte SECONDS_PER_MINUTE = 60;
+  const unsigned long minutesToAdd = secondsToAdd / SECONDS_PER_MINUTE;
+  addMinutes(minutesToAdd);
+  seconds = (seconds + secondsToAdd) % SECONDS_PER_MINUTE;
+}
+
+void ESATTimestamp::addYears(const unsigned long yearsToAdd)
+{
+  year = year + yearsToAdd;
 }
 
 byte ESATTimestamp::compare(const ESATTimestamp timestamp) const
@@ -145,44 +137,40 @@ byte ESATTimestamp::compare(const ESATTimestamp timestamp) const
   }
 }
 
-void ESATTimestamp::addDay()
+byte ESATTimestamp::daysPerMonth(const unsigned int year, const byte month)
 {
-  addDays(1);
-  hours = 0;
-  minutes = 0;
-  seconds = 0;
-}
-
-boolean ESATTimestamp::isDivisor(const unsigned int dividend,
-                                 const unsigned int divisor) const
-{
-  return (dividend/divisor*divisor == dividend);
-}
-
-boolean ESATTimestamp::isLeapYear(const unsigned int year) const
-{
-  if(isDivisor(year,4))
+  const byte MONTHS_PER_YEAR = 12;
+  if (isLeapYear(year))
   {
-    if(isDivisor(year,100))
-    {
-      if(isDivisor(year,400))
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-    else
-    {
-      return true;
-    }
+    const byte DAYS_PER_MONTH[] = {
+      31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+    };
+    return DAYS_PER_MONTH[(month - 1) % MONTHS_PER_YEAR];
   }
   else
   {
+    const byte DAYS_PER_MONTH[] = {
+      31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+    };
+    return DAYS_PER_MONTH[(month - 1) % MONTHS_PER_YEAR];
+  }
+}
+
+boolean ESATTimestamp::isLeapYear(const unsigned int year)
+{
+  if ((year % 4) != 0)
+  {
     return false;
   }
+  if ((year % 100) != 0)
+  {
+    return true;
+  }
+  if ((year % 400) != 0)
+  {
+    return false;
+  }
+  return true;
 }
 
 void ESATTimestamp::update(const ESATTimestamp timestamp)
