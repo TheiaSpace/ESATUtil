@@ -42,7 +42,7 @@ class ESATRealTimeClock
     // Return the current timestamp.
     // If the RTC is not initialized before calling this method,
     // return 2000-00-00T00:00:00.
-    ESATTimestamp read();
+    ESATTimestamp read() const;
 
     // Set the time to the given timestamp.
     void write(ESATTimestamp timestamp);

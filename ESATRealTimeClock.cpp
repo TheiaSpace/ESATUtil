@@ -33,7 +33,7 @@ boolean ESATRealTimeClock::isRunning()
   return running;
 }
 
-ESATTimestamp ESATRealTimeClock::read()
+ESATTimestamp ESATRealTimeClock::read() const
 {
   if (running)
   {
