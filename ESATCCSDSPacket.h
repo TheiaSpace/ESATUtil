@@ -154,6 +154,13 @@ class ESATCCSDSPacket: public Printable
     // before reaching the end of the packet data buffer.
     boolean readBoolean();
 
+    // Return the next 8-bit unsigned integer from the packet data.
+    // This advances the read/byte pointer by 1, but limited
+    // to the packet data buffer length.
+    // The return value is undefined if there are fewer than 1 byte
+    // before reaching the end of the packet data buffer.
+    byte readByte();
+
     // Return the next 8-bit signed integer from the packet data.
     // The raw datum is stored in two's complement format.
     // This advances the read/byte pointer by 1, but limited
@@ -161,13 +168,6 @@ class ESATCCSDSPacket: public Printable
     // The return value is undefined if there are fewer than 1 byte
     // before reaching the end of the packet data buffer.
     signed char readChar();
-
-    // Return the next 8-bit unsigned integer from the packet data.
-    // This advances the read/byte pointer by 1, but limited
-    // to the packet data buffer length.
-    // The return value is undefined if there are fewer than 1 byte
-    // before reaching the end of the packet data buffer.
-    byte readByte();
 
     // Return the next single-precision floating-point number
     // from the packet data.
