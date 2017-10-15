@@ -35,20 +35,22 @@ boolean ESATRealTimeClock::isRunning()
 
 ESATTimestamp ESATRealTimeClock::read()
 {
-  ESATTimestamp timestamp;
   if (running)
   {
-    timestamp.update(setTimestamp);
+    ESATTimestamp timestamp = setTimestamp;
     unsigned long theSeconds = (millis() / 1000) - setSeconds;
     timestamp.addSeconds(theSeconds);
   }
-  return timestamp;
+  else
+  {
+    return ESATTimestamp();
+  }
 }
 
 void ESATRealTimeClock::setCurrentTime(ESATTimestamp timestamp)
 {
   setSeconds = millis() / 1000;
-  setTimestamp.update(timestamp);
+  setTimestamp = timestamp;
   running = true;
 }
 

@@ -22,22 +22,13 @@
 #define ESATTimestamp_h
 
 // Timestamp representation:
-// calendar date plus time of day with second resolution.
+// Gregorian calendar date plus time of day with second resolution.
+// Leap years are supported, but leap seconds aren't.
 class ESATTimestamp
 {
   public:
-    // The timestamp length + 1.
-    static const byte CHAR_TIMESTAMP_LENGTH = 20;
-
-    // The date length + 1.
-    static const byte CHAR_DATE_LENGTH = 9;
-
-    // Timestamp validity statuses.
-    static const byte INVALID_TIMESTAMP = 1;
-    static const byte VALID_TIMESTAMP = 2;
-
-    // Last two digits of the year (from 0 to 99).
-    byte year;
+    // Year (from 1 to 9999).
+    word year;
 
     // Month number (from 1 to 12).
     byte month;
@@ -54,91 +45,130 @@ class ESATTimestamp
     // Seconds (from 0 to 59).
     byte seconds;
 
-    // Instantiate a new timestamp.
+    // Instantiate a new timestamp with all fields set to 0.
+    // This null timestamp is invalid and its fields should
+    // be set to valid values before use.
     ESATTimestamp();
 
-    // Sum the specified days to the date 
-    // It takes into account the Gregorian calendar
-    void addDays(unsigned int days);
+    // Instantiate a new timestamp with the given fields.
+    ESATTimestamp(word year,
+                  byte month,
+                  byte day,
+                  byte hours,
+                  byte minutes,
+                  byte seconds);
 
-    // Sum the specified seconds to the timestamp
-    // It takes into account the Gregorian calendar
+    // Add a given number of days to the timestamp.
+    // The hours, minutes and seconds stay untouched.
+    // The month and year increase as needed.
+    void addDays(unsigned long days);
+
+    // Add a given number of hours to the timestamp.
+    // The minutes and seconds stay untouched.
+    // The day, month and year increase as needed.
+    void addHours(unsigned long hours);
+
+    // Add a given number of minutes to the timestamp.
+    // The seconds stay untouched.
+    // The hours, day, month and year increase as needed.
+    void addMinutes(unsigned long minutes);
+
+    // Add a given number of months to the timestamp.
+    // The day, hours, minutes and seconds stay untouched.
+    // The year increases as needed.
+    void addMonths(unsigned long months);
+
+    // Add a given number of seconds to the timestamp.
+    // The minutes, hours, day, month and year increase as needed.
     void addSeconds(unsigned long seconds);
-    
-    // Format the date part of the timestamp as text without hyphens/dashes.
-    // Write the formatted text to the date character buffer argument,
-    // which must be at least CHAR_DATE_LENGTH characters long.
-    void getDateWithoutDashes(char date[]);
 
-    // Increment the day by 1. Set hour in 00:00:00
-    void addDay();
+    // Add a given number of years to the timestamp.
+    // The month, day, hours, minutes and seconds stay untouched.
+    void addYears(unsigned long years);
 
-    // Format the timestamp as human-readable text.
-    // Write the formatted text to the timestamp character buffer
-    // argument, which must be at least CHAR_TIMESTAMP_LENGTH
-    // characters long.
-    void toStringTimeStamp(char timestamp[]);
+    // Return true if the argument timestamp coincides with this timestamp;
+    // otherwise return false.
+    boolean operator==(ESATTimestamp timestamp) const;
 
-    // Update the time and date with those taken from the argument timestamp.
-    void update(ESATTimestamp timestamp);
+    // Return true if the argument timestamp happens after this
+    // timestamp; otherwise return false.
+    boolean operator<(ESATTimestamp timestamp) const;
 
-    // Update the time and date with the argument values.
-    void update(byte year,
-                byte month,
-                byte day,
-                byte hours,
-                byte minutes,
-                byte seconds);
-
-    // Update the time and date with the formatted timestamp character
-    // buffer argument, which must be at least CHAR_TIMESTAMP_LENGTH
-    // characters long.
-    byte update(char timestamp[]);
+    // Return true if the argument timestamp happens after this
+    // timestamp or coincides with this timestamp; otherwise return
+    // false.
+    boolean operator<=(ESATTimestamp timestamp) const;
 
     // Return true if the argument timestamp happens before this timestamp.
-    boolean operator>(ESATTimestamp timestamp);
+    boolean operator>(ESATTimestamp timestamp) const;
 
     // Return true if the argument timestamp happens before this
     // timestamp or coincides with this timestamp; otherwise return
     // false.
-    boolean operator>=(ESATTimestamp timestamp);
-
-    // Return true if the argument timestamp happens after this
-    // timestamp; otherwise return false.
-    boolean operator<(ESATTimestamp timestamp);
-
-    // Return true if the argument timestamp happens after this
-    // timestamp or coincides with this timestamp; otherwise return
-    // false.
-    boolean operator<=(ESATTimestamp timestamp);
-
-    // Return true if the argument timestamp coincides with this timestamp;
-    // otherwise return false.
-    boolean operator==(ESATTimestamp timestamp);
+    boolean operator>=(ESATTimestamp timestamp) const;
 
   private:
-    // Comparison result: when this timestamp happens after another timestamp.
-    static const byte THIS_IS_HIGHER = 1;
+    // Comparison results.
+    enum ComparisonResult
+    {
+      THIS_IS_LOWER, // When this timestamp happens before another timestamp.
+      THIS_IS_EQUAL, // When this timestamp is identical to another timestamp.
+      THIS_IS_HIGHER, // When this timestamp happens after another timestamp.
+    };
 
-    // Comparison result: when this timestamp happens before another timestamp.
-    static const byte THIS_IS_LOWER = 2;
-
-    // Comparison result: when this timestamp coincides with another timestamp.
-    static const byte THIS_IS_EQUAL = 3;
-
-    // Compare this timestamp to another timestamp.  Return:
-    // THIS_IS_LOWER if the argument happens before this timestamp;
-    // THIS_IS_HIGHER if the argument happens after this timestamp;
-    // THIS_IS_EQUAL if the arguments coincides with this timestamp.
-    byte compare(ESATTimestamp timestamp);
-
-    // Return true if "divisor" is divisor of "dividend",
-    // otherwise return false
-    boolean isDivisor(unsigned int dividend, unsigned int divisor);
+    // Return the number of days of a month in a given year.
+    static byte daysPerMonth(unsigned int year, byte month);
 
     // Return true if "year" is a leap year,
     // otherwise return false
-    boolean isLeapYear(unsigned int year);
+    static boolean isLeapYear(unsigned int year);
+
+    // Compare this timestamp to another timestamp taking into account
+    // day, hours, minutes and seconds.
+    // Return:
+    // THIS_IS_LOWER if the argument happens before this timestamp;
+    // THIS_IS_HIGHER if the argument happens after this timestamp;
+    // THIS_IS_EQUAL if the arguments coincides with this timestamp.
+    ComparisonResult compareDayTo(ESATTimestamp timestamp) const;
+
+    // Compare this timestamp to another timestamp taking into account
+    // hours, minutes and seconds.
+    // Return:
+    // THIS_IS_LOWER if the argument happens before this timestamp;
+    // THIS_IS_HIGHER if the argument happens after this timestamp;
+    // THIS_IS_EQUAL if the arguments coincides with this timestamp.
+    ComparisonResult compareHoursTo(ESATTimestamp timestamp) const;
+
+    // Compare this timestamp to another timestamp taking into account
+    // minutes and seconds.
+    // Return:
+    // THIS_IS_LOWER if the argument happens before this timestamp;
+    // THIS_IS_HIGHER if the argument happens after this timestamp;
+    // THIS_IS_EQUAL if the arguments coincides with this timestamp.
+    ComparisonResult compareMinutesTo(ESATTimestamp timestamp) const;
+
+    // Compare this timestamp to another timestamp taking into account
+    // month, day, hours, minutes and seconds.
+    // Return:
+    // THIS_IS_LOWER if the argument happens before this timestamp;
+    // THIS_IS_HIGHER if the argument happens after this timestamp;
+    // THIS_IS_EQUAL if the arguments coincides with this timestamp.
+    ComparisonResult compareMonthTo(ESATTimestamp timestamp) const;
+
+    // Compare this timestamp to another timestamp taking into account
+    // seconds.
+    // Return:
+    // THIS_IS_LOWER if the argument happens before this timestamp;
+    // THIS_IS_HIGHER if the argument happens after this timestamp;
+    // THIS_IS_EQUAL if the arguments coincides with this timestamp.
+    ComparisonResult compareSecondsTo(ESATTimestamp timestamp) const;
+
+    // Compare this timestamp to another timestamp.
+    // Return:
+    // THIS_IS_LOWER if the argument happens before this timestamp;
+    // THIS_IS_HIGHER if the argument happens after this timestamp;
+    // THIS_IS_EQUAL if the arguments coincides with this timestamp.
+    ComparisonResult compareTo(ESATTimestamp timestamp) const;
 };
 
 #endif

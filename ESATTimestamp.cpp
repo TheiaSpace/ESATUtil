@@ -20,306 +20,328 @@
 #include <ESATUtil.h>
 
 
-ESATTimestamp::ESATTimestamp()
+ESATTimestamp::ESATTimestamp():
+  year(0),
+  month(0),
+  day(0),
+  hours(0),
+  minutes(0),
+  seconds(0)
 {
-  hours = 0;
-  minutes = 0;
-  seconds = 0;
-  year = 0;
-  month = 0;
-  day = 0;
 }
 
-void ESATTimestamp::addSeconds(unsigned long seconds)
+ESATTimestamp::ESATTimestamp(const word theYear,
+                             const byte theMonth,
+                             const byte theDay,
+                             const byte theMinutes,
+                             const byte theHours,
+                             const byte theSeconds):
+  year(theYear),
+  month(theMonth),
+  day(theDay),
+  minutes(theMinutes),
+  hours(theHours),
+  seconds(theSeconds)
 {
-  ESATTimestamp Timestamp;
-  Timestamp.update(*this);
-
-  unsigned int numOfDays =    ((seconds / 3600) / 24);
-  unsigned int numOfHours =   ((seconds / 3600) % 24);
-  unsigned int numOfMinutes = ((seconds / 60) % 60);
-  unsigned int numOfSeconds = (seconds % 60);
-  
-  numOfSeconds = numOfSeconds + Timestamp.seconds;
-  Timestamp.seconds = numOfSeconds % 60;
-  numOfMinutes = numOfMinutes + Timestamp.minutes + numOfSeconds / 60;
-  Timestamp.minutes = numOfMinutes % 60;
-  numOfHours = numOfHours + Timestamp.hours + numOfMinutes / 60;
-  Timestamp.hours = numOfHours % 24;
-  numOfDays = numOfDays + numOfHours / 24;
-  
-  update(Timestamp);
-  if(numOfDays > 0)
-  {
-    addDays(numOfDays);
-  }
 }
 
-void ESATTimestamp::addDays(unsigned int days)
+void ESATTimestamp::addDays(const unsigned long daysToAdd)
 {
-  ESATTimestamp Timestamp;
-  Timestamp.update(*this);
-  byte monthDays[12] = {31,28,31,30,31,30, 31, 31, 30, 31, 30, 31};
-  if(isLeapYear(Timestamp.year))
+  for (long i = 0; i < daysToAdd; i++)
   {
-    monthDays[1] = 29;
-  }
-  for(unsigned int day = 0; day < days; day++)
-  {
-    Timestamp.day = Timestamp.day + 1;
-    if(Timestamp.day > monthDays[Timestamp.month - 1])
+    const byte DAYS_PER_MONTH = daysPerMonth(year, month);
+    day = day + 1;
+    if (day >= DAYS_PER_MONTH)
     {
-      Timestamp.day = 1;
-      Timestamp.month = Timestamp.month + 1;
-      if(Timestamp.month > 12)
-      {
-        Timestamp.month = 1;
-        Timestamp.year = Timestamp.year + 1;
-        if(isLeapYear(Timestamp.year))
-        {
-          monthDays[1] = 29;
-        }
-        else
-        {
-          monthDays[1] = 28;
-        }
-      }
+      addMonths(1);
+      day = 1;
     }
   }
-  update(Timestamp);
 }
 
-byte ESATTimestamp::compare(ESATTimestamp timestamp)
+void ESATTimestamp::addHours(const unsigned long hoursToAdd)
 {
-  if (timestamp.year > year)
+  const byte HOURS_PER_DAY = 24;
+  const unsigned long daysToAdd = hoursToAdd / HOURS_PER_DAY;
+  addDays(daysToAdd);
+  hours = (hours + hoursToAdd) % HOURS_PER_DAY;
+}
+
+void ESATTimestamp::addMinutes(const unsigned long minutesToAdd)
+{
+  const byte MINUTES_PER_HOUR = 60;
+  const unsigned long hoursToAdd = minutesToAdd / MINUTES_PER_HOUR;
+  addHours(hoursToAdd);
+  minutes = (minutes + minutesToAdd) % MINUTES_PER_HOUR;
+}
+
+void ESATTimestamp::addMonths(const unsigned long monthsToAdd)
+{
+  const byte MONTHS_PER_YEAR = 12;
+  const unsigned long yearsToAdd = monthsToAdd / MONTHS_PER_YEAR;
+  addYears(yearsToAdd);
+  month = ((month + monthsToAdd - 1) % MONTHS_PER_YEAR) + 1;
+}
+
+void ESATTimestamp::addSeconds(const unsigned long secondsToAdd)
+{
+  const byte SECONDS_PER_MINUTE = 60;
+  const unsigned long minutesToAdd = secondsToAdd / SECONDS_PER_MINUTE;
+  addMinutes(minutesToAdd);
+  seconds = (seconds + secondsToAdd) % SECONDS_PER_MINUTE;
+}
+
+void ESATTimestamp::addYears(const unsigned long yearsToAdd)
+{
+  year = year + yearsToAdd;
+}
+
+ESATTimestamp::ComparisonResult ESATTimestamp::compareDayTo(const ESATTimestamp timestamp) const
+{
+  if (day == timestamp.day)
   {
-    return THIS_IS_LOWER;
-  }
-  else if (timestamp.year < year)
-  {
-    return THIS_IS_HIGHER;
-  }
-  if (timestamp.month > month)
-  {
-    return THIS_IS_LOWER;
-  }
-  else if (timestamp.month < month)
-  {
-    return THIS_IS_HIGHER;
-  }
-  if (timestamp.day > day)
-  {
-    return THIS_IS_LOWER;
-  }
-  else if (timestamp.day < day)
-  {
-    return THIS_IS_HIGHER;
-  }
-  if (timestamp.hours > hours)
-  {
-    return THIS_IS_LOWER;
-  }
-  else if (timestamp.hours < hours)
-  {
-    return THIS_IS_HIGHER;
-  }
-  if (timestamp.minutes > minutes)
-  {
-    return THIS_IS_LOWER;
-  }
-  else if (timestamp.minutes < minutes)
-  {
-    return THIS_IS_HIGHER;
-  }
-  if (timestamp.seconds > seconds)
-  {
-    return THIS_IS_LOWER;
-  }
-  else if (timestamp.seconds < seconds)
-  {
-    return THIS_IS_HIGHER;
+    return compareHoursTo(timestamp);
   }
   else
   {
-    return THIS_IS_EQUAL;
-  }
-}
-
-void ESATTimestamp::getDateWithoutDashes(char timestamp[])
-{
-  sprintf(timestamp,
-          "20%02u%02u%02u",
-          year % 100,
-          month % 100,
-          day % 100);
-}
-
-void ESATTimestamp::addDay()
-{
-  addDays(1);
-  hours = 0;
-  minutes = 0;
-  seconds = 0;
-}
-
-boolean ESATTimestamp::isDivisor(unsigned int dividend, unsigned int divisor)
-{
-  return (dividend/divisor*divisor == dividend);
-}
-
-boolean ESATTimestamp::isLeapYear(unsigned int year)
-{
-  if(isDivisor(year,4))
-  {
-    if(isDivisor(year,100))
+    if (day < timestamp.day)
     {
-      if(isDivisor(year,400))
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+      return THIS_IS_LOWER;
     }
     else
     {
-      return true;
+      return THIS_IS_HIGHER;
     }
   }
-  else
+}
+
+ESATTimestamp::ComparisonResult ESATTimestamp::compareHoursTo(const ESATTimestamp timestamp) const
+{
+  if (hours == timestamp.hours)
   {
-    return false;
-  }
-}
-
-void ESATTimestamp::toStringTimeStamp(char timestamp[])
-{
-  sprintf(timestamp,
-          "20%02u-%02u-%02uT%02u:%02u:%02u",
-          year % 100,
-          month % 100,
-          day % 100,
-          hours % 100,
-          minutes % 100,
-          seconds % 100);
-}
-
-void ESATTimestamp::update(ESATTimestamp timestamp)
-{
-  year = timestamp.year;
-  month = timestamp.month;
-  day = timestamp.day;
-  hours = timestamp.hours;
-  minutes = timestamp.minutes;
-  seconds = timestamp.seconds;
-}
-
-void ESATTimestamp::update(byte newYear,
-                           byte newMonth,
-                           byte newDay,
-                           byte newHours,
-                           byte newMinutes,
-                           byte newSeconds)
-{
-  hours = newHours;
-  minutes = newMinutes;
-  seconds = newSeconds;
-  year = newYear;
-  month = newMonth;
-  day = newDay;
-}
-
-byte ESATTimestamp::update(char time[])
-{
-  int theYear, theMonth, theDay, theHours, theMinutes, theSeconds;
-  int n = sscanf(time,
-                 "20%2u-%2u-%2uT%2u:%2u:%2u",
-                 &theYear,
-                 &theMonth,
-                 &theDay,
-                 &theHours,
-                 &theMinutes,
-                 &theSeconds);
-  if (n < 6)
-  {
-    return INVALID_TIMESTAMP;
-  }
-  year = (byte) theYear;
-  month = (byte) theMonth;
-  day = (byte) theDay;
-  hours = (byte) theHours;
-  minutes = (byte) theMinutes;
-  seconds = (byte) theSeconds;
-  return VALID_TIMESTAMP;
-}
-
-boolean ESATTimestamp::operator==(ESATTimestamp timestamp)
-{
-  if (compare(timestamp) == THIS_IS_EQUAL)
-  {
-    return true;
+    return compareMinutesTo(timestamp);
   }
   else
   {
-    return false;
+    if (minutes < timestamp.minutes)
+    {
+      return THIS_IS_LOWER;
+    }
+    else
+    {
+      return THIS_IS_HIGHER;
+    }
   }
 }
 
-boolean ESATTimestamp::operator>(ESATTimestamp timestamp)
+ESATTimestamp::ComparisonResult ESATTimestamp::compareMinutesTo(const ESATTimestamp timestamp) const
 {
-  if (compare(timestamp) == THIS_IS_HIGHER)
+  if (minutes == timestamp.minutes)
   {
-    return true;
+    return compareSecondsTo(timestamp);
   }
   else
   {
-    return false;
+    if (minutes < timestamp.minutes)
+    {
+      return THIS_IS_LOWER;
+    }
+    else
+    {
+      return THIS_IS_HIGHER;
+    }
   }
 }
 
-boolean ESATTimestamp::operator>=(ESATTimestamp timestamp)
+ESATTimestamp::ComparisonResult ESATTimestamp::compareMonthTo(const ESATTimestamp timestamp) const
 {
-  byte result = compare(timestamp);
-  if (result == THIS_IS_HIGHER)
+  if (month == timestamp.month)
   {
-    return true;
-  }
-  else if (result == THIS_IS_EQUAL)
-  {
-    return true;
+    return compareDayTo(timestamp);
   }
   else
   {
-    return false;
+    if (month < timestamp.month)
+    {
+      return THIS_IS_LOWER;
+    }
+    else
+    {
+      return THIS_IS_HIGHER;
+    }
   }
 }
 
-boolean ESATTimestamp::operator<(ESATTimestamp timestamp)
+ESATTimestamp::ComparisonResult ESATTimestamp::compareSecondsTo(const ESATTimestamp timestamp) const
 {
-  if (compare(timestamp) == THIS_IS_LOWER)
+  if (seconds == timestamp.seconds)
   {
-    return true;
+    return THIS_IS_EQUAL;
   }
   else
   {
-    return false;
+    if (seconds < timestamp.seconds)
+    {
+      return THIS_IS_LOWER;
+    }
+    else
+    {
+      return THIS_IS_HIGHER;
+    }
   }
 }
 
-boolean ESATTimestamp::operator<=(ESATTimestamp timestamp)
+ESATTimestamp::ComparisonResult ESATTimestamp::compareTo(const ESATTimestamp timestamp) const
 {
-  byte result = compare(timestamp);
-  if (result == THIS_IS_LOWER)
+  if (year == timestamp.year)
   {
-    return true;
-  }
-  else if (result == THIS_IS_EQUAL)
-  {
-    return true;
+    return compareMonthTo(timestamp);
   }
   else
   {
+    if (year < timestamp.year)
+    {
+      return THIS_IS_LOWER;
+    }
+    else
+    {
+      return THIS_IS_HIGHER;
+    }
+  }
+}
+
+byte ESATTimestamp::daysPerMonth(const unsigned int year, const byte month)
+{
+  const byte MONTHS_PER_YEAR = 12;
+  if (isLeapYear(year))
+  {
+    const byte DAYS_PER_MONTH[] = {
+      31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+    };
+    return DAYS_PER_MONTH[(month - 1) % MONTHS_PER_YEAR];
+  }
+  else
+  {
+    const byte DAYS_PER_MONTH[] = {
+      31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+    };
+    return DAYS_PER_MONTH[(month - 1) % MONTHS_PER_YEAR];
+  }
+}
+
+boolean ESATTimestamp::isLeapYear(const unsigned int year)
+{
+  if ((year % 4) != 0)
+  {
     return false;
+  }
+  if ((year % 100) != 0)
+  {
+    return true;
+  }
+  if ((year % 400) != 0)
+  {
+    return false;
+  }
+  return true;
+}
+
+boolean ESATTimestamp::operator==(const ESATTimestamp timestamp) const
+{
+  const ComparisonResult result = compareTo(timestamp);
+  switch (result)
+  {
+    case THIS_IS_LOWER:
+      return false;
+      break;
+    case THIS_IS_EQUAL:
+      return true;
+      break;
+    case THIS_IS_HIGHER:
+      return false;
+      break;
+    default:
+      return false;
+      break;
+  }
+}
+
+boolean ESATTimestamp::operator<(const ESATTimestamp timestamp) const
+{
+  const ComparisonResult result = compareTo(timestamp);
+  switch (result)
+  {
+    case THIS_IS_LOWER:
+      return true;
+      break;
+    case THIS_IS_EQUAL:
+      return false;
+      break;
+    case THIS_IS_HIGHER:
+      return false;
+      break;
+    default:
+      return false;
+      break;
+  }
+}
+
+boolean ESATTimestamp::operator<=(const ESATTimestamp timestamp) const
+{
+  const ComparisonResult result = compareTo(timestamp);
+  switch (result)
+  {
+    case THIS_IS_LOWER:
+      return true;
+      break;
+    case THIS_IS_EQUAL:
+      return true;
+      break;
+    case THIS_IS_HIGHER:
+      return false;
+      break;
+    default:
+      return false;
+      break;
+  }
+}
+
+boolean ESATTimestamp::operator>(const ESATTimestamp timestamp) const
+{
+  const ComparisonResult result = compareTo(timestamp);
+  switch (result)
+  {
+    case THIS_IS_LOWER:
+      return false;
+      break;
+    case THIS_IS_EQUAL:
+      return false;
+      break;
+    case THIS_IS_HIGHER:
+      return true;
+      break;
+    default:
+      return false;
+      break;
+  }
+}
+
+boolean ESATTimestamp::operator>=(const ESATTimestamp timestamp) const
+{
+  const ComparisonResult result = compareTo(timestamp);
+  switch (result)
+  {
+    case THIS_IS_LOWER:
+      return false;
+      break;
+    case THIS_IS_EQUAL:
+      return true;
+      break;
+    case THIS_IS_HIGHER:
+      return true;
+      break;
+    default:
+      return false;
+      break;
   }
 }
