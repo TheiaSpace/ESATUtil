@@ -38,8 +38,11 @@ ESATTimestamp ESATRealTimeClock::read()
   if (running)
   {
     ESATTimestamp timestamp = setTimestamp;
-    unsigned long theSeconds = (millis() / 1000) - setSeconds;
-    timestamp.addSeconds(theSeconds);
+    const unsigned long ellapsedMilliseconds =
+            (millis() - setMilliseconds);
+    const unsigned long ellapsedSeconds = ellapsedMilliseconds / 1000;
+    timestamp.addSeconds(ellapsedSeconds);
+    return timestamp;
   }
   else
   {
@@ -49,7 +52,7 @@ ESATTimestamp ESATRealTimeClock::read()
 
 void ESATRealTimeClock::setCurrentTime(ESATTimestamp timestamp)
 {
-  setSeconds = millis() / 1000;
+  setMilliseconds = millis();
   setTimestamp = timestamp;
   running = true;
 }

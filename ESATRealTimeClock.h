@@ -51,8 +51,8 @@ class ESATRealTimeClock
     // True if the clock is running; false otherwise.
     boolean running;
 
-    // System uptime seconds at the last time setting.
-    unsigned long setSeconds;
+    // System uptime milliseconds at the last time setting.
+    unsigned long setMilliseconds;
 
     // Timestamp given at the last time setting.
     ESATTimestamp setTimestamp;
