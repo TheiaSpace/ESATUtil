@@ -17,6 +17,7 @@
  */
 
 #include "ESATCCSDSPacket.h"
+#include "ESATUtil.h"
 
 ESATCCSDSPacket::ESATCCSDSPacket():
   primaryHeader({0, 0, 0, 0, 0, 0}),
@@ -320,6 +321,18 @@ word ESATCCSDSPacket::readApplicationProcessIdentifier() const
                                APPLICATION_PROCESS_IDENTIFIER_LENGTH);
 }
 
+byte ESATCCSDSPacket::readBinaryCodedDecimalByte()
+{
+  const byte datum = readByte();
+  return Util.decodeBinaryCodedDecimalByte(datum);
+}
+
+word ESATCCSDSPacket::readBinaryCodedDecimalWord()
+{
+  const word datum = readWord();
+  return Util.decodeBinaryCodedDecimalWord(datum);
+}
+
 boolean ESATCCSDSPacket::readBoolean()
 {
   const byte datum = readByte();
@@ -525,6 +538,16 @@ void ESATCCSDSPacket::writeApplicationProcessIdentifier(const word applicationPr
   writePrimaryHeaderBits(APPLICATION_PROCESS_IDENTIFIER_OFFSET,
                          APPLICATION_PROCESS_IDENTIFIER_LENGTH,
                          applicationProcessIdentifier);
+}
+
+void ESATCCSDSPacket::writeBinaryCodedDecimalByte(const byte datum)
+{
+  writeByte(Util.encodeBinaryCodedDecimalByte(datum));
+}
+
+void ESATCCSDSPacket::writeBinaryCodedDecimalWord(const word datum)
+{
+  writeWord(Util.encodeBinaryCodedDecimalWord(datum));
 }
 
 void ESATCCSDSPacket::writeBoolean(const boolean datum)
