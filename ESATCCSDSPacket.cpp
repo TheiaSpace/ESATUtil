@@ -17,6 +17,7 @@
  */
 
 #include "ESATCCSDSPacket.h"
+#include "ESATUtil.h"
 
 ESATCCSDSPacket::ESATCCSDSPacket():
   primaryHeader({0, 0, 0, 0, 0, 0}),
@@ -320,6 +321,18 @@ word ESATCCSDSPacket::readApplicationProcessIdentifier() const
                                APPLICATION_PROCESS_IDENTIFIER_LENGTH);
 }
 
+byte ESATCCSDSPacket::readBinaryCodedDecimalByte()
+{
+  const byte datum = readByte();
+  return Util.decodeBinaryCodedDecimalByte(datum);
+}
+
+word ESATCCSDSPacket::readBinaryCodedDecimalWord()
+{
+  const word datum = readWord();
+  return Util.decodeBinaryCodedDecimalWord(datum);
+}
+
 boolean ESATCCSDSPacket::readBoolean()
 {
   const byte datum = readByte();
@@ -485,12 +498,12 @@ ESATCCSDSPacket::SequenceFlags ESATCCSDSPacket::readSequenceFlags() const
 ESATTimestamp ESATCCSDSPacket::readTimestamp()
 {
   ESATTimestamp datum;
-  datum.year = readWord();
-  datum.month = readByte();
-  datum.day = readByte();
-  datum.minutes = readByte();
-  datum.hours = readByte();
-  datum.seconds = readByte();
+  datum.year = readBinaryCodedDecimalWord();
+  datum.month = readBinaryCodedDecimalByte();
+  datum.day = readBinaryCodedDecimalByte();
+  datum.minutes = readBinaryCodedDecimalByte();
+  datum.hours = readBinaryCodedDecimalByte();
+  datum.seconds = readBinaryCodedDecimalByte();
   return datum;
 }
 
@@ -525,6 +538,16 @@ void ESATCCSDSPacket::writeApplicationProcessIdentifier(const word applicationPr
   writePrimaryHeaderBits(APPLICATION_PROCESS_IDENTIFIER_OFFSET,
                          APPLICATION_PROCESS_IDENTIFIER_LENGTH,
                          applicationProcessIdentifier);
+}
+
+void ESATCCSDSPacket::writeBinaryCodedDecimalByte(const byte datum)
+{
+  writeByte(Util.encodeBinaryCodedDecimalByte(datum));
+}
+
+void ESATCCSDSPacket::writeBinaryCodedDecimalWord(const word datum)
+{
+  writeWord(Util.encodeBinaryCodedDecimalWord(datum));
 }
 
 void ESATCCSDSPacket::writeBoolean(const boolean datum)
@@ -663,12 +686,12 @@ void ESATCCSDSPacket::writeSequenceFlags(const SequenceFlags sequenceFlags)
 
 void ESATCCSDSPacket::writeTimestamp(const ESATTimestamp datum)
 {
-  writeWord(datum.year);
-  writeByte(datum.month);
-  writeByte(datum.day);
-  writeByte(datum.hours);
-  writeByte(datum.minutes);
-  writeByte(datum.seconds);
+  writeBinaryCodedDecimalWord(datum.year);
+  writeBinaryCodedDecimalByte(datum.month);
+  writeBinaryCodedDecimalByte(datum.day);
+  writeBinaryCodedDecimalByte(datum.hours);
+  writeBinaryCodedDecimalByte(datum.minutes);
+  writeBinaryCodedDecimalByte(datum.seconds);
 }
 
 boolean ESATCCSDSPacket::writeTo(Stream& output) const

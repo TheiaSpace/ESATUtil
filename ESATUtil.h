@@ -24,6 +24,18 @@
 class ESATUtil
 {
   public:
+    // Decode a binary coded decimal 8-bit number.
+    byte decodeBinaryCodedDecimalByte(byte number);
+
+    // Decode a binary coded decimal 16-bit number.
+    word decodeBinaryCodedDecimalWord(word number);
+
+    // Encode an 8-bit number in binary coded decimal format.
+    byte encodeBinaryCodedDecimalByte(byte number);
+
+    // Encode a 16-bit number in binary coded decimal format.
+    word encodeBinaryCodedDecimalWord(word number);
+
     // Return the hexadecimal representation of a one-byte number.
     String byteToHexadecimal(byte number);
 

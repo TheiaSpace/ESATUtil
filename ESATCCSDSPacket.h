@@ -127,6 +127,24 @@ class ESATCCSDSPacket: public Printable
     // most significant bit first.
     word readApplicationProcessIdentifier() const;
 
+    // Return the next 8-bit unsigned integer from the packet data.
+    // The raw datum is stored as an 8-bit binary-coded-decimal number,
+    // most significant bit first.
+    // This advances the read/byte pointer by 1, but limited
+    // to the packet data buffer length.
+    // The return value is undefined if there are fewer than 1 byte
+    // before reaching the end of the packet data buffer.
+    byte readBinaryCodedDecimalByte();
+
+    // Return the next 16-bit unsigned integer from the packet data.
+    // The raw datum is stored as an 16-bit binary-coded-decimal number,
+    // most significant bit first.
+    // This advances the read/byte pointer by 2, but limited
+    // to the packet data buffer length.
+    // The return value is undefined if there are fewer than 2 bytes
+    // before reaching the end of the packet data buffer.
+    word readBinaryCodedDecimalWord();
+
     // Return the next boolean (an 8-bit entry) from the packet data.
     // The raw datum is stored as a 0 for false and as any other
     // 8-bit number for true.
@@ -300,6 +318,26 @@ class ESATCCSDSPacket: public Printable
     // most significant bit first.
     // This leaves the read/byte pointer untouched.
     void writeApplicationProcessIdentifier(word applicationProcessIdentifier);
+
+    // Append an 8-bit unsigned integer to the packet data.
+    // The raw datum is stored in binary-coded-decimal format, most
+    // significant bit first.
+    // This advances the read/byte pointer by 1, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 1 byte before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
+    void writeBinaryCodedDecimalByte(byte datum);
+
+    // Append a 16-bit unsigned integer to the packet data.
+    // The raw datum is stored in binary-coded-decimal format, most
+    // significant bit first.
+    // This advances the read/byte pointer by 2, but limited to the
+    // packet data buffer length.
+    // The written value is undefined if there are fewer than 2 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
+    void writeBinaryCodedDecimalWord(word datum);
 
     // Append a boolean to the packet data.
     // The raw datum is stored as an 8-bit unsigned integer:
