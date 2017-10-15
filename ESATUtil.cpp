@@ -18,14 +18,14 @@
 
 #include "ESATUtil.h"
 
-byte ESATUtil::decodeBinaryCodedDecimalByte(const byte number)
+byte ESATUtil::decodeBinaryCodedDecimalByte(const byte number) const
 {
   const byte tens = constrain(number >> 4, 0, 9);
   const byte ones = constrain(number, 0, 9);
   return 10 * tens + ones;
 }
 
-word ESATUtil::decodeBinaryCodedDecimalWord(const word number)
+word ESATUtil::decodeBinaryCodedDecimalWord(const word number) const
 {
   const word thousands = constrain(number >> 12, 0, 9);
   const word hundreds = constrain(number >> 8, 0, 9);
@@ -34,14 +34,14 @@ word ESATUtil::decodeBinaryCodedDecimalWord(const word number)
   return 1000 * thousands + 100 * hundreds + 10 * tens + ones;
 }
 
-byte ESATUtil::encodeBinaryCodedDecimalByte(const byte number)
+byte ESATUtil::encodeBinaryCodedDecimalByte(const byte number) const
 {
   const byte tens = constrain(number / 10, 0, 9);
   const byte ones = constrain(number, 0, 9);
   return (tens << 4) | ones;
 }
 
-word ESATUtil::encodeBinaryCodedDecimalWord(const word number)
+word ESATUtil::encodeBinaryCodedDecimalWord(const word number) const
 {
   const word thousands = constrain(number / 1000, 0, 9);
   const word hundreds = constrain(number / 100, 0, 9);
@@ -50,19 +50,19 @@ word ESATUtil::encodeBinaryCodedDecimalWord(const word number)
   return (thousands << 12) | (hundreds << 8) | (tens << 4) | ones;
 }
 
-String ESATUtil::byteToHexadecimal(byte number)
+String ESATUtil::byteToHexadecimal(const byte number) const
 {
   String unpaddedText = String(int(number), HEX);
   String paddedText = pad(unpaddedText, '0', 2);
   return paddedText;
 }
 
-byte ESATUtil::hexadecimalToByte(String hexadecimalNumber)
+byte ESATUtil::hexadecimalToByte(const String hexadecimalNumber) const
 {
   return byte(hexadecimalToWord(hexadecimalNumber));
 }
 
-word ESATUtil::hexadecimalToWord(String hexadecimalNumber)
+word ESATUtil::hexadecimalToWord(const String hexadecimalNumber) const
 {
   word number = 0;
   for (int index = 0; index < hexadecimalNumber.length(); index++)
@@ -134,15 +134,9 @@ word ESATUtil::hexadecimalToWord(String hexadecimalNumber)
   return number;
 }
 
-String ESATUtil::intToHexadecimal(unsigned int number)
-{
-  byte firstByte = byte(number >> 8);
-  byte secondByte = byte(number & 255);
-  String text = byteToHexadecimal(firstByte) + byteToHexadecimal(secondByte);
-  return text;
-}
-
-String ESATUtil::pad(String text, char padding, unsigned int length)
+String ESATUtil::pad(const String text,
+                     const char padding,
+                     const unsigned int length) const
 {
   String paddingString = String(padding);
   String paddedText = text;
@@ -153,12 +147,12 @@ String ESATUtil::pad(String text, char padding, unsigned int length)
   return paddedText;
 }
 
-word ESATUtil::swapWordBytes(const word number)
+word ESATUtil::swapWordBytes(const word number) const
 {
   return word(lowByte(number), highByte(number));
 }
 
-String ESATUtil::wordToHexadecimal(const word number)
+String ESATUtil::wordToHexadecimal(const word number) const
 {
   String text =
     byteToHexadecimal(highByte(number)) + byteToHexadecimal(lowByte(number));
