@@ -48,8 +48,16 @@ class ESATTimestamp
     // Seconds (from 0 to 59).
     byte seconds;
 
-    // Instantiate a new timestamp.
+    // Instantiate a new timestamp with all fields set to 0.
     ESATTimestamp();
+
+    // Instantiate a new timestamp with the given fields.
+    ESATTimestamp(word year,
+                  byte month,
+                  byte day,
+                  byte hours,
+                  byte minutes,
+                  byte seconds);
 
     // Add a given number of days to the timestamp.
     // The hours, minutes and seconds stay untouched.

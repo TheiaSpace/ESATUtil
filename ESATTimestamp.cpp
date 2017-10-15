@@ -20,14 +20,29 @@
 #include <ESATUtil.h>
 
 
-ESATTimestamp::ESATTimestamp()
+ESATTimestamp::ESATTimestamp():
+  year(0),
+  month(0),
+  day(0),
+  hours(0),
+  minutes(0),
+  seconds(0)
 {
-  hours = 0;
-  minutes = 0;
-  seconds = 0;
-  year = 0;
-  month = 0;
-  day = 0;
+}
+
+ESATTimestamp::ESATTimestamp(const word theYear,
+                             const byte theMonth,
+                             const byte theDay,
+                             const byte theMinutes,
+                             const byte theHours,
+                             const byte theSeconds):
+  year(theYear),
+  month(theMonth),
+  day(theDay),
+  minutes(theMinutes),
+  hours(theHours),
+  seconds(theSeconds)
+{
 }
 
 void ESATTimestamp::addDays(const unsigned long daysToAdd)
