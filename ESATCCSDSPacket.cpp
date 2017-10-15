@@ -498,12 +498,12 @@ ESATCCSDSPacket::SequenceFlags ESATCCSDSPacket::readSequenceFlags() const
 ESATTimestamp ESATCCSDSPacket::readTimestamp()
 {
   ESATTimestamp datum;
-  datum.year = readWord();
-  datum.month = readByte();
-  datum.day = readByte();
-  datum.minutes = readByte();
-  datum.hours = readByte();
-  datum.seconds = readByte();
+  datum.year = readBinaryCodedDecimalWord();
+  datum.month = readBinaryCodedDecimalByte();
+  datum.day = readBinaryCodedDecimalByte();
+  datum.minutes = readBinaryCodedDecimalByte();
+  datum.hours = readBinaryCodedDecimalByte();
+  datum.seconds = readBinaryCodedDecimalByte();
   return datum;
 }
 
@@ -686,12 +686,12 @@ void ESATCCSDSPacket::writeSequenceFlags(const SequenceFlags sequenceFlags)
 
 void ESATCCSDSPacket::writeTimestamp(const ESATTimestamp datum)
 {
-  writeWord(datum.year);
-  writeByte(datum.month);
-  writeByte(datum.day);
-  writeByte(datum.hours);
-  writeByte(datum.minutes);
-  writeByte(datum.seconds);
+  writeBinaryCodedDecimalWord(datum.year);
+  writeBinaryCodedDecimalByte(datum.month);
+  writeBinaryCodedDecimalByte(datum.day);
+  writeBinaryCodedDecimalByte(datum.hours);
+  writeBinaryCodedDecimalByte(datum.minutes);
+  writeBinaryCodedDecimalByte(datum.seconds);
 }
 
 boolean ESATCCSDSPacket::writeTo(Stream& output) const
