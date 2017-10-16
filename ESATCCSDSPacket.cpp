@@ -262,7 +262,7 @@ size_t ESATCCSDSPacket::printTo(Print& output) const
     case CONTINUATION_SEGMENT_OF_USER_DATA:
       bytesWritten =
         bytesWritten
-        + output.print(String("\"CONTINUATION_SGEMENT_OF_USER_DATA\""));
+        + output.print(String("\"CONTINUATION_SEGMENT_OF_USER_DATA\""));
       break;
     case FIRST_SEGMENT_OF_USER_DATA:
       bytesWritten =
@@ -277,7 +277,7 @@ size_t ESATCCSDSPacket::printTo(Print& output) const
     default:
       bytesWritten =
         bytesWritten
-        + output.print(String("\"UNSGEMENTED_USER_DATA\""));
+        + output.print(String("\"UNSEGMENTED_USER_DATA\""));
       break;
   }
   bytesWritten =
