@@ -20,33 +20,33 @@
 
 byte ESATUtil::decodeBinaryCodedDecimalByte(const byte number) const
 {
-  const byte tens = constrain(number >> 4, 0, 9);
-  const byte ones = constrain(number, 0, 9);
+  const byte tens = (number >> 4) % 10;
+  const byte ones = number % 10;
   return 10 * tens + ones;
 }
 
 word ESATUtil::decodeBinaryCodedDecimalWord(const word number) const
 {
-  const word thousands = constrain(number >> 12, 0, 9);
-  const word hundreds = constrain(number >> 8, 0, 9);
-  const word tens = constrain(number >> 4, 0, 9);
-  const word ones = constrain(number, 0, 9);
+  const word thousands = (number >> 12) % 10;
+  const word hundreds = (number >> 8) % 10;
+  const word tens = (number >> 4) % 10;
+  const word ones = number % 10;
   return 1000 * thousands + 100 * hundreds + 10 * tens + ones;
 }
 
 byte ESATUtil::encodeBinaryCodedDecimalByte(const byte number) const
 {
-  const byte tens = constrain(number / 10, 0, 9);
-  const byte ones = constrain(number, 0, 9);
+  const byte tens = (number % 100) / 10;
+  const byte ones = number % 10;
   return (tens << 4) | ones;
 }
 
 word ESATUtil::encodeBinaryCodedDecimalWord(const word number) const
 {
-  const word thousands = constrain(number / 1000, 0, 9);
-  const word hundreds = constrain(number / 100, 0, 9);
-  const word tens = constrain(number / 10, 0, 9);
-  const word ones = constrain(number, 0, 9);
+  const word thousands = (number % 10000) / 1000;
+  const word hundreds = (number % 1000) / 100;
+  const word tens = (number % 100) / 10;
+  const word ones = number % 10;
   return (thousands << 12) | (hundreds << 8) | (tens << 4) | ones;
 }
 
