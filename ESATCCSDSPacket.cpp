@@ -36,6 +36,11 @@ ESATCCSDSPacket::ESATCCSDSPacket(byte* const buffer,
 {
 }
 
+int ESATCCSDSPacket::available()
+{
+  return constrain(availableBytesToRead(), 0, 0x7FFF);
+}
+
 unsigned long ESATCCSDSPacket::availableBytesToRead() const
 {
   unsigned long packetDataLength = readPacketDataLength();
@@ -126,6 +131,12 @@ unsigned long ESATCCSDSPacket::floatToLong(const float number)
   return (signBit << 31) | (exponentBits << 23) | mantissaBits;
 }
 
+void ESATCCSDSPacket::flush()
+{
+  updatePacketDataLength();
+  rewind();
+}
+
 float ESATCCSDSPacket::longToFloat(const unsigned long bits)
 {
   if (bits == 0x00000000ul)
@@ -168,6 +179,18 @@ float ESATCCSDSPacket::longToFloat(const unsigned long bits)
     }
   }
   return number;
+}
+
+int ESATCCSDSPacket::peek()
+{
+  if (available() > 0)
+  {
+    return packetData[position];
+  }
+  else
+  {
+    return -1;
+  }
 }
 
 size_t ESATCCSDSPacket::printTo(Print& output) const
@@ -315,6 +338,16 @@ size_t ESATCCSDSPacket::printTo(Print& output) const
   return bytesWritten;
 }
 
+int ESATCCSDSPacket::read()
+{
+  const int datum = peek();
+  if (datum >= 0)
+  {
+    position = position + 1;
+  }
+  return datum;
+}
+
 word ESATCCSDSPacket::readApplicationProcessIdentifier() const
 {
   return readPrimaryHeaderBits(APPLICATION_PROCESS_IDENTIFIER_OFFSET,
@@ -348,13 +381,15 @@ boolean ESATCCSDSPacket::readBoolean()
 
 byte ESATCCSDSPacket::readByte()
 {
-  if (position >= packetDataBufferLength)
+  const int datum = read();
+  if (datum >= 0)
+  {
+    return datum;
+  }
+  else
   {
     return 0;
   }
-  const byte datum = packetData[position];
-  position = position + 1;
-  return datum;
 }
 
 signed char ESATCCSDSPacket::readChar()
@@ -533,6 +568,20 @@ void ESATCCSDSPacket::updatePacketDataLength()
   writePacketDataLength(position);
 }
 
+size_t ESATCCSDSPacket::write(const uint8_t datum)
+{
+  if (position < packetDataBufferLength)
+  {
+    packetData[position] = datum;
+    position = position + 1;
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
+}
+
 void ESATCCSDSPacket::writeApplicationProcessIdentifier(const word applicationProcessIdentifier)
 {
   writePrimaryHeaderBits(APPLICATION_PROCESS_IDENTIFIER_OFFSET,
@@ -564,11 +613,7 @@ void ESATCCSDSPacket::writeBoolean(const boolean datum)
 
 void ESATCCSDSPacket::writeByte(const byte datum)
 {
-  if (position < packetDataBufferLength)
-  {
-    packetData[position] = datum;
-    position = position + 1;
-  }
+  (void) write(datum);
 }
 
 void ESATCCSDSPacket::writeChar(const signed char datum)

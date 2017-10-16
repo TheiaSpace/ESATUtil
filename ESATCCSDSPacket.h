@@ -31,7 +31,8 @@
 // the most significant, the last byte is the least significant.
 // Signed integers are stored in two's complement format.
 // Floating-point numbers are stored in IEEE 754 format.
-class ESATCCSDSPacket: public Printable
+// The packet data can be read and written as a Stream.
+class ESATCCSDSPacket: public Printable, public Stream
 {
   public:
     // Packet type: either telemetry or telecommand.
@@ -100,6 +101,10 @@ class ESATCCSDSPacket: public Printable
 
     // Return the number of unread bytes in the packet data (the
     // packet data length minus the position of the read pointer).
+    int available();
+
+    // Return the number of unread bytes in the packet data (the
+    // packet data length minus the position of the read pointer).
     unsigned long availableBytesToRead() const;
 
     // Clear the packet by setting all bytes to 0.
@@ -114,9 +119,32 @@ class ESATCCSDSPacket: public Printable
     // packet.  Otherwise return false.
     boolean endOfPacketDataReached() const;
 
+    // Update the packet data length to match the number of bytes written
+    // to the packet data (the position of the next write operation).
+    // The raw datum is stored as a 16-bit unsigned integer in
+    // big-endian byte order, as the actual packet data length minus 1.
+    // If the number of bytes written to the packet is 0, the packet
+    // data length will be erroneous, but empty CCSDS packets
+    // are forbidden by the standard.
+    // This moves the read/write pointer back to the start of the
+    // packet data.
+    void flush();
+
+    // Return the next 8-bit unsigned integer from the packet data
+    // or, if the read/write pointer is at the end of the packet data,
+    // return -1.
+    int peek();
+
     // Print the packet in human-readable (JSON) form.
     // This leaves the read/byte pointer untouched.
     size_t printTo(Print& output) const;
+
+    // Return the next 8-bit unsigned integer from the packet data
+    // or, if the read/write pointer is at the end of the packet data,
+    // return -1.
+    // This advances the read/byte pointer by 1, but limited
+    // to the packet data buffer length.
+    int read();
 
     // Return the CCSDS application process identifier.
     // This field is part of the primary header.
@@ -308,6 +336,23 @@ class ESATCCSDSPacket: public Printable
     // are forbidden by the standard.
     // This leaves the read/byte pointer untouched.
     void updatePacketDataLength();
+
+    // Append an 8-bit unsigned integer to the packet data.
+    // This advances the read/write pointer by 1, but limited to the
+    // packet data buffer length.
+    // Don't append anything if there are fewer than 1 bytes before
+    // reaching the end of the packet data.
+    // Return the number of bytes written.
+    size_t write(uint8_t datum);
+
+    // Import size_t Print::write(const uint8_t* buffer, size_t bufferLength).
+    // Append the contents of a byte buffer of given length into the packet
+    // data buffer.
+    // This advances the read/write pointer by bufferLength, but limited
+    // to the packet data buffer length.
+    // Don't append data beyond the end of the packet data buffer.
+    // Return the number of bytes written.
+    using Print::write;
 
     // Write the CCSDS application process identifier.
     // This field is part of the primary header.
