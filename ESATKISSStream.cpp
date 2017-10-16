@@ -34,7 +34,10 @@ int ESATKISSStream::available()
 {
   if (readPosition >= decodedDataLength)
   {
-    reset();
+    if (decodedDataLength > 0)
+    {
+      reset();
+    }
     while ((backendStream.available() > 0)
            && (decoderState != FINISHED))
     {
