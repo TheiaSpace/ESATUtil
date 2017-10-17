@@ -310,11 +310,9 @@ void ESATI2CSlave::writeTelemetry(ESATCCSDSPacket& packet)
     return;
   }
   packet.rewind();
-  (void) packet.readByte();
-  (void) packet.readByte();
-  (void) packet.readByte();
-  const byte packetIdentifier = packet.readByte();
-  if (packetIdentifier != telemetryPacketIdentifier)
+  const ESATCCSDSSecondaryHeader secondaryHeader =
+    packet.readSecondaryHeader();
+  if (secondaryHeader.packetIdentifier != telemetryPacketIdentifier)
   {
     telemetryState = TELEMETRY_INVALID;
     return;
