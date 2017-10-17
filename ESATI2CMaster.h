@@ -28,6 +28,8 @@ class ESATI2CMaster
 {
   public:
     // Read a telemetry packet from the device at the given address.
+    // Wait some milliseconds after each write operation to give
+    // the slave time to process the request.
     // Retry several times, waiting several milliseconds, if the
     // telemetry is not ready.
     // Return true on success; otherwise return false.
@@ -35,16 +37,20 @@ class ESATI2CMaster
                           byte address,
                           byte packetIdentifier,
                           ESATCCSDSPacket& packet,
+                          byte millisecondsAfterWrites,
                           byte tries,
                           word millisecondsBetweenRetries);
 
     // Write a telecommand to the device at the given address.
+    // Wait some milliseconds after each write operation to give
+    // the slave time to process the request.
     // Retry several times, waiting several milliseconds, if the
     // telecommand queue is full.
     // Return true on success; otherwise return false.
     boolean writeTelecommand(TwoWire& bus,
                              byte address,
                              ESATCCSDSPacket& packet,
+                             byte millisecondsAfterWrites,
                              byte tries,
                              word millisecondsBetweenRetries);
 
@@ -81,11 +87,14 @@ class ESATI2CMaster
     static const byte I2C_CHUNK_LENGTH = 16;
 
     // Read the telecommand status from the given address.
+    // Wait some milliseconds after each write operation to give
+    // the slave time to process the request.
     // Retry several times if the queue is not free,
     // waiting several milliseconds between retries.
     // Return true if the telecommand queue is free; otherwise return false.
     boolean readTelecommandStatus(TwoWire& bus,
                                   byte address,
+                                  byte millisecondsAfterWrites,
                                   byte tries,
                                   word millisecondsBetweenRetries);
 
@@ -96,38 +105,53 @@ class ESATI2CMaster
                                     ESATCCSDSPacket& packet);
 
     // Read the packet primary header from the given address.
+    // Wait some milliseconds after each write operation to give
+    // the slave time to process the request.
     // Return true on success; otherwise return false.
     boolean readTelemetryPrimaryHeader(TwoWire& bus,
                                        byte address,
-                                       ESATCCSDSPacket& packet);
+                                       ESATCCSDSPacket& packet,
+                                       byte millisecondsAfterWrites);
 
     // Read the telemetry status from the given address.
+    // Wait some milliseconds after each write operation to give
+    // the slave time to process the request.
     // Retry several times if the telemetry is not ready,
     // waiting several milliseconds between retries.
     // Return true if the telemetry is ready; otherwise return false.
     boolean readTelemetryStatus(TwoWire& bus,
                                 byte address,
+                                byte millisecondsAfterWrites,
                                 byte tries,
                                 word millisecondsBetweenRetries);
 
     // Write the packet data to the given address.
+    // Wait some milliseconds after each write operation to give
+    // the slave time to process the request.
     // Return true on success; otherwise return false.
     boolean writeTelecommandPacketData(TwoWire& bus,
                                        byte address,
-                                       ESATCCSDSPacket& packet);
+                                       ESATCCSDSPacket& packet,
+                                       byte millisecondsAfterWrites);
 
     // Write the primary header to the given address.
+    // Wait some milliseconds after each write operation to give
+    // the slave time to process the request.
     // Return true on success; otherwise return false.
     boolean writeTelecommandPrimaryHeader(TwoWire& bus,
                                           byte address,
-                                          ESATCCSDSPacket& packet);
+                                          ESATCCSDSPacket& packet,
+                                          byte millisecondsAfterWrites);
 
     // Write a telemetry request for a packet identifier to the given
     // address.
+    // Wait some milliseconds after each write operation to give
+    // the slave time to process the request.
     // Return true on success; otherwise return false.
     boolean writeTelemetryRequest(TwoWire& bus,
                                   byte address,
-                                  byte packetIdentifier);
+                                  byte packetIdentifier,
+                                  byte millisecondsAfterWrites);
 };
 
 extern ESATI2CMaster I2CMaster;
