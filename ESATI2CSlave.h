@@ -27,6 +27,10 @@
 class ESATI2CSlave
 {
   public:
+    // Return value of requestTelemetryPacket() when there is no
+    // pending telemetry packet request.
+    static const int NO_TELEMETRY_PACKET_REQUESTED = -1;
+
     // Configure the I2C slave to listen on the given I2C interface
     // (register the I2C reception and request handlers).
     // The I2C interface must be already initiated.
@@ -38,8 +42,9 @@ class ESATI2CSlave
                byte telemetryPacketDataBuffer[],
                word telemetryPacketDataBufferLength);
 
-    // Return the number of the requested telemetry packet
-    // or a negative number if no telemetry packet was requested.
+    // Return the number of the requested telemetry packet or
+    // NO_TELEMETRY_PACKET_REQUESTED if no telemetry packet was
+    // requested (the telemetry status isn't TELEMETRY_NOT_READY).
     int requestedTelemetryPacket();
 
     // Read the next queued telecommand into a CCSDS packet.
