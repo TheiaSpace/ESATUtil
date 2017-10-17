@@ -95,11 +95,9 @@ boolean ESATI2CMaster::readTelemetry(TwoWire& bus,
   {
     return false;
   }
-  (void) packet.readByte();
-  (void) packet.readByte();
-  (void) packet.readByte();
-  const byte receivedPacketIdentifier = packet.readByte();
-  if (receivedPacketIdentifier != packetIdentifier)
+  const ESATCCSDSSecondaryHeader secondaryHeader =
+    packet.readSecondaryHeader();
+  if (secondaryHeader.packetIdentifier != packetIdentifier)
   {
     return false;
   }
