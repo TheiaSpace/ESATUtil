@@ -254,15 +254,19 @@ void ESATI2CSlave::receiveEvent(const int numberOfBytes)
 
 int ESATI2CSlave::requestedTelemetryPacket()
 {
-  if ((telemetryPacketIdentifier >= 0)
-      && (telemetryPacketIdentifier <= 255))
-  {
-    return telemetryPacketIdentifier;
-  }
-  else
+  if (telemetryState != TELEMETRY_NOT_READY)
   {
     return -1;
   }
+  if (telemetryPacketIdentifier < 0)
+  {
+    return -1;
+  }
+  if (telemetryPacketIdentifier > 255)
+  {
+    return -1;
+  }
+  return telemetryPacketIdentifier;
 }
 
 void ESATI2CSlave::requestEvent()
