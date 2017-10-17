@@ -52,12 +52,12 @@ class ESATI2CMaster
     // Register numbers for telecommand and telemetry handling.
     enum RegisterNumbers
     {
-      TELECOMMAND_PRIMARY_HEADER = 0,
-      TELECOMMAND_PACKET_DATA = 1,
-      TELECOMMAND_STATUS = 2,
-      TELEMETRY_REQUEST = 3,
-      TELEMETRY_STATUS = 4,
-      TELEMETRY_VECTOR = 5,
+      TELECOMMAND_PRIMARY_HEADER = 0x00,
+      TELECOMMAND_PACKET_DATA = 0x01,
+      TELECOMMAND_STATUS = 0x02,
+      TELEMETRY_REQUEST = 0x10,
+      TELEMETRY_STATUS = 0x11,
+      TELEMETRY_VECTOR = 0x12,
     };
 
     // Possible states of the telecommand reception state machine.
