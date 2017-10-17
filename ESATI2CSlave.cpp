@@ -256,15 +256,15 @@ int ESATI2CSlave::requestedTelemetryPacket()
 {
   if (telemetryState != TELEMETRY_NOT_READY)
   {
-    return -1;
+    return NO_TELEMETRY_PACKET_REQUESTED;
   }
   if (telemetryPacketIdentifier < 0)
   {
-    return -1;
+    return NO_TELEMETRY_PACKET_REQUESTED;
   }
   if (telemetryPacketIdentifier > 255)
   {
-    return -1;
+    return NO_TELEMETRY_PACKET_REQUESTED;
   }
   return telemetryPacketIdentifier;
 }
