@@ -744,7 +744,7 @@ boolean ESATCCSDSPacket::writeTo(Stream& output) const
   for (byte i = 0; i < PRIMARY_HEADER_LENGTH; i++)
   {
     const size_t bytesWritten = output.write(primaryHeader[i]);
-    if (bytesWritten != 1)
+    if (bytesWritten == 0)
     {
       return false;
     }
@@ -757,7 +757,7 @@ boolean ESATCCSDSPacket::writeTo(Stream& output) const
   for (long i = 0; i < packetDataLength; i++)
   {
     const size_t bytesWritten = output.write(packetData[i]);
-    if (bytesWritten != 1)
+    if (bytesWritten == 0)
     {
       return false;
     }
