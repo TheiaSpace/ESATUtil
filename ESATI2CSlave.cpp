@@ -317,7 +317,7 @@ void ESATI2CSlave::writeTelemetry(ESATCCSDSPacket& packet)
     telemetryState = TELEMETRY_INVALID;
     return;
   }
-  const boolean successfulCopy =  packet.copyTo(telemetry);
+  const boolean successfulCopy = packet.copyTo(telemetry);
   if (!successfulCopy)
   {
     telemetryState = TELEMETRY_INVALID;
