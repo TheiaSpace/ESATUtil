@@ -20,6 +20,7 @@
 
 boolean ESATI2CMaster::readTelecommandStatus(TwoWire& bus,
                                              const byte address,
+                                             const byte millisecondsAfterWrites,
                                              const byte tries,
                                              const word millisecondsBetweenRetries)
 {
@@ -28,6 +29,7 @@ boolean ESATI2CMaster::readTelecommandStatus(TwoWire& bus,
     bus.beginTransmission(address);
     (void) bus.write(TELECOMMAND_STATUS);
     const byte writeStatus = bus.endTransmission();
+    delay(millisecondsAfterWrites);
     if (writeStatus != 0)
     {
       return false;
@@ -59,13 +61,15 @@ boolean ESATI2CMaster::readTelemetry(TwoWire& bus,
                                      const byte address,
                                      const byte packetIdentifier,
                                      ESATCCSDSPacket& packet,
+                                     const byte millisecondsAfterWrites,
                                      const byte tries,
                                      const word millisecondsBetweenRetries)
 {
   const boolean telemetryRequestCorrect =
     writeTelemetryRequest(bus,
                           address,
-                          packetIdentifier);
+                          packetIdentifier,
+                          millisecondsAfterWrites);
   if (!telemetryRequestCorrect)
   {
     return false;
@@ -73,6 +77,7 @@ boolean ESATI2CMaster::readTelemetry(TwoWire& bus,
   const boolean telemetryReady =
     readTelemetryStatus(bus,
                         address,
+                        millisecondsAfterWrites,
                         tries,
                         millisecondsBetweenRetries);
   if (!telemetryReady)
@@ -82,7 +87,8 @@ boolean ESATI2CMaster::readTelemetry(TwoWire& bus,
   const boolean primaryHeaderCorrect =
     readTelemetryPrimaryHeader(bus,
                                address,
-                               packet);
+                               packet,
+                               millisecondsAfterWrites);
   if (!primaryHeaderCorrect)
   {
     return false;
@@ -134,7 +140,8 @@ boolean ESATI2CMaster::readTelemetryPacketData(TwoWire& bus,
 
 boolean ESATI2CMaster::readTelemetryPrimaryHeader(TwoWire& bus,
                                                   const byte address,
-                                                  ESATCCSDSPacket& packet)
+                                                  ESATCCSDSPacket& packet,
+                                                  const byte millisecondsAfterWrites)
 {
   bus.beginTransmission(address);
   (void) bus.write(TELEMETRY_VECTOR);
@@ -143,6 +150,7 @@ boolean ESATI2CMaster::readTelemetryPrimaryHeader(TwoWire& bus,
   {
     return false;
   }
+  delay(millisecondsAfterWrites);
   const byte headerBytesRead =
     bus.requestFrom(address, packet.PRIMARY_HEADER_LENGTH);
   if (headerBytesRead != packet.PRIMARY_HEADER_LENGTH)
@@ -168,8 +176,10 @@ boolean ESATI2CMaster::readTelemetryPrimaryHeader(TwoWire& bus,
   return true;
 }
 
+#include <USBSerial.h>
 boolean ESATI2CMaster::readTelemetryStatus(TwoWire& bus,
                                            const byte address,
+                                           const byte millisecondsAfterWrites,
                                            const byte tries,
                                            const word millisecondsBetweenRetries)
 {
@@ -178,6 +188,7 @@ boolean ESATI2CMaster::readTelemetryStatus(TwoWire& bus,
     bus.beginTransmission(address);
     (void) bus.write(TELEMETRY_STATUS);
     const byte writeStatus = bus.endTransmission();
+    delay(millisecondsAfterWrites);
     if (writeStatus != 0)
     {
       return false;
@@ -217,12 +228,14 @@ boolean ESATI2CMaster::readTelemetryStatus(TwoWire& bus,
 boolean ESATI2CMaster::writeTelecommand(TwoWire& bus,
                                         const byte address,
                                         ESATCCSDSPacket& packet,
+                                        const byte millisecondsAfterWrites,
                                         const byte tries,
                                         const word millisecondsBetweenRetries)
 {
   const boolean telecommandStatusCorrect =
     readTelecommandStatus(bus,
                           address,
+                          millisecondsAfterWrites,
                           tries,
                           millisecondsBetweenRetries);
   if (!telecommandStatusCorrect)
@@ -232,7 +245,8 @@ boolean ESATI2CMaster::writeTelecommand(TwoWire& bus,
   const boolean telecommandPrimaryHeaderCorrect =
     writeTelecommandPrimaryHeader(bus,
                                   address,
-                                  packet);
+                                  packet,
+                                  millisecondsAfterWrites);
   if (!telecommandPrimaryHeaderCorrect)
   {
     return false;
@@ -240,13 +254,15 @@ boolean ESATI2CMaster::writeTelecommand(TwoWire& bus,
   const boolean telecommandPacketDataCorrect =
     writeTelecommandPacketData(bus,
                                address,
-                               packet);
+                               packet,
+                               millisecondsAfterWrites);
   return telecommandPacketDataCorrect;
 }
 
 boolean ESATI2CMaster::writeTelecommandPacketData(TwoWire& bus,
                                                   const byte address,
-                                                  ESATCCSDSPacket& packet)
+                                                  ESATCCSDSPacket& packet,
+                                                  const byte millisecondsAfterWrites)
 {
   packet.rewind();
   while (!packet.endOfPacketDataReached())
@@ -261,6 +277,7 @@ boolean ESATI2CMaster::writeTelecommandPacketData(TwoWire& bus,
       (void) bus.write(packet.readByte());
     }
     const byte writeStatus = bus.endTransmission();
+    delay(millisecondsAfterWrites);
     if (writeStatus != 0)
     {
       return false;
@@ -271,7 +288,8 @@ boolean ESATI2CMaster::writeTelecommandPacketData(TwoWire& bus,
 
 boolean ESATI2CMaster::writeTelecommandPrimaryHeader(TwoWire& bus,
                                                      const byte address,
-                                                     ESATCCSDSPacket& packet)
+                                                     ESATCCSDSPacket& packet,
+                                                     const byte millisecondsAfterWrites)
 {
   bus.beginTransmission(address);
   (void) bus.write(TELECOMMAND_PRIMARY_HEADER);
@@ -280,6 +298,7 @@ boolean ESATI2CMaster::writeTelecommandPrimaryHeader(TwoWire& bus,
     (void) bus.write(packet.primaryHeader[i]);
   }
   const byte writeStatus = bus.endTransmission();
+  delay(millisecondsAfterWrites);
   if (writeStatus == 0)
   {
     return true;
@@ -292,12 +311,14 @@ boolean ESATI2CMaster::writeTelecommandPrimaryHeader(TwoWire& bus,
 
 boolean ESATI2CMaster::writeTelemetryRequest(TwoWire& bus,
                                              const byte address,
-                                             const byte packetIdentifier)
+                                             const byte packetIdentifier,
+                                             const byte millisecondsAfterWrites)
 {
   bus.beginTransmission(address);
   (void) bus.write(TELEMETRY_REQUEST);
   (void) bus.write(packetIdentifier);
   const byte writeStatus = bus.endTransmission();
+  delay(millisecondsAfterWrites);
   if (writeStatus == 0)
   {
     return true;
