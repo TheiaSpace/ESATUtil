@@ -24,7 +24,7 @@
 // Timestamp representation:
 // Gregorian calendar date plus time of day with second resolution.
 // Leap years are supported, but leap seconds aren't.
-class ESATTimestamp
+class ESATTimestamp: public Printable
 {
   public:
     // Year (from 1 to 9999).
@@ -85,6 +85,10 @@ class ESATTimestamp
     // Add a given number of years to the timestamp.
     // The month, day, hours, minutes and seconds stay untouched.
     void addYears(unsigned long years);
+
+    // Print the timestamp in human readable form (ISO 8601).
+    // Return the number of characters written.
+    size_t printTo(Print& output) const;
 
     // Return true if the argument timestamp coincides with this timestamp;
     // otherwise return false.

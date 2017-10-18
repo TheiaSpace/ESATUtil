@@ -246,6 +246,34 @@ boolean ESATTimestamp::isLeapYear(const unsigned int year)
   return true;
 }
 
+size_t ESATTimestamp::printTo(Print& output) const
+{
+  size_t bytesWritten = 0;
+  bytesWritten =
+    bytesWritten + output.print(Util.pad(String(year, DEC), '0', 4));
+  bytesWritten =
+    bytesWritten + output.print(String("-"));
+  bytesWritten =
+    bytesWritten + output.print(Util.pad(String(month, DEC), '0', 2));
+  bytesWritten =
+    bytesWritten + output.print(String("-"));
+  bytesWritten =
+    bytesWritten + output.print(Util.pad(String(day, DEC), '0', 2));
+  bytesWritten =
+    bytesWritten + output.print(String("T"));
+  bytesWritten =
+    bytesWritten + output.print(Util.pad(String(hours, DEC), '0', 2));
+  bytesWritten =
+    bytesWritten + output.print(String(":"));
+  bytesWritten =
+    bytesWritten + output.print(Util.pad(String(minutes, DEC), '0', 2));
+  bytesWritten =
+    bytesWritten + output.print(String(":"));
+  bytesWritten =
+    bytesWritten + output.print(Util.pad(String(seconds, DEC), '0', 2));
+  return bytesWritten;
+}
+
 boolean ESATTimestamp::operator==(const ESATTimestamp timestamp) const
 {
   const ComparisonResult result = compareTo(timestamp);
