@@ -176,7 +176,6 @@ boolean ESATI2CMaster::readTelemetryPrimaryHeader(TwoWire& bus,
   return true;
 }
 
-#include <USBSerial.h>
 boolean ESATI2CMaster::readTelemetryStatus(TwoWire& bus,
                                            const byte address,
                                            const byte millisecondsAfterWrites,
