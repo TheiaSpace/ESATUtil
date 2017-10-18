@@ -536,8 +536,8 @@ ESATTimestamp ESATCCSDSPacket::readTimestamp()
   datum.year = readBinaryCodedDecimalWord();
   datum.month = readBinaryCodedDecimalByte();
   datum.day = readBinaryCodedDecimalByte();
-  datum.minutes = readBinaryCodedDecimalByte();
   datum.hours = readBinaryCodedDecimalByte();
+  datum.minutes = readBinaryCodedDecimalByte();
   datum.seconds = readBinaryCodedDecimalByte();
   return datum;
 }
