@@ -62,7 +62,8 @@ void ESATTimestamp::addDays(const unsigned long daysToAdd)
 void ESATTimestamp::addHours(const unsigned long hoursToAdd)
 {
   const byte HOURS_PER_DAY = 24;
-  const unsigned long daysToAdd = hoursToAdd / HOURS_PER_DAY;
+  const unsigned long daysToAdd =
+    (hours + hoursToAdd) / HOURS_PER_DAY;
   addDays(daysToAdd);
   hours = (hours + hoursToAdd) % HOURS_PER_DAY;
 }
@@ -70,7 +71,8 @@ void ESATTimestamp::addHours(const unsigned long hoursToAdd)
 void ESATTimestamp::addMinutes(const unsigned long minutesToAdd)
 {
   const byte MINUTES_PER_HOUR = 60;
-  const unsigned long hoursToAdd = minutesToAdd / MINUTES_PER_HOUR;
+  const unsigned long hoursToAdd =
+    (minutes + minutesToAdd) / MINUTES_PER_HOUR;
   addHours(hoursToAdd);
   minutes = (minutes + minutesToAdd) % MINUTES_PER_HOUR;
 }
@@ -78,7 +80,8 @@ void ESATTimestamp::addMinutes(const unsigned long minutesToAdd)
 void ESATTimestamp::addMonths(const unsigned long monthsToAdd)
 {
   const byte MONTHS_PER_YEAR = 12;
-  const unsigned long yearsToAdd = monthsToAdd / MONTHS_PER_YEAR;
+  const unsigned long yearsToAdd =
+    (month + monthsToAdd - 1) / MONTHS_PER_YEAR;
   addYears(yearsToAdd);
   month = ((month + monthsToAdd - 1) % MONTHS_PER_YEAR) + 1;
 }
@@ -86,7 +89,8 @@ void ESATTimestamp::addMonths(const unsigned long monthsToAdd)
 void ESATTimestamp::addSeconds(const unsigned long secondsToAdd)
 {
   const byte SECONDS_PER_MINUTE = 60;
-  const unsigned long minutesToAdd = secondsToAdd / SECONDS_PER_MINUTE;
+  const unsigned long minutesToAdd =
+    (seconds + secondsToAdd) / SECONDS_PER_MINUTE;
   addMinutes(minutesToAdd);
   seconds = (seconds + secondsToAdd) % SECONDS_PER_MINUTE;
 }
