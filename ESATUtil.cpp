@@ -20,17 +20,23 @@
 
 byte ESATUtil::decodeBinaryCodedDecimalByte(const byte number) const
 {
-  const byte tens = (number >> 4) % 10;
-  const byte ones = number % 10;
+  const byte tens =
+    constrain(number / 0x10, 0, 9);
+  const byte ones =
+    number - tens * 0x10;
   return 10 * tens + ones;
 }
 
 word ESATUtil::decodeBinaryCodedDecimalWord(const word number) const
 {
-  const word thousands = (number >> 12) % 10;
-  const word hundreds = (number >> 8) % 10;
-  const word tens = (number >> 4) % 10;
-  const word ones = number % 10;
+  const word thousands =
+    constrain(number / 0x1000, 0, 9);
+  const word hundreds =
+    (number - thousands * 0x1000) / 0x0100;
+  const word tens =
+    (number - thousands * 0x1000 - hundreds * 0x0100) / 0x0010;
+  const word ones =
+    (number - thousands * 0x1000 - hundreds * 0x0100 - tens * 0x0010);
   return 1000 * thousands + 100 * hundreds + 10 * tens + ones;
 }
 
