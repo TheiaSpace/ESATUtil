@@ -28,7 +28,7 @@
 // - A packet identifier (1 byte).
 // The only supported time code format is calendar segmented time code,
 // month of year/day of month variation, 1 second resolution.
-class ESATCCSDSSecondaryHeader
+class ESATCCSDSSecondaryHeader: public Printable
 {
   public:
     // Supported time code types.  Currently, the only supported
@@ -59,6 +59,10 @@ class ESATCCSDSSecondaryHeader
     // For telemetry: telemetry packet type (housekeeping, event...).
     // For telecommands: command code (, start experiment...).
     byte packetIdentifier;
+
+    // Print the secondary header in human readable (JSON) form.
+    // Return the number of characters written.
+    size_t printTo(Print& output) const;
 };
 
 #endif
