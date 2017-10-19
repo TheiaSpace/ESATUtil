@@ -44,9 +44,9 @@ class ESATTimer
     void waitUntilNextCycle();
 
   private:
-    unsigned long previousWakeUpTime;
-
     unsigned long previousWaitTime;
+
+    unsigned long previousWakeUpTime;
 };
 
 extern ESATTimer Timer;
