@@ -21,9 +21,15 @@
 
 #include <Arduino.h>
 
+// Simple locking timer for time-sensitive applications that require
+// periodic execution.
+// Use the global instance Timer.
+// Set up with Timer.begin().
+// Wait until the start of the next cycle with Timer.waitUntilNextCycle().
 class ESATTimer
 {
   public:
+    // Period of the timer in milliseconds.
     unsigned int period;
 
     // Set the period (in milliseconds)
@@ -44,11 +50,14 @@ class ESATTimer
     void waitUntilNextCycle();
 
   private:
+    // Wait time (in milliseconds) of the previous cycle.
     unsigned long previousWaitTime;
 
+    // Wake-up time (in uptime milliseconds) of the previous cycle.
     unsigned long previousWakeUpTime;
 };
 
+// Global instance of the ESATTimer library.
 extern ESATTimer Timer;
 
 #endif
