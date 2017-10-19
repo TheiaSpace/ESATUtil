@@ -18,51 +18,50 @@
 
 #include "ESATKISSStream.h"
 
+ESATKISSStream::ESATKISSStream():
+  backendStream(nullptr),
+  backendBuffer(nullptr),
+  backendBufferLength(0),
+  decoderState(WAITING_FOR_FRAME_START),
+  position(0),
+  decodedDataLength(0)
+{
+}
+
 ESATKISSStream::ESATKISSStream(Stream& stream,
                                byte buffer[],
                                unsigned long bufferLength):
-  backendStream(stream),
-  decoderBuffer(buffer),
-  decoderBufferLength(bufferLength),
+  backendStream(&stream),
+  backendBuffer(buffer),
+  backendBufferLength(bufferLength),
   decoderState(WAITING_FOR_FRAME_START),
-  readPosition(0),
+  position(0),
   decodedDataLength(0)
 {
 }
 
 int ESATKISSStream::available()
 {
-  if (readPosition >= decodedDataLength)
-  {
-    if (decodedDataLength > 0)
-    {
-      reset();
-    }
-    while ((backendStream.available() > 0)
-           && (decoderState != FINISHED))
-    {
-      const byte datum = backendStream.read();
-      if (datum >= 0)
-      {
-        decode(datum);
-      }
-    }
-  }
-  return constrain(decodedDataLength - readPosition, 0, 0x7FFF);
+  return constrain(decodedDataLength - position, 0, 0x7FFF);
 }
 
-void ESATKISSStream::append(const byte datum)
+size_t ESATKISSStream::append(const byte datum)
 {
-  if (decodedDataLength < decoderBufferLength)
+  if (!backendStream)
   {
-    decoderBuffer[decodedDataLength] = datum;
-    decodedDataLength = decodedDataLength + 1;
-    decoderState = DECODING_FRAME_DATA;
+    return 0;
   }
-  else
+  if (!backendBuffer)
   {
-    reset();
+    return 0;
   }
+  if (position >= backendBufferLength)
+  {
+    return 0;
+  }
+  backendBuffer[position] = datum;
+  position = position + 1;
+  return 1;
 }
 
 void ESATKISSStream::decode(const byte datum)
@@ -107,10 +106,24 @@ void ESATKISSStream::decodeEscapedFrameData(const byte datum)
   switch (datum)
   {
     case TRANSPOSED_FRAME_END:
-      append(FRAME_END);
+      if (append(FRAME_END) > 0)
+      {
+        decoderState = DECODING_FRAME_DATA;
+      }
+      else
+      {
+        reset();
+      }
       break;
     case TRANSPOSED_FRAME_ESCAPE:
-      append(FRAME_ESCAPE);
+      if (append(FRAME_ESCAPE) > 0)
+      {
+        decoderState = DECODING_FRAME_DATA;
+      }
+      else
+      {
+        reset();
+      }
       break;
     default:
       reset();
@@ -129,7 +142,7 @@ void ESATKISSStream::decodeFrameData(const byte datum)
       decoderState = DECODING_ESCAPED_FRAME_DATA;
       break;
     default:
-      append(datum);
+      (void) append(datum);
       break;
   }
 }
@@ -149,28 +162,58 @@ void ESATKISSStream::decodeFrameStart(const byte datum)
 
 size_t ESATKISSStream::beginFrame()
 {
+  reset();
   const size_t frameEndBytesWritten =
-    backendStream.write(FRAME_END);
+    append(FRAME_END);
   const size_t dataFrameBytesWritten =
-    backendStream.write(DATA_FRAME);
+    append(DATA_FRAME);
   return frameEndBytesWritten + dataFrameBytesWritten;
 }
 
 size_t ESATKISSStream::endFrame()
 {
-  return backendStream.write(FRAME_END);
+  const size_t frameEndBytesWritten = append(FRAME_END);
+  flush();
+  return frameEndBytesWritten;
 }
 
 void ESATKISSStream::flush()
 {
-  backendStream.flush();
+  if (backendBufferLength == 0)
+  {
+    return;
+  }
+  if (!backendStream)
+  {
+    return;
+  }
+  if (!backendBuffer)
+  {
+    return;
+  }
+  (void) backendStream->write(backendBuffer, position);
+  reset();
+}
+
+unsigned long ESATKISSStream::frameLength(const unsigned long dataLength)
+{
+  const unsigned long frameStartLength = 1;
+  const unsigned long dataFrameLength = 1;
+  const unsigned long frameEndLength = 1;
+  const unsigned long escapeFactor = 2;
+  const unsigned long totalLength =
+    frameStartLength
+    + dataFrameLength
+    + escapeFactor * dataLength
+    + frameEndLength;
+  return totalLength;
 }
 
 int ESATKISSStream::peek()
 {
   if (available() > 0)
   {
-    return decoderBuffer[readPosition];
+    return backendBuffer[position];
   }
   else
   {
@@ -183,14 +226,57 @@ int ESATKISSStream::read()
   const int datum = peek();
   if (datum >= 0)
   {
-    readPosition = readPosition + 1;
+    position = position + 1;
   }
   return datum;
 }
 
+boolean ESATKISSStream::receiveFrame()
+{
+  if (!backendStream)
+  {
+    return false;
+  }
+  if (!backendBuffer)
+  {
+    return false;
+  }
+  if (backendBufferLength == 0)
+  {
+    return false;
+  }
+  if (decoderState == FINISHED)
+  {
+    reset();
+  }
+  if (position >= backendBufferLength)
+  {
+    reset();
+  }
+  while ((backendStream->available() > 0)
+         && (decoderState != FINISHED))
+  {
+    const byte datum = backendStream->read();
+    if (datum >= 0)
+    {
+      decode(datum);
+    }
+  }
+  decodedDataLength = position;
+  if (decoderState == FINISHED)
+  {
+    position = 0;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 void ESATKISSStream::reset()
 {
-  readPosition = 0;
+  position = 0;
   decodedDataLength = 0;
   decoderState = WAITING_FOR_FRAME_START;
 }
@@ -206,7 +292,7 @@ size_t ESATKISSStream::write(const uint8_t datum)
       return writeEscapedFrameEscape();
       break;
     default:
-      return backendStream.write(datum);
+      return append(datum);
       break;
   }
 }
@@ -214,17 +300,17 @@ size_t ESATKISSStream::write(const uint8_t datum)
 size_t ESATKISSStream::writeEscapedFrameEnd()
 {
   const size_t frameEscapeBytesWritten =
-    backendStream.write(FRAME_ESCAPE);
+    append(FRAME_ESCAPE);
   const size_t transposedFrameEndBytesWritten =
-    backendStream.write(TRANSPOSED_FRAME_END);
+    append(TRANSPOSED_FRAME_END);
   return frameEscapeBytesWritten + transposedFrameEndBytesWritten;
 }
 
 size_t ESATKISSStream::writeEscapedFrameEscape()
 {
   const size_t frameEscapeBytesWritten =
-    backendStream.write(FRAME_ESCAPE);
+    append(FRAME_ESCAPE);
   const size_t transposedFrameEscapeBytesWritten =
-    backendStream.write(TRANSPOSED_FRAME_ESCAPE);
+    append(TRANSPOSED_FRAME_ESCAPE);
   return frameEscapeBytesWritten + transposedFrameEscapeBytesWritten;
 }

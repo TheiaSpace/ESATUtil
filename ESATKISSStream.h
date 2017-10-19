@@ -24,25 +24,38 @@
 
 // KISS frame writer and reader.
 // Operate on a backend stream.
+// Reads and writes are buffered.
+// The stream is half-duplex:
+// - if it is in the middle of the reception a frame, don't write;
+// - if it is in the middle of the writing of a frame, don't read.
 class ESATKISSStream: public Stream
 {
   public:
+    // Instantiate an empty KISS stream.
+    // Empty KISS will not read and will not write.
+    ESATKISSStream();
+
     // Instantiate a new KISS stream that will operate
     // on the given backend stream.
-    // Use the buffer for storing decoded data.
+    // Use the buffer for storing encoded or decoded data.
+    // The KISS stream is half-duplex: it cannot be used
+    // for reading frames simultaneously with writing frames.
     ESATKISSStream(Stream& stream,
                    byte buffer[],
                    unsigned long bufferLength);
 
-    // Return the number of bytes available.
+    // Return the number of bytes available in the current frame.
     int available();
 
     // Start writing a KISS frame.
     // Return the number of bytes written.
     size_t beginFrame();
 
-    // Flush the backend stream.
+    // Write the contents of the buffer to the backend stream.
     void flush();
+
+    // Return the worst case frame length for a given data length.
+    static unsigned long frameLength(unsigned long dataLength);
 
     // Return the next byte (or -1 if no byte could be read)
     // and advance to the next one.
@@ -51,6 +64,12 @@ class ESATKISSStream: public Stream
     // Return the next byte (or -1 if no byte could be read)
     // without advancing to the next one.
     int peek();
+
+    // Receive a new frame.
+    // Return true if a full frame has arrived; otherwise return false.
+    // If there was a new frame in the last call to receiveFrame(),
+    // start the reception of a new frame.
+    boolean receiveFrame();
 
     // Write a byte.
     // Return the actual number of bytes written,
@@ -62,8 +81,11 @@ class ESATKISSStream: public Stream
     // Return the number of bytes written.
     using Print::write;
 
-    // End writing a KISS frame.
+    // End writing a KISS frame and flush the contents of the buffer
+    // to the backend stream.
     // Return the number of bytes written.
+    // Reset the buffer so that the KISS stream can be used for
+    // reading or writing a new frame.
     size_t endFrame();
 
   private:
@@ -88,13 +110,13 @@ class ESATKISSStream: public Stream
     };
 
     // Backend stream.  Read and write operations are performed on it.
-    Stream& backendStream;
+    Stream* backendStream;
 
-    // Buffer used for decoding.
-    byte* const decoderBuffer;
+    // Buffer used for encoding and decoding.
+    byte* backendBuffer;
 
     // Length of the buffer used for decoding.
-    const unsigned long decoderBufferLength;
+    unsigned long backendBufferLength;
 
     // Number of decoded data bytes.
     unsigned long decodedDataLength;
@@ -102,13 +124,12 @@ class ESATKISSStream: public Stream
     // Current state of the decoder state machine.
     DecoderState decoderState;
 
-    // Position of the next read operation on the decoder buffer.
-    unsigned long readPosition;
+    // Position of the next read/write operation on the backend buffer.
+    unsigned long position;
 
-    // Append a byte to the decoder buffer.
-    // Set decoderState to DECODING_FRAME_DATA on success.
-    // Reset the decoder on overflow.
-    void append(byte datum);
+    // Append a byte to the backend buffer.
+    // Return the number of bytes written.
+    size_t append(byte datum);
 
     // Decode an input byte.
     void decode(byte datum);
@@ -125,10 +146,10 @@ class ESATKISSStream: public Stream
     // Decode the frame start mark.
     void decodeFrameStart(byte datum);
 
-    // Reset the decoder:
+    // Reset the encoder/decoder:
     // - set decoderState to WAITING_FOR_FRAME_START;
-    // - set decoderDataLength to 0;
-    // - set readPosition to 0.
+    // - set decodedDataLength to 0;
+    // - set position to 0.
     void reset();
 
     // Write a sequence to output an escaped frame end mark.
