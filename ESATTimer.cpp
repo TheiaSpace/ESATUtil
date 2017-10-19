@@ -18,7 +18,7 @@
 
 #include "ESATTimer.h"
 
-void ESATTimer::begin(unsigned int period)
+void ESATTimer::begin(word period)
 {
   this->period = period;
   previousWakeUpTime = millis();
