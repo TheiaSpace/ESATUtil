@@ -30,6 +30,10 @@ class ESATTimer
     // and start the timer.
     void begin(unsigned int period);
 
+    // Return the CPU load estimation as the percentage of busy time
+    // during the previous cycle.
+    byte load();
+
     // Return the milliseconds ellapsed
     // since the last wake-up time.
     unsigned long ellapsedMilliseconds();
@@ -41,6 +45,8 @@ class ESATTimer
 
   private:
     unsigned long lastWakeUpTime;
+
+    unsigned long lastWaitTime;
 };
 
 extern ESATTimer Timer;

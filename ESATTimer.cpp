@@ -22,6 +22,19 @@ void ESATTimer::begin(unsigned int period)
 {
   this->period = period;
   lastWakeUpTime = millis();
+  lastWaitTime = period;
+}
+
+byte ESATTimer::load()
+{
+  if (lastWaitTime == 0)
+  {
+    return 100;
+  }
+  else
+  {
+    return (period - lastWaitTime) / period;
+  }
 }
 
 unsigned long ESATTimer::ellapsedMilliseconds()
@@ -31,10 +44,19 @@ unsigned long ESATTimer::ellapsedMilliseconds()
 
 void ESATTimer::waitUntilNextCycle()
 {
-  while (ellapsedMilliseconds() < period)
+  const unsigned long ellapsedTime = ellapsedMilliseconds();
+  if (ellapsedTime < period)
   {
+    const unsigned long waitTime = period - ellapsedTime;
+    delay(waitTime);
+    lastWakeUpTime = lastWakeUpTime + period;
+    lastWaitTime = waitTime;
   }
-  lastWakeUpTime = millis();
+  else
+  {
+    lastWakeUpTime = millis();
+    lastWaitTime = 0;
+  }
 }
 
 ESATTimer Timer;
