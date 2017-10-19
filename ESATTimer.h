@@ -30,11 +30,11 @@ class ESATTimer
 {
   public:
     // Period of the timer in milliseconds.
-    unsigned int period;
+    word period;
 
     // Set the period (in milliseconds)
     // and start the timer.
-    void begin(unsigned int period);
+    void begin(word period);
 
     // Return the CPU load estimation as the percentage of busy time
     // during the previous cycle.

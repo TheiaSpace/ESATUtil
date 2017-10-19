@@ -18,9 +18,9 @@
 
 #include "ESATTimer.h"
 
-void ESATTimer::begin(unsigned int period)
+void ESATTimer::begin(word thePeriod)
 {
-  this->period = period;
+  period = thePeriod;
   previousWakeUpTime = millis();
   previousWaitTime = period;
 }
