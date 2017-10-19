@@ -126,7 +126,7 @@ void ESATKISSStream::decodeEscapedFrameData(const byte datum)
       }
       break;
     default:
-      reset();
+      decoderState = DECODING_FRAME_DATA;
       break;
   }
 }
