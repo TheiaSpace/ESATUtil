@@ -16,16 +16,16 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "ESATTimer.h"
+#include "ESAT_Timer.h"
 
-void ESATTimer::begin(word thePeriod)
+void ESAT_TimerClass::begin(word thePeriod)
 {
   period = thePeriod;
   previousWakeUpTime = millis();
   previousWaitTime = period;
 }
 
-byte ESATTimer::load()
+byte ESAT_TimerClass::load()
 {
   if (previousWaitTime == 0)
   {
@@ -37,12 +37,12 @@ byte ESATTimer::load()
   }
 }
 
-unsigned long ESATTimer::ellapsedMilliseconds()
+unsigned long ESAT_TimerClass::ellapsedMilliseconds()
 {
   return millis() - previousWakeUpTime;
 }
 
-void ESATTimer::waitUntilNextCycle()
+void ESAT_TimerClass::waitUntilNextCycle()
 {
   const unsigned long ellapsedTime = ellapsedMilliseconds();
   if (ellapsedTime < period)
@@ -59,4 +59,4 @@ void ESATTimer::waitUntilNextCycle()
   }
 }
 
-ESATTimer Timer;
+ESAT_TimerClass ESAT_Timer;

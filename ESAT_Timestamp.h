@@ -18,13 +18,13 @@
 
 #include <Arduino.h>
 
-#ifndef ESATTimestamp_h
-#define ESATTimestamp_h
+#ifndef ESAT_Timestamp_h
+#define ESAT_Timestamp_h
 
 // Timestamp representation:
 // Gregorian calendar date plus time of day with second resolution.
 // Leap years are supported, but leap seconds aren't.
-class ESATTimestamp: public Printable
+class ESAT_Timestamp: public Printable
 {
   public:
     // Year (from 1 to 9999).
@@ -48,15 +48,15 @@ class ESATTimestamp: public Printable
     // Instantiate a new timestamp with all fields set to 0.
     // This null timestamp is invalid and its fields should
     // be set to valid values before use.
-    ESATTimestamp();
+    ESAT_Timestamp();
 
     // Instantiate a new timestamp with the given fields.
-    ESATTimestamp(word year,
-                  byte month,
-                  byte day,
-                  byte hours,
-                  byte minutes,
-                  byte seconds);
+    ESAT_Timestamp(word year,
+                   byte month,
+                   byte day,
+                   byte hours,
+                   byte minutes,
+                   byte seconds);
 
     // Add a given number of days to the timestamp.
     // The hours, minutes and seconds stay untouched.
@@ -92,24 +92,24 @@ class ESATTimestamp: public Printable
 
     // Return true if the argument timestamp coincides with this timestamp;
     // otherwise return false.
-    boolean operator==(ESATTimestamp timestamp) const;
+    boolean operator==(ESAT_Timestamp timestamp) const;
 
     // Return true if the argument timestamp happens after this
     // timestamp; otherwise return false.
-    boolean operator<(ESATTimestamp timestamp) const;
+    boolean operator<(ESAT_Timestamp timestamp) const;
 
     // Return true if the argument timestamp happens after this
     // timestamp or coincides with this timestamp; otherwise return
     // false.
-    boolean operator<=(ESATTimestamp timestamp) const;
+    boolean operator<=(ESAT_Timestamp timestamp) const;
 
     // Return true if the argument timestamp happens before this timestamp.
-    boolean operator>(ESATTimestamp timestamp) const;
+    boolean operator>(ESAT_Timestamp timestamp) const;
 
     // Return true if the argument timestamp happens before this
     // timestamp or coincides with this timestamp; otherwise return
     // false.
-    boolean operator>=(ESATTimestamp timestamp) const;
+    boolean operator>=(ESAT_Timestamp timestamp) const;
 
   private:
     // Comparison results.
@@ -133,7 +133,7 @@ class ESATTimestamp: public Printable
     // THIS_IS_LOWER if the argument happens before this timestamp;
     // THIS_IS_HIGHER if the argument happens after this timestamp;
     // THIS_IS_EQUAL if the arguments coincides with this timestamp.
-    ComparisonResult compareDayTo(ESATTimestamp timestamp) const;
+    ComparisonResult compareDayTo(ESAT_Timestamp timestamp) const;
 
     // Compare this timestamp to another timestamp taking into account
     // hours, minutes and seconds.
@@ -141,7 +141,7 @@ class ESATTimestamp: public Printable
     // THIS_IS_LOWER if the argument happens before this timestamp;
     // THIS_IS_HIGHER if the argument happens after this timestamp;
     // THIS_IS_EQUAL if the arguments coincides with this timestamp.
-    ComparisonResult compareHoursTo(ESATTimestamp timestamp) const;
+    ComparisonResult compareHoursTo(ESAT_Timestamp timestamp) const;
 
     // Compare this timestamp to another timestamp taking into account
     // minutes and seconds.
@@ -149,7 +149,7 @@ class ESATTimestamp: public Printable
     // THIS_IS_LOWER if the argument happens before this timestamp;
     // THIS_IS_HIGHER if the argument happens after this timestamp;
     // THIS_IS_EQUAL if the arguments coincides with this timestamp.
-    ComparisonResult compareMinutesTo(ESATTimestamp timestamp) const;
+    ComparisonResult compareMinutesTo(ESAT_Timestamp timestamp) const;
 
     // Compare this timestamp to another timestamp taking into account
     // month, day, hours, minutes and seconds.
@@ -157,7 +157,7 @@ class ESATTimestamp: public Printable
     // THIS_IS_LOWER if the argument happens before this timestamp;
     // THIS_IS_HIGHER if the argument happens after this timestamp;
     // THIS_IS_EQUAL if the arguments coincides with this timestamp.
-    ComparisonResult compareMonthTo(ESATTimestamp timestamp) const;
+    ComparisonResult compareMonthTo(ESAT_Timestamp timestamp) const;
 
     // Compare this timestamp to another timestamp taking into account
     // seconds.
@@ -165,14 +165,14 @@ class ESATTimestamp: public Printable
     // THIS_IS_LOWER if the argument happens before this timestamp;
     // THIS_IS_HIGHER if the argument happens after this timestamp;
     // THIS_IS_EQUAL if the arguments coincides with this timestamp.
-    ComparisonResult compareSecondsTo(ESATTimestamp timestamp) const;
+    ComparisonResult compareSecondsTo(ESAT_Timestamp timestamp) const;
 
     // Compare this timestamp to another timestamp.
     // Return:
     // THIS_IS_LOWER if the argument happens before this timestamp;
     // THIS_IS_HIGHER if the argument happens after this timestamp;
     // THIS_IS_EQUAL if the arguments coincides with this timestamp.
-    ComparisonResult compareTo(ESATTimestamp timestamp) const;
+    ComparisonResult compareTo(ESAT_Timestamp timestamp) const;
 };
 
-#endif
+#endif /* ESAT_Timestamp_h */

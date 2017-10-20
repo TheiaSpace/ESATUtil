@@ -16,13 +16,13 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "ESATI2CMaster.h"
+#include "ESAT_I2CMaster.h"
 
-boolean ESATI2CMaster::readTelecommandStatus(TwoWire& bus,
-                                             const byte address,
-                                             const byte millisecondsAfterWrites,
-                                             const byte tries,
-                                             const word millisecondsBetweenRetries)
+boolean ESAT_I2CMasterClass::readTelecommandStatus(TwoWire& bus,
+                                                   const byte address,
+                                                   const byte millisecondsAfterWrites,
+                                                   const byte tries,
+                                                   const word millisecondsBetweenRetries)
 {
   for (int i = 0; i < tries; i++)
   {
@@ -57,13 +57,13 @@ boolean ESATI2CMaster::readTelecommandStatus(TwoWire& bus,
   return false;
 }
 
-boolean ESATI2CMaster::readTelemetry(TwoWire& bus,
-                                     const byte address,
-                                     const byte packetIdentifier,
-                                     ESATCCSDSPacket& packet,
-                                     const byte millisecondsAfterWrites,
-                                     const byte tries,
-                                     const word millisecondsBetweenRetries)
+boolean ESAT_I2CMasterClass::readTelemetry(TwoWire& bus,
+                                           const byte address,
+                                           const byte packetIdentifier,
+                                           ESAT_CCSDSPacket& packet,
+                                           const byte millisecondsAfterWrites,
+                                           const byte tries,
+                                           const word millisecondsBetweenRetries)
 {
   const boolean telemetryRequestCorrect =
     writeTelemetryRequest(bus,
@@ -101,7 +101,7 @@ boolean ESATI2CMaster::readTelemetry(TwoWire& bus,
   {
     return false;
   }
-  const ESATCCSDSSecondaryHeader secondaryHeader =
+  const ESAT_CCSDSSecondaryHeader secondaryHeader =
     packet.readSecondaryHeader();
   if (secondaryHeader.packetIdentifier != packetIdentifier)
   {
@@ -110,9 +110,9 @@ boolean ESATI2CMaster::readTelemetry(TwoWire& bus,
   return true;
 }
 
-boolean ESATI2CMaster::readTelemetryPacketData(TwoWire& bus,
-                                               const byte address,
-                                               ESATCCSDSPacket& packet)
+boolean ESAT_I2CMasterClass::readTelemetryPacketData(TwoWire& bus,
+                                                     const byte address,
+                                                     ESAT_CCSDSPacket& packet)
 {
   const long packetDataLength = packet.readPacketDataLength();
   packet.rewind();
@@ -138,10 +138,10 @@ boolean ESATI2CMaster::readTelemetryPacketData(TwoWire& bus,
   return true;
 }
 
-boolean ESATI2CMaster::readTelemetryPrimaryHeader(TwoWire& bus,
-                                                  const byte address,
-                                                  ESATCCSDSPacket& packet,
-                                                  const byte millisecondsAfterWrites)
+boolean ESAT_I2CMasterClass::readTelemetryPrimaryHeader(TwoWire& bus,
+                                                        const byte address,
+                                                        ESAT_CCSDSPacket& packet,
+                                                        const byte millisecondsAfterWrites)
 {
   bus.beginTransmission(address);
   (void) bus.write(TELEMETRY_VECTOR);
@@ -176,11 +176,11 @@ boolean ESATI2CMaster::readTelemetryPrimaryHeader(TwoWire& bus,
   return true;
 }
 
-boolean ESATI2CMaster::readTelemetryStatus(TwoWire& bus,
-                                           const byte address,
-                                           const byte millisecondsAfterWrites,
-                                           const byte tries,
-                                           const word millisecondsBetweenRetries)
+boolean ESAT_I2CMasterClass::readTelemetryStatus(TwoWire& bus,
+                                                 const byte address,
+                                                 const byte millisecondsAfterWrites,
+                                                 const byte tries,
+                                                 const word millisecondsBetweenRetries)
 {
   for (int i = 0; i < tries; i++)
   {
@@ -224,12 +224,12 @@ boolean ESATI2CMaster::readTelemetryStatus(TwoWire& bus,
   return false;
 }
 
-boolean ESATI2CMaster::writeTelecommand(TwoWire& bus,
-                                        const byte address,
-                                        ESATCCSDSPacket& packet,
-                                        const byte millisecondsAfterWrites,
-                                        const byte tries,
-                                        const word millisecondsBetweenRetries)
+boolean ESAT_I2CMasterClass::writeTelecommand(TwoWire& bus,
+                                              const byte address,
+                                              ESAT_CCSDSPacket& packet,
+                                              const byte millisecondsAfterWrites,
+                                              const byte tries,
+                                              const word millisecondsBetweenRetries)
 {
   const boolean telecommandStatusCorrect =
     readTelecommandStatus(bus,
@@ -258,10 +258,10 @@ boolean ESATI2CMaster::writeTelecommand(TwoWire& bus,
   return telecommandPacketDataCorrect;
 }
 
-boolean ESATI2CMaster::writeTelecommandPacketData(TwoWire& bus,
-                                                  const byte address,
-                                                  ESATCCSDSPacket& packet,
-                                                  const byte millisecondsAfterWrites)
+boolean ESAT_I2CMasterClass::writeTelecommandPacketData(TwoWire& bus,
+                                                        const byte address,
+                                                        ESAT_CCSDSPacket& packet,
+                                                        const byte millisecondsAfterWrites)
 {
   packet.rewind();
   while (!packet.endOfPacketDataReached())
@@ -285,10 +285,10 @@ boolean ESATI2CMaster::writeTelecommandPacketData(TwoWire& bus,
   return true;
 }
 
-boolean ESATI2CMaster::writeTelecommandPrimaryHeader(TwoWire& bus,
-                                                     const byte address,
-                                                     ESATCCSDSPacket& packet,
-                                                     const byte millisecondsAfterWrites)
+boolean ESAT_I2CMasterClass::writeTelecommandPrimaryHeader(TwoWire& bus,
+                                                           const byte address,
+                                                           ESAT_CCSDSPacket& packet,
+                                                           const byte millisecondsAfterWrites)
 {
   bus.beginTransmission(address);
   (void) bus.write(TELECOMMAND_PRIMARY_HEADER);
@@ -308,10 +308,10 @@ boolean ESATI2CMaster::writeTelecommandPrimaryHeader(TwoWire& bus,
   }
 }
 
-boolean ESATI2CMaster::writeTelemetryRequest(TwoWire& bus,
-                                             const byte address,
-                                             const byte packetIdentifier,
-                                             const byte millisecondsAfterWrites)
+boolean ESAT_I2CMasterClass::writeTelemetryRequest(TwoWire& bus,
+                                                   const byte address,
+                                                   const byte packetIdentifier,
+                                                   const byte millisecondsAfterWrites)
 {
   bus.beginTransmission(address);
   (void) bus.write(TELEMETRY_REQUEST);
@@ -328,4 +328,4 @@ boolean ESATI2CMaster::writeTelemetryRequest(TwoWire& bus,
   }
 }
 
-ESATI2CMaster I2CMaster;
+ESAT_I2CMasterClass ESAT_I2CMaster;

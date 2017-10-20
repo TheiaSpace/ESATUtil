@@ -16,15 +16,16 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESATI2CMaster_h
-#define ESATI2CMaster_h
+#ifndef ESAT_I2CMaster_h
+#define ESAT_I2CMaster_h
 
 #include <Arduino.h>
-#include <ESATCCSDSPacket.h>
+#include <ESAT_CCSDSPacket.h>
 #include <Wire.h>
 
 // ESAT I2C telecommand and telemetry protocol for I2C master nodes.
-class ESATI2CMaster
+// Use the global instance ESAT_I2CMaster.
+class ESAT_I2CMasterClass
 {
   public:
     // Read a telemetry packet from the device at the given address.
@@ -36,7 +37,7 @@ class ESATI2CMaster
     boolean readTelemetry(TwoWire& bus,
                           byte address,
                           byte packetIdentifier,
-                          ESATCCSDSPacket& packet,
+                          ESAT_CCSDSPacket& packet,
                           byte millisecondsAfterWrites,
                           byte tries,
                           word millisecondsBetweenRetries);
@@ -49,7 +50,7 @@ class ESATI2CMaster
     // Return true on success; otherwise return false.
     boolean writeTelecommand(TwoWire& bus,
                              byte address,
-                             ESATCCSDSPacket& packet,
+                             ESAT_CCSDSPacket& packet,
                              byte millisecondsAfterWrites,
                              byte tries,
                              word millisecondsBetweenRetries);
@@ -102,7 +103,7 @@ class ESATI2CMaster
     // Return true on success; otherwise return false.
     boolean readTelemetryPacketData(TwoWire& bus,
                                     byte address,
-                                    ESATCCSDSPacket& packet);
+                                    ESAT_CCSDSPacket& packet);
 
     // Read the packet primary header from the given address.
     // Wait some milliseconds after each write operation to give
@@ -110,7 +111,7 @@ class ESATI2CMaster
     // Return true on success; otherwise return false.
     boolean readTelemetryPrimaryHeader(TwoWire& bus,
                                        byte address,
-                                       ESATCCSDSPacket& packet,
+                                       ESAT_CCSDSPacket& packet,
                                        byte millisecondsAfterWrites);
 
     // Read the telemetry status from the given address.
@@ -131,7 +132,7 @@ class ESATI2CMaster
     // Return true on success; otherwise return false.
     boolean writeTelecommandPacketData(TwoWire& bus,
                                        byte address,
-                                       ESATCCSDSPacket& packet,
+                                       ESAT_CCSDSPacket& packet,
                                        byte millisecondsAfterWrites);
 
     // Write the primary header to the given address.
@@ -140,7 +141,7 @@ class ESATI2CMaster
     // Return true on success; otherwise return false.
     boolean writeTelecommandPrimaryHeader(TwoWire& bus,
                                           byte address,
-                                          ESATCCSDSPacket& packet,
+                                          ESAT_CCSDSPacket& packet,
                                           byte millisecondsAfterWrites);
 
     // Write a telemetry request for a packet identifier to the given
@@ -154,6 +155,7 @@ class ESATI2CMaster
                                   byte millisecondsAfterWrites);
 };
 
-extern ESATI2CMaster I2CMaster;
+// Global instance of the I2C master library.
+extern ESAT_I2CMasterClass ESAT_I2CMaster;
 
-#endif
+#endif /* ESAT_I2CMaster_h */

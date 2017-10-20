@@ -16,11 +16,11 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESATCCSDSSecondaryHeader_h
-#define ESATCCSDSSecondaryHeader_h
+#ifndef ESAT_CCSDSSecondaryHeader_h
+#define ESAT_CCSDSSecondaryHeader_h
 
 #include <Arduino.h>
-#include <ESATTimestamp.h>
+#include <ESAT_Timestamp.h>
 
 // Secondary header used for ESAT's packets.  It contains the following fields:
 // - A time code with a preamble (1 byte) followed by a timestamp (7 bytes).
@@ -28,7 +28,7 @@
 // - A packet identifier (1 byte).
 // The only supported time code format is calendar segmented time code,
 // month of year/day of month variation, 1 second resolution.
-class ESATCCSDSSecondaryHeader: public Printable
+class ESAT_CCSDSSecondaryHeader: public Printable
 {
   public:
     // Supported time code types.  Currently, the only supported
@@ -48,7 +48,7 @@ class ESATCCSDSSecondaryHeader: public Printable
     Preamble preamble;
 
     // Timestamp.
-    ESATTimestamp timestamp;
+    ESAT_Timestamp timestamp;
 
     // Version number in major.minor.patch format
     // as defined in the Semantic Versioning 2.0.0 standard.
@@ -65,4 +65,4 @@ class ESATCCSDSSecondaryHeader: public Printable
     size_t printTo(Print& output) const;
 };
 
-#endif
+#endif /* ESAT_CCSDSSecondaryHeader_h */

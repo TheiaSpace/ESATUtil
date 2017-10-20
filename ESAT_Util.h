@@ -16,12 +16,14 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESATUtil_h
-#define ESATUtil_h
+#ifndef ESAT_Util_h
+#define ESAT_Util_h
 
 #include <Arduino.h>
 
-class ESATUtil
+// General utility library.
+// Use the global instance ESAT_Util.
+class ESAT_UtilClass
 {
   public:
     // Decode a binary coded decimal 8-bit number.
@@ -55,6 +57,7 @@ class ESATUtil
     String wordToHexadecimal(word number) const;
 };
 
-extern ESATUtil Util;
+// Global instance of the utility library.
+extern ESAT_UtilClass ESAT_Util;
 
-#endif
+#endif /* ESAT_Util_h */

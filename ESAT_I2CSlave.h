@@ -16,15 +16,16 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESATI2CSlave_h
-#define ESATI2CSlave_h
+#ifndef ESAT_I2CSlave_h
+#define ESAT_I2CSlave_h
 
 #include <Arduino.h>
-#include <ESATCCSDSPacket.h>
+#include <ESAT_CCSDSPacket.h>
 #include <Wire.h>
 
 // ESAT I2C telecommand and telemetry protocol for I2C slave nodes.
-class ESATI2CSlave
+// Use the global instance ESAT_I2CSlave.
+class ESAT_I2CSlaveClass
 {
   public:
     // Return value of requestTelemetryPacket() when there is no
@@ -50,7 +51,7 @@ class ESATI2CSlave
     // Read the next queued telecommand into a CCSDS packet.
     // Return true if there was a queued telecommand;
     // otherwise return false.
-    boolean readTelecommand(ESATCCSDSPacket& packet);
+    boolean readTelecommand(ESAT_CCSDSPacket& packet);
 
     // Reject the last telemetry request.
     // If there is a pending telemetry request (TELEMETRY_NOT_READY),
@@ -69,7 +70,7 @@ class ESATI2CSlave
     // If there is a pending telemetry request, but the packet
     // isn't a well-formed telemetry packet with the requested identifier,
     // the next read of TELEMETRY_STATUS will be TELEMETRY_INVALID.
-    void writeTelemetry(ESATCCSDSPacket& packet);
+    void writeTelemetry(ESAT_CCSDSPacket& packet);
 
   private:
     // Register numbers for telecommand and telemetry handling.
@@ -124,7 +125,7 @@ class ESATI2CSlave
     volatile State requestState;
 
     // Telecommand packet buffer.
-    ESATCCSDSPacket telecommand;
+    ESAT_CCSDSPacket telecommand;
 
     // Number of received telecommand packet data bytes.
     long telecommandPacketDataBytesReceived;
@@ -133,7 +134,7 @@ class ESATI2CSlave
     volatile TelecommandState telecommandState;
 
     // Telemetry packet buffer.
-    ESATCCSDSPacket telemetry;
+    ESAT_CCSDSPacket telemetry;
 
     // Identifier of the requested telemetry packet.
     volatile byte telemetryPacketIdentifier;
@@ -184,6 +185,7 @@ class ESATI2CSlave
     static void requestEvent();
 };
 
-extern ESATI2CSlave I2CSlave;
+// Global instance of the I2C slave library.
+extern ESAT_I2CSlaveClass ESAT_I2CSlave;
 
-#endif
+#endif /* ESAT_I2CSlave_h */
