@@ -16,17 +16,17 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESATTimer_h
-#define ESATTimer_h
+#ifndef ESAT_Timer_h
+#define ESAT_Timer_h
 
 #include <Arduino.h>
 
 // Simple locking timer for time-sensitive applications that require
 // periodic execution.
-// Use the global instance Timer.
-// Set up with Timer.begin().
-// Wait until the start of the next cycle with Timer.waitUntilNextCycle().
-class ESATTimer
+// Use the global instance ESAT_Timer.
+// Set up with ESAT_Timer.begin().
+// Wait until the start of the next cycle with ESAT_Timer.waitUntilNextCycle().
+class ESAT_TimerClass
 {
   public:
     // Period of the timer in milliseconds.
@@ -58,6 +58,6 @@ class ESATTimer
 };
 
 // Global instance of the ESATTimer library.
-extern ESATTimer Timer;
+extern ESAT_TimerClass ESAT_Timer;
 
-#endif
+#endif /* ESAT_Timer_h */

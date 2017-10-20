@@ -16,8 +16,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESATKISSStream_h
-#define ESATKISSStream_h
+#ifndef ESAT_KISSStream_h
+#define ESAT_KISSStream_h
 
 #include <Arduino.h>
 #include <Stream.h>
@@ -28,21 +28,21 @@
 // The stream is half-duplex:
 // - if it is in the middle of the reception a frame, don't write;
 // - if it is in the middle of the writing of a frame, don't read.
-class ESATKISSStream: public Stream
+class ESAT_KISSStream: public Stream
 {
   public:
     // Instantiate an empty KISS stream.
     // Empty KISS will not read and will not write.
-    ESATKISSStream();
+    ESAT_KISSStream();
 
     // Instantiate a new KISS stream that will operate
     // on the given backend stream.
     // Use the buffer for storing encoded or decoded data.
     // The KISS stream is half-duplex: it cannot be used
     // for reading frames simultaneously with writing frames.
-    ESATKISSStream(Stream& stream,
-                   byte buffer[],
-                   unsigned long bufferLength);
+    ESAT_KISSStream(Stream& stream,
+                    byte buffer[],
+                    unsigned long bufferLength);
 
     // Return the number of bytes available in the current frame.
     int available();
@@ -159,4 +159,4 @@ class ESATKISSStream: public Stream
     size_t writeEscapedFrameEscape();
 };
 
-#endif
+#endif /* ESAT_KISSStream_h */

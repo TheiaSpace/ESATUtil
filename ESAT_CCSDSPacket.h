@@ -16,12 +16,12 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESATCCSDSPacket_h
-#define ESATCCSDSPacket_h
+#ifndef ESAT_CCSDSPacket_h
+#define ESAT_CCSDSPacket_h
 
 #include <Arduino.h>
-#include <ESATCCSDSSecondaryHeader.h>
-#include <ESATTimestamp.h>
+#include <ESAT_CCSDSSecondaryHeader.h>
+#include <ESAT_Timestamp.h>
 
 // ESAT's CCSDS space packets.
 // These are simple packets following CCSDS Recommendation 133.0-B-1:
@@ -32,7 +32,7 @@
 // Signed integers are stored in two's complement format.
 // Floating-point numbers are stored in IEEE 754 format.
 // The packet data can be read and written as a Stream.
-class ESATCCSDSPacket: public Printable, public Stream
+class ESAT_CCSDSPacket: public Printable, public Stream
 {
   public:
     // Packet type: either telemetry or telecommand.
@@ -88,7 +88,7 @@ class ESATCCSDSPacket: public Printable, public Stream
     // The packet data buffer length is set to 0 and must be
     // assigned together with the packet data buffer before using
     // the packet data.
-    ESATCCSDSPacket();
+    ESAT_CCSDSPacket();
 
     // Instantiate a new packet backed with the packet data field
     // (packet payload) given by the given buffer.
@@ -97,7 +97,7 @@ class ESATCCSDSPacket: public Printable, public Stream
     // buffer length, which must match the actual buffer length.
     // The primary header starts with a raw value of all zeros.
     // The read/write pointer starts at 0.
-    ESATCCSDSPacket(byte buffer[], unsigned long bufferLength);
+    ESAT_CCSDSPacket(byte buffer[], unsigned long bufferLength);
 
     // Return the number of unread bytes in the packet data (the
     // packet data length minus the position of the read pointer).
@@ -113,7 +113,7 @@ class ESATCCSDSPacket: public Printable, public Stream
     // Copy the whole packet contents to a target packet.
     // The copy will fail if the target packet data buffer is too small.
     // Return true on successful copy; otherwise return false.
-    boolean copyTo(ESATCCSDSPacket& target);
+    boolean copyTo(ESAT_CCSDSPacket& target);
 
     // Return true if the last read operation reached the end of the
     // packet.  Otherwise return false.
@@ -276,7 +276,7 @@ class ESATCCSDSPacket: public Printable, public Stream
     // packet data buffer length.
     // The return value is undefined if there are fewer than 12 bytes before
     // reaching the end of the packet data buffer.
-    ESATCCSDSSecondaryHeader readSecondaryHeader();
+    ESAT_CCSDSSecondaryHeader readSecondaryHeader();
 
     // Return the CCSDS secondary header flag.
     // This field is part of the primary header.
@@ -305,7 +305,7 @@ class ESATCCSDSPacket: public Printable, public Stream
     // packet data buffer length.
     // The return value is undefined if there are fewer than 7 bytes before
     // reaching the end of the packet data buffer.
-    ESATTimestamp readTimestamp();
+    ESAT_Timestamp readTimestamp();
 
     // Return the next 32-bit unsigned integer from the packet data.
     // The raw datum is stored in big-endian byte order.
@@ -496,7 +496,7 @@ class ESATCCSDSPacket: public Printable, public Stream
     // The written value is undefined if there are fewer than 12 bytes before
     // reaching the end of the packet data, but no data will be written beyond
     // the packet data buffer.
-    void writeSecondaryHeader(ESATCCSDSSecondaryHeader datum);
+    void writeSecondaryHeader(ESAT_CCSDSSecondaryHeader datum);
 
     // Write the CCSDS secondary header flag.
     // This field is part of the primary header.
@@ -531,7 +531,7 @@ class ESATCCSDSPacket: public Printable, public Stream
     // The written data is undefined if there are fewer than 7 bytes before
     // reaching the end of the packet data, but no data will be written beyond
     // the packet data buffer.
-    void writeTimestamp(ESATTimestamp datum);
+    void writeTimestamp(ESAT_Timestamp datum);
 
     // Write the raw contents of the packet to an output stream.
     // Return true on success; otherwise return false.
@@ -601,4 +601,4 @@ class ESATCCSDSPacket: public Printable, public Stream
     void writePrimaryHeaderBits(byte offset, byte length, word bits);
 };
 
-#endif
+#endif /* ESAT_CCSDSPacket_h */

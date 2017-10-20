@@ -16,28 +16,28 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "ESATSoftwareClock.h"
+#include "ESAT_SoftwareClock.h"
 
-ESATSoftwareClock::ESATSoftwareClock()
+ESAT_SoftwareClock::ESAT_SoftwareClock()
 {
   running = false;
 }
 
-void ESATSoftwareClock::begin(ESATTimestamp timestamp)
+void ESAT_SoftwareClock::begin(ESAT_Timestamp timestamp)
 {
   setCurrentTime(timestamp);
 }
 
-boolean ESATSoftwareClock::isRunning() const
+boolean ESAT_SoftwareClock::isRunning() const
 {
   return running;
 }
 
-ESATTimestamp ESATSoftwareClock::read() const
+ESAT_Timestamp ESAT_SoftwareClock::read() const
 {
   if (running)
   {
-    ESATTimestamp timestamp = setTimestamp;
+    ESAT_Timestamp timestamp = setTimestamp;
     const unsigned long ellapsedMilliseconds =
             (millis() - setMilliseconds);
     const unsigned long ellapsedSeconds = ellapsedMilliseconds / 1000;
@@ -46,18 +46,18 @@ ESATTimestamp ESATSoftwareClock::read() const
   }
   else
   {
-    return ESATTimestamp();
+    return ESAT_Timestamp();
   }
 }
 
-void ESATSoftwareClock::setCurrentTime(ESATTimestamp timestamp)
+void ESAT_SoftwareClock::setCurrentTime(ESAT_Timestamp timestamp)
 {
   setMilliseconds = millis();
   setTimestamp = timestamp;
   running = true;
 }
 
-void ESATSoftwareClock::write(ESATTimestamp timestamp)
+void ESAT_SoftwareClock::write(ESAT_Timestamp timestamp)
 {
   setCurrentTime(timestamp);
 }

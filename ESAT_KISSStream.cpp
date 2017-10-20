@@ -16,9 +16,9 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "ESATKISSStream.h"
+#include "ESAT_KISSStream.h"
 
-ESATKISSStream::ESATKISSStream():
+ESAT_KISSStream::ESAT_KISSStream():
   backendStream(nullptr),
   backendBuffer(nullptr),
   backendBufferLength(0),
@@ -28,9 +28,9 @@ ESATKISSStream::ESATKISSStream():
 {
 }
 
-ESATKISSStream::ESATKISSStream(Stream& stream,
-                               byte buffer[],
-                               unsigned long bufferLength):
+ESAT_KISSStream::ESAT_KISSStream(Stream& stream,
+                                 byte buffer[],
+                                 unsigned long bufferLength):
   backendStream(&stream),
   backendBuffer(buffer),
   backendBufferLength(bufferLength),
@@ -40,12 +40,12 @@ ESATKISSStream::ESATKISSStream(Stream& stream,
 {
 }
 
-int ESATKISSStream::available()
+int ESAT_KISSStream::available()
 {
   return constrain(decodedDataLength - position, 0, 0x7FFF);
 }
 
-size_t ESATKISSStream::append(const byte datum)
+size_t ESAT_KISSStream::append(const byte datum)
 {
   if (!backendStream)
   {
@@ -64,7 +64,7 @@ size_t ESATKISSStream::append(const byte datum)
   return 1;
 }
 
-void ESATKISSStream::decode(const byte datum)
+void ESAT_KISSStream::decode(const byte datum)
 {
   switch (decoderState)
   {
@@ -85,7 +85,7 @@ void ESATKISSStream::decode(const byte datum)
   }
 }
 
-void ESATKISSStream::decodeDataFrame(const byte datum)
+void ESAT_KISSStream::decodeDataFrame(const byte datum)
 {
   switch (datum)
   {
@@ -101,7 +101,7 @@ void ESATKISSStream::decodeDataFrame(const byte datum)
   }
 }
 
-void ESATKISSStream::decodeEscapedFrameData(const byte datum)
+void ESAT_KISSStream::decodeEscapedFrameData(const byte datum)
 {
   switch (datum)
   {
@@ -131,7 +131,7 @@ void ESATKISSStream::decodeEscapedFrameData(const byte datum)
   }
 }
 
-void ESATKISSStream::decodeFrameData(const byte datum)
+void ESAT_KISSStream::decodeFrameData(const byte datum)
 {
   switch (datum)
   {
@@ -147,7 +147,7 @@ void ESATKISSStream::decodeFrameData(const byte datum)
   }
 }
 
-void ESATKISSStream::decodeFrameStart(const byte datum)
+void ESAT_KISSStream::decodeFrameStart(const byte datum)
 {
   switch (datum)
   {
@@ -160,7 +160,7 @@ void ESATKISSStream::decodeFrameStart(const byte datum)
   }
 }
 
-size_t ESATKISSStream::beginFrame()
+size_t ESAT_KISSStream::beginFrame()
 {
   reset();
   const size_t frameEndBytesWritten =
@@ -170,14 +170,14 @@ size_t ESATKISSStream::beginFrame()
   return frameEndBytesWritten + dataFrameBytesWritten;
 }
 
-size_t ESATKISSStream::endFrame()
+size_t ESAT_KISSStream::endFrame()
 {
   const size_t frameEndBytesWritten = append(FRAME_END);
   flush();
   return frameEndBytesWritten;
 }
 
-void ESATKISSStream::flush()
+void ESAT_KISSStream::flush()
 {
   if (backendBufferLength == 0)
   {
@@ -195,7 +195,7 @@ void ESATKISSStream::flush()
   reset();
 }
 
-unsigned long ESATKISSStream::frameLength(const unsigned long dataLength)
+unsigned long ESAT_KISSStream::frameLength(const unsigned long dataLength)
 {
   const unsigned long frameStartLength = 1;
   const unsigned long dataFrameLength = 1;
@@ -209,7 +209,7 @@ unsigned long ESATKISSStream::frameLength(const unsigned long dataLength)
   return totalLength;
 }
 
-int ESATKISSStream::peek()
+int ESAT_KISSStream::peek()
 {
   if (available() > 0)
   {
@@ -221,7 +221,7 @@ int ESATKISSStream::peek()
   }
 }
 
-int ESATKISSStream::read()
+int ESAT_KISSStream::read()
 {
   const int datum = peek();
   if (datum >= 0)
@@ -231,7 +231,7 @@ int ESATKISSStream::read()
   return datum;
 }
 
-boolean ESATKISSStream::receiveFrame()
+boolean ESAT_KISSStream::receiveFrame()
 {
   if (!backendStream)
   {
@@ -274,14 +274,14 @@ boolean ESATKISSStream::receiveFrame()
   }
 }
 
-void ESATKISSStream::reset()
+void ESAT_KISSStream::reset()
 {
   position = 0;
   decodedDataLength = 0;
   decoderState = WAITING_FOR_FRAME_START;
 }
 
-size_t ESATKISSStream::write(const uint8_t datum)
+size_t ESAT_KISSStream::write(const uint8_t datum)
 {
   switch (datum)
   {
@@ -297,7 +297,7 @@ size_t ESATKISSStream::write(const uint8_t datum)
   }
 }
 
-size_t ESATKISSStream::writeEscapedFrameEnd()
+size_t ESAT_KISSStream::writeEscapedFrameEnd()
 {
   const size_t frameEscapeBytesWritten =
     append(FRAME_ESCAPE);
@@ -306,7 +306,7 @@ size_t ESATKISSStream::writeEscapedFrameEnd()
   return frameEscapeBytesWritten + transposedFrameEndBytesWritten;
 }
 
-size_t ESATKISSStream::writeEscapedFrameEscape()
+size_t ESAT_KISSStream::writeEscapedFrameEscape()
 {
   const size_t frameEscapeBytesWritten =
     append(FRAME_ESCAPE);

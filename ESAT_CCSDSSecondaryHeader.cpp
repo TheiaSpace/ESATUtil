@@ -16,9 +16,9 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "ESATCCSDSSecondaryHeader.h"
+#include "ESAT_CCSDSSecondaryHeader.h"
 
-size_t ESATCCSDSSecondaryHeader::printTo(Print& output) const
+size_t ESAT_CCSDSSecondaryHeader::printTo(Print& output) const
 {
   size_t bytesWritten = 0;
   bytesWritten =

@@ -16,11 +16,11 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "ESATTimestamp.h"
-#include <ESATUtil.h>
+#include "ESAT_Timestamp.h"
+#include <ESAT_Util.h>
 
 
-ESATTimestamp::ESATTimestamp():
+ESAT_Timestamp::ESAT_Timestamp():
   year(0),
   month(0),
   day(0),
@@ -30,12 +30,12 @@ ESATTimestamp::ESATTimestamp():
 {
 }
 
-ESATTimestamp::ESATTimestamp(const word theYear,
-                             const byte theMonth,
-                             const byte theDay,
-                             const byte theMinutes,
-                             const byte theHours,
-                             const byte theSeconds):
+ESAT_Timestamp::ESAT_Timestamp(const word theYear,
+                               const byte theMonth,
+                               const byte theDay,
+                               const byte theMinutes,
+                               const byte theHours,
+                               const byte theSeconds):
   year(theYear),
   month(theMonth),
   day(theDay),
@@ -45,7 +45,7 @@ ESATTimestamp::ESATTimestamp(const word theYear,
 {
 }
 
-void ESATTimestamp::addDays(const unsigned long daysToAdd)
+void ESAT_Timestamp::addDays(const unsigned long daysToAdd)
 {
   for (long i = 0; i < daysToAdd; i++)
   {
@@ -59,7 +59,7 @@ void ESATTimestamp::addDays(const unsigned long daysToAdd)
   }
 }
 
-void ESATTimestamp::addHours(const unsigned long hoursToAdd)
+void ESAT_Timestamp::addHours(const unsigned long hoursToAdd)
 {
   const byte HOURS_PER_DAY = 24;
   const unsigned long daysToAdd =
@@ -68,7 +68,7 @@ void ESATTimestamp::addHours(const unsigned long hoursToAdd)
   hours = (hours + hoursToAdd) % HOURS_PER_DAY;
 }
 
-void ESATTimestamp::addMinutes(const unsigned long minutesToAdd)
+void ESAT_Timestamp::addMinutes(const unsigned long minutesToAdd)
 {
   const byte MINUTES_PER_HOUR = 60;
   const unsigned long hoursToAdd =
@@ -77,7 +77,7 @@ void ESATTimestamp::addMinutes(const unsigned long minutesToAdd)
   minutes = (minutes + minutesToAdd) % MINUTES_PER_HOUR;
 }
 
-void ESATTimestamp::addMonths(const unsigned long monthsToAdd)
+void ESAT_Timestamp::addMonths(const unsigned long monthsToAdd)
 {
   const byte MONTHS_PER_YEAR = 12;
   const unsigned long yearsToAdd =
@@ -86,7 +86,7 @@ void ESATTimestamp::addMonths(const unsigned long monthsToAdd)
   month = ((month + monthsToAdd - 1) % MONTHS_PER_YEAR) + 1;
 }
 
-void ESATTimestamp::addSeconds(const unsigned long secondsToAdd)
+void ESAT_Timestamp::addSeconds(const unsigned long secondsToAdd)
 {
   const byte SECONDS_PER_MINUTE = 60;
   const unsigned long minutesToAdd =
@@ -95,12 +95,12 @@ void ESATTimestamp::addSeconds(const unsigned long secondsToAdd)
   seconds = (seconds + secondsToAdd) % SECONDS_PER_MINUTE;
 }
 
-void ESATTimestamp::addYears(const unsigned long yearsToAdd)
+void ESAT_Timestamp::addYears(const unsigned long yearsToAdd)
 {
   year = year + yearsToAdd;
 }
 
-ESATTimestamp::ComparisonResult ESATTimestamp::compareDayTo(const ESATTimestamp timestamp) const
+ESAT_Timestamp::ComparisonResult ESAT_Timestamp::compareDayTo(const ESAT_Timestamp timestamp) const
 {
   if (day == timestamp.day)
   {
@@ -119,7 +119,7 @@ ESATTimestamp::ComparisonResult ESATTimestamp::compareDayTo(const ESATTimestamp 
   }
 }
 
-ESATTimestamp::ComparisonResult ESATTimestamp::compareHoursTo(const ESATTimestamp timestamp) const
+ESAT_Timestamp::ComparisonResult ESAT_Timestamp::compareHoursTo(const ESAT_Timestamp timestamp) const
 {
   if (hours == timestamp.hours)
   {
@@ -138,7 +138,7 @@ ESATTimestamp::ComparisonResult ESATTimestamp::compareHoursTo(const ESATTimestam
   }
 }
 
-ESATTimestamp::ComparisonResult ESATTimestamp::compareMinutesTo(const ESATTimestamp timestamp) const
+ESAT_Timestamp::ComparisonResult ESAT_Timestamp::compareMinutesTo(const ESAT_Timestamp timestamp) const
 {
   if (minutes == timestamp.minutes)
   {
@@ -157,7 +157,7 @@ ESATTimestamp::ComparisonResult ESATTimestamp::compareMinutesTo(const ESATTimest
   }
 }
 
-ESATTimestamp::ComparisonResult ESATTimestamp::compareMonthTo(const ESATTimestamp timestamp) const
+ESAT_Timestamp::ComparisonResult ESAT_Timestamp::compareMonthTo(const ESAT_Timestamp timestamp) const
 {
   if (month == timestamp.month)
   {
@@ -176,7 +176,7 @@ ESATTimestamp::ComparisonResult ESATTimestamp::compareMonthTo(const ESATTimestam
   }
 }
 
-ESATTimestamp::ComparisonResult ESATTimestamp::compareSecondsTo(const ESATTimestamp timestamp) const
+ESAT_Timestamp::ComparisonResult ESAT_Timestamp::compareSecondsTo(const ESAT_Timestamp timestamp) const
 {
   if (seconds == timestamp.seconds)
   {
@@ -195,7 +195,7 @@ ESATTimestamp::ComparisonResult ESATTimestamp::compareSecondsTo(const ESATTimest
   }
 }
 
-ESATTimestamp::ComparisonResult ESATTimestamp::compareTo(const ESATTimestamp timestamp) const
+ESAT_Timestamp::ComparisonResult ESAT_Timestamp::compareTo(const ESAT_Timestamp timestamp) const
 {
   if (year == timestamp.year)
   {
@@ -214,7 +214,7 @@ ESATTimestamp::ComparisonResult ESATTimestamp::compareTo(const ESATTimestamp tim
   }
 }
 
-byte ESATTimestamp::daysPerMonth(const unsigned int year, const byte month)
+byte ESAT_Timestamp::daysPerMonth(const unsigned int year, const byte month)
 {
   const byte MONTHS_PER_YEAR = 12;
   if (isLeapYear(year))
@@ -233,7 +233,7 @@ byte ESATTimestamp::daysPerMonth(const unsigned int year, const byte month)
   }
 }
 
-boolean ESATTimestamp::isLeapYear(const unsigned int year)
+boolean ESAT_Timestamp::isLeapYear(const unsigned int year)
 {
   if ((year % 4) != 0)
   {
@@ -250,35 +250,35 @@ boolean ESATTimestamp::isLeapYear(const unsigned int year)
   return true;
 }
 
-size_t ESATTimestamp::printTo(Print& output) const
+size_t ESAT_Timestamp::printTo(Print& output) const
 {
   size_t bytesWritten = 0;
   bytesWritten =
-    bytesWritten + output.print(Util.pad(String(year, DEC), '0', 4));
+    bytesWritten + output.print(ESAT_Util.pad(String(year, DEC), '0', 4));
   bytesWritten =
     bytesWritten + output.print(String("-"));
   bytesWritten =
-    bytesWritten + output.print(Util.pad(String(month, DEC), '0', 2));
+    bytesWritten + output.print(ESAT_Util.pad(String(month, DEC), '0', 2));
   bytesWritten =
     bytesWritten + output.print(String("-"));
   bytesWritten =
-    bytesWritten + output.print(Util.pad(String(day, DEC), '0', 2));
+    bytesWritten + output.print(ESAT_Util.pad(String(day, DEC), '0', 2));
   bytesWritten =
     bytesWritten + output.print(String("T"));
   bytesWritten =
-    bytesWritten + output.print(Util.pad(String(hours, DEC), '0', 2));
+    bytesWritten + output.print(ESAT_Util.pad(String(hours, DEC), '0', 2));
   bytesWritten =
     bytesWritten + output.print(String(":"));
   bytesWritten =
-    bytesWritten + output.print(Util.pad(String(minutes, DEC), '0', 2));
+    bytesWritten + output.print(ESAT_Util.pad(String(minutes, DEC), '0', 2));
   bytesWritten =
     bytesWritten + output.print(String(":"));
   bytesWritten =
-    bytesWritten + output.print(Util.pad(String(seconds, DEC), '0', 2));
+    bytesWritten + output.print(ESAT_Util.pad(String(seconds, DEC), '0', 2));
   return bytesWritten;
 }
 
-boolean ESATTimestamp::operator==(const ESATTimestamp timestamp) const
+boolean ESAT_Timestamp::operator==(const ESAT_Timestamp timestamp) const
 {
   const ComparisonResult result = compareTo(timestamp);
   switch (result)
@@ -298,7 +298,7 @@ boolean ESATTimestamp::operator==(const ESATTimestamp timestamp) const
   }
 }
 
-boolean ESATTimestamp::operator<(const ESATTimestamp timestamp) const
+boolean ESAT_Timestamp::operator<(const ESAT_Timestamp timestamp) const
 {
   const ComparisonResult result = compareTo(timestamp);
   switch (result)
@@ -318,7 +318,7 @@ boolean ESATTimestamp::operator<(const ESATTimestamp timestamp) const
   }
 }
 
-boolean ESATTimestamp::operator<=(const ESATTimestamp timestamp) const
+boolean ESAT_Timestamp::operator<=(const ESAT_Timestamp timestamp) const
 {
   const ComparisonResult result = compareTo(timestamp);
   switch (result)
@@ -338,7 +338,7 @@ boolean ESATTimestamp::operator<=(const ESATTimestamp timestamp) const
   }
 }
 
-boolean ESATTimestamp::operator>(const ESATTimestamp timestamp) const
+boolean ESAT_Timestamp::operator>(const ESAT_Timestamp timestamp) const
 {
   const ComparisonResult result = compareTo(timestamp);
   switch (result)
@@ -358,7 +358,7 @@ boolean ESATTimestamp::operator>(const ESATTimestamp timestamp) const
   }
 }
 
-boolean ESATTimestamp::operator>=(const ESATTimestamp timestamp) const
+boolean ESAT_Timestamp::operator>=(const ESAT_Timestamp timestamp) const
 {
   const ComparisonResult result = compareTo(timestamp);
   switch (result)
