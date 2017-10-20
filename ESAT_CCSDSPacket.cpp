@@ -72,6 +72,7 @@ boolean ESAT_CCSDSPacket::copyTo(ESAT_CCSDSPacket& target)
     target.primaryHeader[i] = primaryHeader[i];
   }
   rewind();
+  target.rewind();
   while (!endOfPacketDataReached())
   {
     target.writeByte(readByte());
