@@ -33,7 +33,7 @@ byte ESATTimer::load()
   }
   else
   {
-    return (period - previousWaitTime) / period;
+    return 100 * (period - previousWaitTime) / period;
   }
 }
 
