@@ -20,6 +20,7 @@
 #define ESAT_CCSDSPacket_h
 
 #include <Arduino.h>
+#include <ESAT_Buffer.h>
 #include <ESAT_CCSDSSecondaryHeader.h>
 #include <ESAT_Timestamp.h>
 
@@ -66,15 +67,6 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // Length of the primary header.
     static const byte PRIMARY_HEADER_LENGTH = 6;
 
-    // Buffer with the raw packet data field.
-    // The variable packetDataBufferLength must be equal
-    // to the capacity of this buffer.
-    byte* packetData;
-
-    // Packet data buffer length in bytes.
-    // Its value must be equal to the capacity of packetData.
-    unsigned long packetDataBufferLength;
-
     // Buffer with the raw primary header.
     byte primaryHeader[PRIMARY_HEADER_LENGTH];
 
@@ -106,6 +98,9 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // Return the number of unread bytes in the packet data (the
     // packet data length minus the position of the read pointer).
     unsigned long availableBytesToRead() const;
+
+    // Return the capacity in bytes of the packet data buffer.
+    unsigned long capacity() const;
 
     // Clear the packet by setting all bytes to 0.
     void clear();
@@ -539,7 +534,7 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // when the packet data buffer is smaller than the packet
     // data length.
     // This leaves the read/write pointer untouched.
-    boolean writeTo(Stream& output) const;
+    boolean writeTo(Stream& output);
 
     // Append a 32-bit unsigned integer to the packet data.
     // The raw datum is stored in big-endian byte order.
@@ -583,8 +578,8 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // The following offset is expressed in bytes:
     static const byte PACKET_DATA_LENGTH_OFFSET = 4;
 
-    // Position of the next read or write operation.
-    long position;
+    // Buffer with the raw packet data field.
+    ESAT_Buffer packetData;
 
     // Return the bits of a floating-point number packed into a 32-bit
     // integer.
