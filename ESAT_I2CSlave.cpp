@@ -222,7 +222,7 @@ void ESAT_I2CSlaveClass::receiveEvent(const int numberOfBytes)
   const byte registerNumber = ESAT_I2CSlave.bus->read();
   const int messageLength = numberOfBytes - 1;
   byte message[messageLength];
-  for (long i = 0; i < numberOfBytes; i++)
+  for (long i = 0; i < messageLength; i++)
   {
     message[i] = ESAT_I2CSlave.bus->read();
   }
