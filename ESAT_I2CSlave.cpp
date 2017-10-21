@@ -204,6 +204,7 @@ boolean ESAT_I2CSlaveClass::readTelecommand(ESAT_CCSDSPacket& packet)
   if (telecommandState == TELECOMMAND_PENDING)
   {
     boolean successfulCopy = telecommand.copyTo(packet);
+    packet.rewind();
     telecommandState = TELECOMMAND_NOT_PENDING;
     return successfulCopy;
   }
@@ -222,7 +223,7 @@ void ESAT_I2CSlaveClass::receiveEvent(const int numberOfBytes)
   const byte registerNumber = ESAT_I2CSlave.bus->read();
   const int messageLength = numberOfBytes - 1;
   byte message[messageLength];
-  for (long i = 0; i < numberOfBytes; i++)
+  for (long i = 0; i < messageLength; i++)
   {
     message[i] = ESAT_I2CSlave.bus->read();
   }
