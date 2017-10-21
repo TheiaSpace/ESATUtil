@@ -204,6 +204,7 @@ boolean ESAT_I2CSlaveClass::readTelecommand(ESAT_CCSDSPacket& packet)
   if (telecommandState == TELECOMMAND_PENDING)
   {
     boolean successfulCopy = telecommand.copyTo(packet);
+    packet.rewind();
     telecommandState = TELECOMMAND_NOT_PENDING;
     return successfulCopy;
   }
