@@ -21,6 +21,7 @@
 
 #include <Arduino.h>
 #include <Stream.h>
+#include <ESAT_Buffer.h>
 
 // KISS frame writer and reader.
 // Operate on a backend stream.
@@ -113,13 +114,7 @@ class ESAT_KISSStream: public Stream
     Stream* backendStream;
 
     // Buffer used for encoding and decoding.
-    byte* backendBuffer;
-
-    // Length of the buffer used for decoding.
-    unsigned long backendBufferLength;
-
-    // Number of decoded data bytes.
-    unsigned long decodedDataLength;
+    ESAT_Buffer backendBuffer;
 
     // Current state of the decoder state machine.
     DecoderState decoderState;
