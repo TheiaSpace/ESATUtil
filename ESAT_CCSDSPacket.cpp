@@ -169,7 +169,7 @@ size_t ESAT_CCSDSPacket::printTo(Print& output) const
     + output.println(String("{"));
   bytesWritten =
     bytesWritten
-    + output.print(String("  \"primaryHeader\":"));
+    + output.println(String("  \"primaryHeader\":"));
   bytesWritten =
     bytesWritten
     + output.print(primaryHeader);
