@@ -117,6 +117,10 @@ boolean ESAT_Buffer::readFrom(Stream& input, const unsigned long bytesToRead)
   {
     return false;
   }
+  if (bytesToRead == 0)
+  {
+    return true;
+  }
   bytesInBuffer = input.readBytes((char*) buffer, bytesToRead);
   if (bytesInBuffer == bytesToRead)
   {
