@@ -355,7 +355,7 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // when the packet data buffer is smaller than the packet
     // data length.
     // This leaves the read/write pointer untouched.
-    boolean writeTo(Stream& output);
+    boolean writeTo(Stream& output) const;
 
     // Append a 32-bit unsigned integer to the packet data.
     // The raw datum is stored in big-endian byte order.

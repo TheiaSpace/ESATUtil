@@ -445,7 +445,7 @@ void ESAT_CCSDSPacket::writeTimestamp(const ESAT_Timestamp datum)
   writeBinaryCodedDecimalByte(datum.seconds);
 }
 
-boolean ESAT_CCSDSPacket::writeTo(Stream& output)
+boolean ESAT_CCSDSPacket::writeTo(Stream& output) const
 {
   const boolean correctPrimaryHeader = primaryHeader.writeTo(output);
   return packetData.writeTo(output);
