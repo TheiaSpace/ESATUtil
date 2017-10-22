@@ -39,8 +39,8 @@ class ESAT_I2CMasterClass
                           byte packetIdentifier,
                           ESAT_CCSDSPacket& packet,
                           byte millisecondsAfterWrites,
-                          byte tries,
-                          word millisecondsBetweenRetries);
+                          byte attempts,
+                          word millisecondsBetweenAttempts);
 
     // Write a telecommand to the device at the given address.
     // Wait some milliseconds after each write operation to give
@@ -52,8 +52,8 @@ class ESAT_I2CMasterClass
                              byte address,
                              ESAT_CCSDSPacket& packet,
                              byte millisecondsAfterWrites,
-                             byte tries,
-                             word millisecondsBetweenRetries);
+                             byte attempts,
+                             word millisecondsBetweenAttempts);
 
   private:
     // Register numbers for telecommand and telemetry handling.
@@ -91,13 +91,13 @@ class ESAT_I2CMasterClass
     // Wait some milliseconds after each write operation to give
     // the slave time to process the request.
     // Retry several times if the queue is not free,
-    // waiting several milliseconds between retries.
+    // waiting several milliseconds between reattempts.
     // Return true if the telecommand queue is free; otherwise return false.
     boolean readTelecommandStatus(TwoWire& bus,
                                   byte address,
                                   byte millisecondsAfterWrites,
-                                  byte tries,
-                                  word millisecondsBetweenRetries);
+                                  byte attempts,
+                                  word millisecondsBetweenAttempts);
 
     // Read the packet data from the given address.
     // Return true on success; otherwise return false.
@@ -118,13 +118,13 @@ class ESAT_I2CMasterClass
     // Wait some milliseconds after each write operation to give
     // the slave time to process the request.
     // Retry several times if the telemetry is not ready,
-    // waiting several milliseconds between retries.
+    // waiting several milliseconds between reattempts.
     // Return true if the telemetry is ready; otherwise return false.
     boolean readTelemetryStatus(TwoWire& bus,
                                 byte address,
                                 byte millisecondsAfterWrites,
-                                byte tries,
-                                word millisecondsBetweenRetries);
+                                byte attempts,
+                                word millisecondsBetweenAttempts);
 
     // Write the packet data to the given address.
     // Wait some milliseconds after each write operation to give
