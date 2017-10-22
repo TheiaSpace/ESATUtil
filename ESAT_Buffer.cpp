@@ -164,12 +164,12 @@ boolean ESAT_Buffer::writeTo(Stream& output) const
     return true;
   }
   const size_t bytesWritten = output.write(buffer, bytesInBuffer);
-  if (bytesWritten == bytesInBuffer)
+  if (bytesWritten < bytesInBuffer)
   {
-    return true;
+    return false;
   }
   else
   {
-    return false;
+    return true;
   }
 }
