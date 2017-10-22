@@ -447,14 +447,7 @@ void ESAT_CCSDSPacket::writeTimestamp(const ESAT_Timestamp datum)
 
 boolean ESAT_CCSDSPacket::writeTo(Stream& output)
 {
-  for (byte i = 0; i < PRIMARY_HEADER_LENGTH; i++)
-  {
-    const size_t bytesWritten = output.write(primaryHeader[i]);
-    if (bytesWritten == 0)
-    {
-      return false;
-    }
-  }
+  const boolean correctPrimaryHeader = primaryHeader.writeTo(output);
   return packetData.writeTo(output);
 }
 
