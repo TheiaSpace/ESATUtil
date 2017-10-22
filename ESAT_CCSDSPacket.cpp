@@ -112,6 +112,11 @@ void ESAT_CCSDSPacket::flush()
   rewind();
 }
 
+unsigned long ESAT_CCSDSPacket::length() const
+{
+  return primaryHeader.LENGTH + primaryHeader.packetDataLength;
+}
+
 float ESAT_CCSDSPacket::longToFloat(const unsigned long bits)
 {
   if (bits == 0x00000000ul)

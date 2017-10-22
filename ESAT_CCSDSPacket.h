@@ -85,6 +85,10 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // packet data.
     void flush();
 
+    // Return the total length of the packet, which is the sum
+    // of the primary header length and the packet data length.
+    unsigned long length() const;
+
     // Return the next 8-bit unsigned integer from the packet data
     // or, if the read/write pointer is at the end of the packet data,
     // return -1.
