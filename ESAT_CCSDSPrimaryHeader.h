@@ -137,7 +137,7 @@ class ESAT_CCSDSPrimaryHeader: public Printable
     static const word SECONDARY_HEADER_FLAG_MASK =
       (B00001000 << 8) | B00000000;
     static const word APPLICATION_PROCESS_IDENTIFIER_MASK =
-      (B00000111 << 8) | B00000000;
+      (B00000111 << 8) | B11111111;
 
     // Bit masks of the fields of the second 16-bit word
     // of the header.
