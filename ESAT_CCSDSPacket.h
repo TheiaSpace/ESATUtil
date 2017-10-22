@@ -79,10 +79,6 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // be any write operation after the last flush()).
     boolean copyTo(ESAT_CCSDSPacket& target);
 
-    // Return true if the last read operation reached the end of the
-    // packet.  Otherwise return false.
-    boolean endOfPacketDataReached() const;
-
     // Update the packet data length to match the number of bytes written
     // to the packet data (the position of the next write operation).
     // This moves the read/write pointer back to the start of the
