@@ -114,15 +114,15 @@ boolean ESAT_I2CMasterClass::readTelemetryPacketData(TwoWire& bus,
                                                      const byte address,
                                                      ESAT_CCSDSPacket& packet)
 {
-  const long packetDataLength = packet.readPacketDataLength();
+  const ESAT_CCSDSPrimaryHeader primaryHeader = packet.readPrimaryHeader();
   packet.rewind();
-  long totalBytesRead = 0;
-  while (totalBytesRead < packetDataLength)
+  unsigned long totalBytesRead = 0;
+  while (totalBytesRead < primaryHeader.packetDataLength)
   {
     byte bytesToRead = I2C_CHUNK_LENGTH;
-    if ((totalBytesRead + bytesToRead) > packetDataLength)
+    if ((totalBytesRead + bytesToRead) > primaryHeader.packetDataLength)
     {
-      bytesToRead = packetDataLength - totalBytesRead;
+      bytesToRead = primaryHeader.packetDataLength - totalBytesRead;
     }
     const byte bytesRead = bus.requestFrom(address, bytesToRead);
     if (bytesRead != bytesToRead)
@@ -151,28 +151,27 @@ boolean ESAT_I2CMasterClass::readTelemetryPrimaryHeader(TwoWire& bus,
     return false;
   }
   delay(millisecondsAfterWrites);
+  ESAT_CCSDSPrimaryHeader primaryHeader;
   const byte headerBytesRead =
-    bus.requestFrom(address, packet.PRIMARY_HEADER_LENGTH);
-  if (headerBytesRead != packet.PRIMARY_HEADER_LENGTH)
+    bus.requestFrom(address, primaryHeader.LENGTH);
+  if (headerBytesRead != primaryHeader.LENGTH)
   {
     return false;
   }
-  for (byte i = 0; i < packet.PRIMARY_HEADER_LENGTH; i++)
-  {
-    packet.primaryHeader[i] = bus.read();
-  }
-  if (packet.readPacketType() != packet.TELEMETRY)
+  const boolean correctRead = primaryHeader.readFrom(bus);
+  if (!correctRead)
   {
     return false;
   }
-  if (packet.readPacketDataLength() == 0)
+  if (primaryHeader.packetType != primaryHeader.TELEMETRY)
   {
     return false;
   }
-  if (packet.readPacketDataLength() > packet.packetDataBufferLength)
+  if (primaryHeader.packetDataLength > packet.capacity())
   {
     return false;
   }
+  packet.writePrimaryHeader(primaryHeader);
   return true;
 }
 
@@ -264,13 +263,13 @@ boolean ESAT_I2CMasterClass::writeTelecommandPacketData(TwoWire& bus,
                                                         const byte millisecondsAfterWrites)
 {
   packet.rewind();
-  while (!packet.endOfPacketDataReached())
+  while (packet.available() > 0)
   {
     bus.beginTransmission(address);
     (void) bus.write(TELECOMMAND_PACKET_DATA);
     const byte bytesToWrite = I2C_CHUNK_LENGTH - 1;
     for (byte i = 0;
-         (i < bytesToWrite) && !packet.endOfPacketDataReached();
+         (i < bytesToWrite) && (packet.available() > 0);
          i++)
     {
       (void) bus.write(packet.readByte());
@@ -292,10 +291,8 @@ boolean ESAT_I2CMasterClass::writeTelecommandPrimaryHeader(TwoWire& bus,
 {
   bus.beginTransmission(address);
   (void) bus.write(TELECOMMAND_PRIMARY_HEADER);
-  for (byte i = 0; i < packet.PRIMARY_HEADER_LENGTH; i++)
-  {
-    (void) bus.write(packet.primaryHeader[i]);
-  }
+  const ESAT_CCSDSPrimaryHeader primaryHeader = packet.readPrimaryHeader();
+  (void) primaryHeader.writeTo(bus);
   const byte writeStatus = bus.endTransmission();
   delay(millisecondsAfterWrites);
   if (writeStatus == 0)

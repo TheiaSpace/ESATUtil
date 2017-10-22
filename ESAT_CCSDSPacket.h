@@ -20,6 +20,8 @@
 #define ESAT_CCSDSPacket_h
 
 #include <Arduino.h>
+#include <ESAT_Buffer.h>
+#include <ESAT_CCSDSPrimaryHeader.h>
 #include <ESAT_CCSDSSecondaryHeader.h>
 #include <ESAT_Timestamp.h>
 
@@ -35,49 +37,6 @@
 class ESAT_CCSDSPacket: public Printable, public Stream
 {
   public:
-    // Packet type: either telemetry or telecommand.
-    // The packet type field is part of the primary header.
-    enum PacketType
-    {
-      TELEMETRY = 0,
-      TELECOMMAND = 1,
-    };
-
-    // Secondary header flag.
-    // The secondary header may either be present of not.
-    enum SecondaryHeaderFlag
-    {
-      SECONDARY_HEADER_IS_NOT_PRESENT = 0,
-      SECONDARY_HEADER_IS_PRESENT = 1,
-    };
-
-    // Sequence flags.
-    // User data may be either segmented or unsegmented.  For
-    // segmented user data, the packet may contain the first segment,
-    // a continuation segment, or the last segment.
-    enum SequenceFlags
-    {
-      CONTINUATION_SEGMENT_OF_USER_DATA = B00,
-      FIRST_SEGMENT_OF_USER_DATA = B01,
-      LAST_SEGMENT_OF_USER_DATA = B10,
-      UNSEGMENTED_USER_DATA = B11,
-    };
-
-    // Length of the primary header.
-    static const byte PRIMARY_HEADER_LENGTH = 6;
-
-    // Buffer with the raw packet data field.
-    // The variable packetDataBufferLength must be equal
-    // to the capacity of this buffer.
-    byte* packetData;
-
-    // Packet data buffer length in bytes.
-    // Its value must be equal to the capacity of packetData.
-    unsigned long packetDataBufferLength;
-
-    // Buffer with the raw primary header.
-    byte primaryHeader[PRIMARY_HEADER_LENGTH];
-
     // Instantiate a CCSDS packet with no packet data field.
     // Useful for just generating a primary header.
     // The primary header starts with a raw value of all zeros.
@@ -107,28 +66,28 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // packet data length minus the position of the read pointer).
     unsigned long availableBytesToRead() const;
 
+    // Return the capacity in bytes of the packet data buffer.
+    unsigned long capacity() const;
+
     // Clear the packet by setting all bytes to 0.
     void clear();
 
     // Copy the whole packet contents to a target packet.
     // The copy will fail if the target packet data buffer is too small.
     // Return true on successful copy; otherwise return false.
+    // The packet must be in a consistent state (i.e. there mustn't
+    // be any write operation after the last flush()).
     boolean copyTo(ESAT_CCSDSPacket& target);
-
-    // Return true if the last read operation reached the end of the
-    // packet.  Otherwise return false.
-    boolean endOfPacketDataReached() const;
 
     // Update the packet data length to match the number of bytes written
     // to the packet data (the position of the next write operation).
-    // The raw datum is stored as a 16-bit unsigned integer in
-    // big-endian byte order, as the actual packet data length minus 1.
-    // If the number of bytes written to the packet is 0, the packet
-    // data length will be erroneous, but empty CCSDS packets
-    // are forbidden by the standard.
     // This moves the read/write pointer back to the start of the
     // packet data.
     void flush();
+
+    // Return the total length of the packet, which is the sum
+    // of the primary header length and the packet data length.
+    unsigned long length() const;
 
     // Return the next 8-bit unsigned integer from the packet data
     // or, if the read/write pointer is at the end of the packet data,
@@ -145,15 +104,6 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // This advances the read/write pointer by 1, but limited
     // to the packet data buffer length.
     int read();
-
-    // Return the CCSDS application process identifier.
-    // This field is part of the primary header.
-    // There should be one application process identifier per logical
-    // subsystem (e.g., the attitude determination and control
-    // subsystem should have its own application process identifier).
-    // The application process identifier is a 14-bit unsigned integer,
-    // most significant bit first.
-    word readApplicationProcessIdentifier() const;
 
     // Return the next 8-bit unsigned integer from the packet data.
     // The raw datum is stored as an 8-bit binary-coded-decimal number,
@@ -231,39 +181,10 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // before reaching the end of the packet data buffer.
     long readLong();
 
-    // Return the packet data length (expressed in octets).
-    // This field is part of the primary header.
-    // The packet data length includes the secondary header
-    // and the user data/packet payload.
-    // It can go from 1 to 65536.
-    // The raw datum is stored as a 16-bit unsigned integer
-    // in big-endian byte order, as the actual packet data
-    // length minus 1.
+    // Return the primary header of the packet.
+    // The primary header is sent as 3 16-bit words.
     // This leaves the read/write pointer untouched.
-    long readPacketDataLength() const;
-
-    // Return the CCSDS packet sequence count.
-    // This field is part of the primary header.
-    // There is a packet sequence count for every application process
-    // and it should be incremented every time a new packet is generated.
-    // The raw datum is stored as a 14-bit unsigned integer,
-    // most significant bit first.
-    // This leaves the read/write pointer untouched.
-    word readPacketSequenceCount() const;
-
-    // Return the CCSDS packet type: either telemetry or telecommand.
-    // This field is part of the primary header.
-    // The raw datum is stored as a bit:
-    // 0 for TELEMETRY, 1 for TELECOMMAND.
-    // This leaves the read/write pointer untouched.
-    PacketType readPacketType() const;
-
-    // Return the CCSDS packet version number.
-    // This field is part of the primary header.
-    // The raw datum is stored as a 3-bit unsigned integer, most
-    // significant bit first.
-    // This leaves the read/write pointer untouched.
-    byte readPacketVersionNumber() const;
+    ESAT_CCSDSPrimaryHeader readPrimaryHeader() const;
 
     // Return the next secondary header from the packet data.
     // The raw datum is stored in big-endian byte order, with the
@@ -277,25 +198,6 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // The return value is undefined if there are fewer than 12 bytes before
     // reaching the end of the packet data buffer.
     ESAT_CCSDSSecondaryHeader readSecondaryHeader();
-
-    // Return the CCSDS secondary header flag.
-    // This field is part of the primary header.
-    // The raw datum is stored as a bit:
-    // 0 for SECONDARY_HEADER_IS_NOT_PRESENT,
-    // 1 for SECONDARY_HEADER_IS_PRESENT.
-    // This leaves the read/write pointer untouched.
-    SecondaryHeaderFlag readSecondaryHeaderFlag() const;
-
-    // Return the CCSDS sequence flags.
-    // This field is part of the primary header.
-    // The raw datum is stored as a 2-bit unsigned integer, most
-    // significant bit first:
-    // 0 for CONTINUATION_SEGMENT_OF_USER_DATA,
-    // 1 for FIRST_SEGMENT_OF_USER_DATA,
-    // 2 for LAST_SEGMENT_OF_USER_DATA,
-    // 3 for UNSEGMENTED_USER_DATA.
-    // This leaves the read/write pointer untouched.
-    SequenceFlags readSequenceFlags() const;
 
     // Return the next timestamp from the packet data.
     // The raw datum is stored in big-endian byte order, encoded as a
@@ -327,16 +229,6 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // packet data field (packet payload).
     void rewind();
 
-    // Update the packet data length to match the number of bytes written
-    // to the packet data (the position of the next write operation).
-    // The raw datum is stored as a 16-bit unsigned integer in
-    // big-endian byte order, as the actual packet data length minus 1.
-    // If the number of bytes written to the packet is 0, the packet
-    // data length will be erroneous, but empty CCSDS packets
-    // are forbidden by the standard.
-    // This leaves the read/write pointer untouched.
-    void updatePacketDataLength();
-
     // Append an 8-bit unsigned integer to the packet data.
     // This advances the read/write pointer by 1, but limited to the
     // packet data buffer length.
@@ -353,16 +245,6 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // Don't append data beyond the end of the packet data buffer.
     // Return the number of bytes written.
     using Print::write;
-
-    // Write the CCSDS application process identifier.
-    // This field is part of the primary header.
-    // There should be one application process identifier per logical
-    // subsystem (e.g., the attitude determination and control
-    // subsystem should have its own application process identifier).
-    // The raw datum is stored as an 11-bit unsigned integer,
-    // most significant bit first.
-    // This leaves the read/write pointer untouched.
-    void writeApplicationProcessIdentifier(word applicationProcessIdentifier);
 
     // Append an 8-bit unsigned integer to the packet data.
     // The raw datum is stored in binary-coded-decimal format, most
@@ -441,49 +323,6 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // the packet data buffer.
     void writeLong(long datum);
 
-    // Write the packet data length (expressed in octets).
-    // This field is part of the primary header.
-    // The packet data length includes the secondary header
-    // and the user data/packet payload.
-    // It can go from 1 to 65536 (both included).
-    // The raw datum is stored as a 16-bit unsigned integer
-    // in big-endian byte order, as the actual packet data
-    // length minus 1.  As valid packet data lengths go from
-    // 1 to 65536 (both included), the behaviour when given
-    // an argument outside of that interval is undefined.
-    // This leaves the read/write pointer untouched.
-    void writePacketDataLength(long packetDataLength);
-
-    // Read the CCSDS packet sequence count.
-    // This field is part of the primary header.
-    // There is a packet sequence count for every application process
-    // and it should be incremented every time a new packet is generated.
-    // The raw datum is stored as a 14-bit unsigned integer,
-    // most significant bit first.
-    // This leaves the read/write pointer untouched.
-    void writePacketSequenceCount(word packetSequenceCount);
-
-    // Write the CCSDS packet type: wether telemetry or telecommand.
-    // This field is part of the primary header.
-    // The raw datum is stored as a bit:
-    // 0 for TELEMETRY, 1 for TELECOMMAND.
-    // The behaviour with arguments other than TELEMETRY or TELECOMMAND
-    // is undefined.
-    // This leaves the read/write pointer untouched.
-    void writePacketType(PacketType packetType);
-
-    // Write the CCSDS packet version number.
-    // This field is part of the primary header.
-    // Should be 0.
-    // The packet version number can go from 0 to 7 (both included).
-    // The raw datum is stored as a 3-bit unsigned integer, most
-    // significant bit first.
-    // As valid packet version numbers go from 0 to 7 (both included),
-    // the behaviour when given an argument outside of that interval
-    // is undefined.
-    // This leaves the read/write pointer untouched.
-    void writePacketVersionNumber(byte packetVersionNumber);
-
     // Append the secondary header to the packet data.
     // The raw datum is stored in big-endian byte order, with the
     // timestamp field encoded as a calendar segmented time code,
@@ -498,29 +337,10 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // the packet data buffer.
     void writeSecondaryHeader(ESAT_CCSDSSecondaryHeader datum);
 
-    // Write the CCSDS secondary header flag.
-    // This field is part of the primary header.
-    // The raw datum is stored as a bit:
-    // 0 for SECONDARY_HEADER_IS_NOT_PRESENT,
-    // 1 for SECONDARY_HEADER_IS_PRESENT.
-    // The behaviour with arguments other than SECONDARY_HEADER_IS_NOT_PRESENT
-    // or SECONDARY_HEADER_IS_PRESENT is undefined.
+    // Write the primary header of the packet.
+    // The primary header is sent as 3 16-bit words.
     // This leaves the read/write pointer untouched.
-    void writeSecondaryHeaderFlag(SecondaryHeaderFlag secondaryHeaderFlag);
-
-    // Write the CCSDS sequence flags.
-    // This field is part of the primary header.
-    // The raw datum is stored as a 2-bit unsigned integer,
-    // most significant bit first:
-    // 0 for CONTINUATION_SEGMENT_OF_USER_DATA,
-    // 1 for FIRST_SEGMENT_OF_USER_DATA,
-    // 2 for LAST_SEGMENT_OF_USER_DATA,
-    // 3 for UNSEGMENTED_USER_DATA.
-    // The behaviour with arguments other than
-    // CONTINUATION_SEGMENT_OF_USER_DATA, FIRST_SEGMENT_OF_USER_DATA,
-    // LAST_SEGMENT_OF_USER_DATA or UNSEGMENTED_USER_DATA is undefined.
-    // This leaves the read/write pointer untouched.
-    void writeSequenceFlags(SequenceFlags sequenceFlags);
+    void writePrimaryHeader(ESAT_CCSDSPrimaryHeader primaryHeader);
 
     // Append a timestamp to the packet data.
     // The raw datum is stored in big-endian byte order, encoded as a
@@ -560,31 +380,11 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     void writeWord(word datum);
 
   private:
-    // Structure of the primary header.
-    // The following offsets and lengths are expressed in bits:
-    static const byte PACKET_VERSION_NUMBER_OFFSET = 0;
-    static const byte PACKET_VERSION_NUMBER_LENGTH = 3;
-    static const byte PACKET_TYPE_OFFSET =
-      PACKET_VERSION_NUMBER_OFFSET + PACKET_VERSION_NUMBER_LENGTH;
-    static const byte PACKET_TYPE_LENGTH = 1;
-    static const byte SECONDARY_HEADER_FLAG_OFFSET =
-      PACKET_TYPE_OFFSET + PACKET_TYPE_LENGTH;
-    static const byte SECONDARY_HEADER_FLAG_LENGTH = 1;
-    static const byte APPLICATION_PROCESS_IDENTIFIER_OFFSET =
-      SECONDARY_HEADER_FLAG_OFFSET + SECONDARY_HEADER_FLAG_LENGTH;
-    static const byte APPLICATION_PROCESS_IDENTIFIER_LENGTH = 11;
-    static const byte SEQUENCE_FLAGS_OFFSET =
-      APPLICATION_PROCESS_IDENTIFIER_OFFSET
-      + APPLICATION_PROCESS_IDENTIFIER_LENGTH;
-    static const byte SEQUENCE_FLAGS_LENGTH = 2;
-    static const byte PACKET_SEQUENCE_COUNT_OFFSET =
-      SEQUENCE_FLAGS_OFFSET + SEQUENCE_FLAGS_LENGTH;
-    static const byte PACKET_SEQUENCE_COUNT_LENGTH = 14;
-    // The following offset is expressed in bytes:
-    static const byte PACKET_DATA_LENGTH_OFFSET = 4;
+    // Buffer with the raw packet data field.
+    ESAT_Buffer packetData;
 
-    // Position of the next read or write operation.
-    long position;
+    // Primary header field of the packet.
+    ESAT_CCSDSPrimaryHeader primaryHeader;
 
     // Return the bits of a floating-point number packed into a 32-bit
     // integer.
@@ -593,12 +393,6 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // Return the floating point number encoded in the bits of a
     // 32-bit integer.
     float longToFloat(unsigned long bits);
-
-    // Read up to 16 bits at a given offset from the primary header.
-    word readPrimaryHeaderBits(byte offset, byte length) const;
-
-    // Write up to 16 bits at a given bit offset on the primary header.
-    void writePrimaryHeaderBits(byte offset, byte length, word bits);
 };
 
 #endif /* ESAT_CCSDSPacket_h */

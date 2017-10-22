@@ -20,11 +20,8 @@
 
 ESAT_KISSStream::ESAT_KISSStream():
   backendStream(nullptr),
-  backendBuffer(nullptr),
-  backendBufferLength(0),
-  decoderState(WAITING_FOR_FRAME_START),
-  position(0),
-  decodedDataLength(0)
+  backendBuffer(),
+  decoderState(WAITING_FOR_FRAME_START)
 {
 }
 
@@ -32,36 +29,26 @@ ESAT_KISSStream::ESAT_KISSStream(Stream& stream,
                                  byte buffer[],
                                  unsigned long bufferLength):
   backendStream(&stream),
-  backendBuffer(buffer),
-  backendBufferLength(bufferLength),
-  decoderState(WAITING_FOR_FRAME_START),
-  position(0),
-  decodedDataLength(0)
+  backendBuffer(buffer, bufferLength),
+  decoderState(WAITING_FOR_FRAME_START)
 {
 }
 
 int ESAT_KISSStream::available()
 {
-  return constrain(decodedDataLength - position, 0, 0x7FFF);
+  if (decoderState == FINISHED)
+  {
+    return backendBuffer.available();
+  }
+  else
+  {
+    return 0;
+  }
 }
 
 size_t ESAT_KISSStream::append(const byte datum)
 {
-  if (!backendStream)
-  {
-    return 0;
-  }
-  if (!backendBuffer)
-  {
-    return 0;
-  }
-  if (position >= backendBufferLength)
-  {
-    return 0;
-  }
-  backendBuffer[position] = datum;
-  position = position + 1;
-  return 1;
+  return backendBuffer.write(datum);
 }
 
 void ESAT_KISSStream::decode(const byte datum)
@@ -179,19 +166,11 @@ size_t ESAT_KISSStream::endFrame()
 
 void ESAT_KISSStream::flush()
 {
-  if (backendBufferLength == 0)
-  {
-    return;
-  }
   if (!backendStream)
   {
     return;
   }
-  if (!backendBuffer)
-  {
-    return;
-  }
-  (void) backendStream->write(backendBuffer, position);
+  (void) backendBuffer.writeTo(*backendStream);
   reset();
 }
 
@@ -211,24 +190,12 @@ unsigned long ESAT_KISSStream::frameLength(const unsigned long dataLength)
 
 int ESAT_KISSStream::peek()
 {
-  if (available() > 0)
-  {
-    return backendBuffer[position];
-  }
-  else
-  {
-    return -1;
-  }
+  return backendBuffer.peek();
 }
 
 int ESAT_KISSStream::read()
 {
-  const int datum = peek();
-  if (datum >= 0)
-  {
-    position = position + 1;
-  }
-  return datum;
+  return backendBuffer.read();
 }
 
 boolean ESAT_KISSStream::receiveFrame()
@@ -237,11 +204,7 @@ boolean ESAT_KISSStream::receiveFrame()
   {
     return false;
   }
-  if (!backendBuffer)
-  {
-    return false;
-  }
-  if (backendBufferLength == 0)
+  if (backendBuffer.capacity() == 0)
   {
     return false;
   }
@@ -249,7 +212,7 @@ boolean ESAT_KISSStream::receiveFrame()
   {
     reset();
   }
-  if (position >= backendBufferLength)
+  if (backendBuffer.available() <= 0)
   {
     reset();
   }
@@ -262,10 +225,9 @@ boolean ESAT_KISSStream::receiveFrame()
       decode(datum);
     }
   }
-  decodedDataLength = position;
   if (decoderState == FINISHED)
   {
-    position = 0;
+    backendBuffer.rewind();
     return true;
   }
   else
@@ -276,8 +238,7 @@ boolean ESAT_KISSStream::receiveFrame()
 
 void ESAT_KISSStream::reset()
 {
-  position = 0;
-  decodedDataLength = 0;
+  backendBuffer.flush();
   decoderState = WAITING_FOR_FRAME_START;
 }
 

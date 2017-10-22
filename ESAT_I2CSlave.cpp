@@ -37,8 +37,7 @@ void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
   bus->onRequest(requestEvent);
 }
 
-void ESAT_I2CSlaveClass::handleTelecommandPacketDataReception(const byte message[],
-                                                              const int messageLength)
+void ESAT_I2CSlaveClass::handleTelecommandPacketDataReception(ESAT_Buffer message)
 {
   if (telecommandState == TELECOMMAND_PENDING)
   {
@@ -52,16 +51,19 @@ void ESAT_I2CSlaveClass::handleTelecommandPacketDataReception(const byte message
     requestState = IDLE;
     return;
   }
-  const long packetDataLength = telecommand.readPacketDataLength();
-  for (long i = 0;
-       (i < messageLength)
-         && (telecommandPacketDataBytesReceived < packetDataLength);
-       i++)
+  const ESAT_CCSDSPrimaryHeader primaryHeader =
+    telecommand.readPrimaryHeader();
+  while ((message.available() > 0)
+         && (telecommandPacketDataBytesReceived
+             < primaryHeader.packetDataLength))
   {
-    telecommand.packetData[telecommandPacketDataBytesReceived] = message[i];
-    telecommandPacketDataBytesReceived = telecommandPacketDataBytesReceived + 1;
-    if (telecommandPacketDataBytesReceived >= packetDataLength)
+    telecommand.writeByte(message.read());
+    telecommandPacketDataBytesReceived =
+      telecommandPacketDataBytesReceived + 1;
+    if (telecommandPacketDataBytesReceived >=
+        primaryHeader.packetDataLength)
     {
+      telecommand.flush();
       telecommandState = TELECOMMAND_PENDING;
       receiveState = IDLE;
     }
@@ -69,8 +71,7 @@ void ESAT_I2CSlaveClass::handleTelecommandPacketDataReception(const byte message
   requestState = IDLE;
 }
 
-void ESAT_I2CSlaveClass::handleTelecommandPrimaryHeaderReception(const byte message[],
-                                                                 const int messageLength)
+void ESAT_I2CSlaveClass::handleTelecommandPrimaryHeaderReception(ESAT_Buffer message)
 {
   if (telecommandState == TELECOMMAND_PENDING)
   {
@@ -78,32 +79,38 @@ void ESAT_I2CSlaveClass::handleTelecommandPrimaryHeaderReception(const byte mess
     requestState = IDLE;
     return;
   }
-  if (messageLength != telecommand.PRIMARY_HEADER_LENGTH)
+  if (message.length() != ESAT_CCSDSPrimaryHeader::LENGTH)
   {
     receiveState = IDLE;
     requestState = IDLE;
     return;
   }
-  for (byte i = 0; i < messageLength; i++)
+  message.rewind();
+  ESAT_CCSDSPrimaryHeader primaryHeader;
+  const boolean correctRead = primaryHeader.readFrom(message);
+  if (!correctRead)
   {
-    telecommand.primaryHeader[i] = message[i];
+    receiveState = IDLE;
+    requestState = IDLE;
+    return;
   }
-  if (telecommand.readPacketType() != telecommand.TELECOMMAND)
+  if (primaryHeader.packetType
+      != primaryHeader.TELECOMMAND)
   {
     receiveState = IDLE;
     requestState = IDLE;
     return;
   }
   telecommand.rewind();
+  telecommand.writePrimaryHeader(primaryHeader);
   telecommandPacketDataBytesReceived = 0;
   receiveState = HANDLE_TELECOMMAND_PACKET_DATA;
   requestState = IDLE;
 }
 
-void ESAT_I2CSlaveClass::handleTelecommandStatusReception(const byte message[],
-                                                          const int messageLength)
+void ESAT_I2CSlaveClass::handleTelecommandStatusReception(ESAT_Buffer message)
 {
-  if (messageLength != 1)
+  if (message.length() != 0)
   {
     receiveState = IDLE;
     requestState = IDLE;
@@ -113,25 +120,23 @@ void ESAT_I2CSlaveClass::handleTelecommandStatusReception(const byte message[],
   requestState = HANDLE_TELECOMMAND_STATUS;
 }
 
-void ESAT_I2CSlaveClass::handleTelemetryRequestReception(const byte message[],
-                                                         const int messageLength)
+void ESAT_I2CSlaveClass::handleTelemetryRequestReception(ESAT_Buffer message)
 {
-  if (messageLength != 1)
+  if (message.length() != 1)
   {
     receiveState = IDLE;
     requestState = IDLE;
     return;
   }
-  telemetryPacketIdentifier = message[0];
+  telemetryPacketIdentifier = message.read();
   telemetryState = TELEMETRY_NOT_READY;
   receiveState = IDLE;
   requestState = HANDLE_TELEMETRY_REQUEST;
 }
 
-void ESAT_I2CSlaveClass::handleTelemetryStatusReception(const byte message[],
-                                                        const int messageLength)
+void ESAT_I2CSlaveClass::handleTelemetryStatusReception(ESAT_Buffer message)
 {
-  if (messageLength != 0)
+  if (message.length() != 0)
   {
     receiveState = IDLE;
     requestState = IDLE;
@@ -141,10 +146,9 @@ void ESAT_I2CSlaveClass::handleTelemetryStatusReception(const byte message[],
   requestState = HANDLE_TELEMETRY_STATUS;
 }
 
-void ESAT_I2CSlaveClass::handleTelemetryVectorReception(const byte message[],
-                                                        const int messageLength)
+void ESAT_I2CSlaveClass::handleTelemetryVectorReception(ESAT_Buffer message)
 {
-  if (messageLength != 0)
+  if (message.length() != 0)
   {
     receiveState = IDLE;
     requestState = IDLE;
@@ -176,7 +180,7 @@ void ESAT_I2CSlaveClass::handleTelemetryVectorPacketDataRequest()
   for (byte i = 0; i < I2C_CHUNK_LENGTH; i++)
   {
     (void) bus->write(telemetry.readByte());
-    if (telemetry.endOfPacketDataReached())
+    if (telemetry.available() == 0)
     {
       requestState = IDLE;
       telemetryState = TELEMETRY_NOT_REQUESTED;
@@ -191,10 +195,9 @@ void ESAT_I2CSlaveClass::handleTelemetryVectorPrimaryHeaderRequest()
     requestState = IDLE;
     return;
   }
-  for (byte i = 0; i < telemetry.PRIMARY_HEADER_LENGTH; i++)
-  {
-    (void) bus->write(telemetry.primaryHeader[i]);
-  }
+  const ESAT_CCSDSPrimaryHeader primaryHeader =
+    telemetry.readPrimaryHeader();
+  (void) primaryHeader.writeTo(*bus);
   telemetry.rewind();
   requestState = HANDLE_TELEMETRY_VECTOR_PACKET_DATA;
 }
@@ -222,36 +225,33 @@ void ESAT_I2CSlaveClass::receiveEvent(const int numberOfBytes)
   }
   const byte registerNumber = ESAT_I2CSlave.bus->read();
   const int messageLength = numberOfBytes - 1;
-  byte message[messageLength];
-  for (long i = 0; i < messageLength; i++)
+  byte octets[messageLength];
+  ESAT_Buffer message(octets, sizeof(octets));
+  const boolean correctRead = message.readFrom(*(ESAT_I2CSlave.bus),
+                                               messageLength);
+  if (!correctRead)
   {
-    message[i] = ESAT_I2CSlave.bus->read();
+    return;
   }
   switch (registerNumber)
   {
     case TELECOMMAND_PRIMARY_HEADER:
-      ESAT_I2CSlave.handleTelecommandPrimaryHeaderReception(message,
-                                                            messageLength);
+      ESAT_I2CSlave.handleTelecommandPrimaryHeaderReception(message);
       break;
     case TELECOMMAND_PACKET_DATA:
-      ESAT_I2CSlave.handleTelecommandPacketDataReception(message,
-                                                         messageLength);
+      ESAT_I2CSlave.handleTelecommandPacketDataReception(message);
       break;
     case TELECOMMAND_STATUS:
-      ESAT_I2CSlave.handleTelecommandStatusReception(message,
-                                                     messageLength);
+      ESAT_I2CSlave.handleTelecommandStatusReception(message);
       break;
     case TELEMETRY_REQUEST:
-      ESAT_I2CSlave.handleTelemetryRequestReception(message,
-                                                    messageLength);
+      ESAT_I2CSlave.handleTelemetryRequestReception(message);
       break;
     case TELEMETRY_STATUS:
-      ESAT_I2CSlave.handleTelemetryStatusReception(message,
-                                                   messageLength);
+      ESAT_I2CSlave.handleTelemetryStatusReception(message);
       break;
     case TELEMETRY_VECTOR:
-      ESAT_I2CSlave.handleTelemetryVectorReception(message,
-                                                   messageLength);
+      ESAT_I2CSlave.handleTelemetryVectorReception(message);
       break;
     default:
       ESAT_I2CSlave.receiveState = IDLE;
@@ -311,12 +311,14 @@ void ESAT_I2CSlaveClass::writeTelemetry(ESAT_CCSDSPacket& packet)
   {
     return;
   }
-  if (packet.readPacketType() != packet.TELEMETRY)
+  packet.rewind();
+  const ESAT_CCSDSPrimaryHeader primaryHeader =
+    packet.readPrimaryHeader();
+  if (primaryHeader.packetType != primaryHeader.TELEMETRY)
   {
     telemetryState = TELEMETRY_INVALID;
     return;
   }
-  packet.rewind();
   const ESAT_CCSDSSecondaryHeader secondaryHeader =
     packet.readSecondaryHeader();
   if (secondaryHeader.packetIdentifier != telemetryPacketIdentifier)

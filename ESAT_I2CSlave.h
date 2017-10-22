@@ -20,7 +20,8 @@
 #define ESAT_I2CSlave_h
 
 #include <Arduino.h>
-#include <ESAT_CCSDSPacket.h>
+#include "ESAT_Buffer.h"
+#include "ESAT_CCSDSPacket.h"
 #include <Wire.h>
 
 // ESAT I2C telecommand and telemetry protocol for I2C slave nodes.
@@ -128,7 +129,7 @@ class ESAT_I2CSlaveClass
     ESAT_CCSDSPacket telecommand;
 
     // Number of received telecommand packet data bytes.
-    long telecommandPacketDataBytesReceived;
+    unsigned long telecommandPacketDataBytesReceived;
 
     // State of the telecommand reception state machine.
     volatile TelecommandState telecommandState;
@@ -143,28 +144,22 @@ class ESAT_I2CSlaveClass
     volatile TelemetryState telemetryState;
 
     // Handle a write to TELECOMMAND_PACKET_DATA.
-    void handleTelecommandPacketDataReception(const byte message[],
-                                              int messageLength);
+    void handleTelecommandPacketDataReception(ESAT_Buffer message);
 
     // Handle a write to TELECOMMAND_PRIMARY_HEADER.
-    void handleTelecommandPrimaryHeaderReception(const byte message[],
-                                                 int messageLength);
+    void handleTelecommandPrimaryHeaderReception(ESAT_Buffer message);
 
     // Handle a write to TELECOMMAND_STATUS.
-    void handleTelecommandStatusReception(const byte message[],
-                                          int messageLength);
+    void handleTelecommandStatusReception(ESAT_Buffer message);
 
     // Handle a write to TELEMETRY_REQUEST.
-    void handleTelemetryRequestReception(const byte message[],
-                                         int messageLength);
+    void handleTelemetryRequestReception(ESAT_Buffer message);
 
     // Handle a write to TELEMETRY_STATUS.
-    void handleTelemetryStatusReception(const byte message[],
-                                        int messageLength);
+    void handleTelemetryStatusReception(ESAT_Buffer message);
 
     // Handle a write to TELEMETRY_VECTOR.
-    void handleTelemetryVectorReception(const byte message[],
-                                        int messageLength);
+    void handleTelemetryVectorReception(ESAT_Buffer message);
 
     // Handle a read from TELECOMMAND_STATUS.
     void handleTelecommandStatusRequest();
