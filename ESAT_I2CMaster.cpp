@@ -21,10 +21,10 @@
 boolean ESAT_I2CMasterClass::readTelecommandStatus(TwoWire& bus,
                                                    const byte address,
                                                    const byte millisecondsAfterWrites,
-                                                   const byte tries,
-                                                   const word millisecondsBetweenRetries)
+                                                   const byte attempts,
+                                                   const word millisecondsBetweenAttempts)
 {
-  for (int i = 0; i < tries; i++)
+  for (int i = 0; i < attempts; i++)
   {
     bus.beginTransmission(address);
     (void) bus.write(TELECOMMAND_STATUS);
@@ -47,7 +47,7 @@ boolean ESAT_I2CMasterClass::readTelecommandStatus(TwoWire& bus,
         return true;
         break;
       case TELECOMMAND_PENDING:
-        delay(millisecondsBetweenRetries);
+        delay(millisecondsBetweenAttempts);
         break;
       default:
         return false;
@@ -62,8 +62,8 @@ boolean ESAT_I2CMasterClass::readTelemetry(TwoWire& bus,
                                            const byte packetIdentifier,
                                            ESAT_CCSDSPacket& packet,
                                            const byte millisecondsAfterWrites,
-                                           const byte tries,
-                                           const word millisecondsBetweenRetries)
+                                           const byte attempts,
+                                           const word millisecondsBetweenAttempts)
 {
   const boolean telemetryRequestCorrect =
     writeTelemetryRequest(bus,
@@ -78,8 +78,8 @@ boolean ESAT_I2CMasterClass::readTelemetry(TwoWire& bus,
     readTelemetryStatus(bus,
                         address,
                         millisecondsAfterWrites,
-                        tries,
-                        millisecondsBetweenRetries);
+                        attempts,
+                        millisecondsBetweenAttempts);
   if (!telemetryReady)
   {
     return false;
@@ -178,10 +178,10 @@ boolean ESAT_I2CMasterClass::readTelemetryPrimaryHeader(TwoWire& bus,
 boolean ESAT_I2CMasterClass::readTelemetryStatus(TwoWire& bus,
                                                  const byte address,
                                                  const byte millisecondsAfterWrites,
-                                                 const byte tries,
-                                                 const word millisecondsBetweenRetries)
+                                                 const byte attempts,
+                                                 const word millisecondsBetweenAttempts)
 {
-  for (int i = 0; i < tries; i++)
+  for (int i = 0; i < attempts; i++)
   {
     bus.beginTransmission(address);
     (void) bus.write(TELEMETRY_STATUS);
@@ -204,7 +204,7 @@ boolean ESAT_I2CMasterClass::readTelemetryStatus(TwoWire& bus,
         return false;
         break;
       case TELEMETRY_NOT_READY:
-        delay(millisecondsBetweenRetries);
+        delay(millisecondsBetweenAttempts);
         break;
       case TELEMETRY_READY:
         return true;
@@ -227,15 +227,15 @@ boolean ESAT_I2CMasterClass::writeTelecommand(TwoWire& bus,
                                               const byte address,
                                               ESAT_CCSDSPacket& packet,
                                               const byte millisecondsAfterWrites,
-                                              const byte tries,
-                                              const word millisecondsBetweenRetries)
+                                              const byte attempts,
+                                              const word millisecondsBetweenAttempts)
 {
   const boolean telecommandStatusCorrect =
     readTelecommandStatus(bus,
                           address,
                           millisecondsAfterWrites,
-                          tries,
-                          millisecondsBetweenRetries);
+                          attempts,
+                          millisecondsBetweenAttempts);
   if (!telecommandStatusCorrect)
   {
     return false;
