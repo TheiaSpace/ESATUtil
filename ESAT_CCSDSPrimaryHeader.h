@@ -107,7 +107,7 @@ class ESAT_CCSDSPrimaryHeader: public Printable
     // The packet sequence count is sent as a 14-bit unsigned
     // integer number, most significant bit first, on the second
     // 16-bit word of the header.
-    word packetSerquenceCount;
+    word packetSequenceCount;
 
     // Packet data length.  Valid values go from 1 to 65536.
     // The packet data length is sent as its actual value,

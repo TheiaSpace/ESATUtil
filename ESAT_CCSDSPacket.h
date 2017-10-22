@@ -380,7 +380,7 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     ESAT_Buffer packetData;
 
     // Primary header field of the packet.
-    ESAT_CCSDSPrimaryHeader primaryHeader.
+    ESAT_CCSDSPrimaryHeader primaryHeader;
 
     // Return the bits of a floating-point number packed into a 32-bit
     // integer.

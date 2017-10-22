@@ -75,7 +75,7 @@ size_t ESAT_CCSDSPrimaryHeader::printTo(Print& output) const
     default:
       bytesWritten =
         bytesWritten
-        + outupt.print(String(secondaryHeaderFlag, DEC));
+        + output.print(String(secondaryHeaderFlag, DEC));
       break;
   }
   bytesWritten =
