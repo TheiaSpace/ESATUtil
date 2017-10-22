@@ -16,7 +16,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "ESTAT_CCSDSPrimaryHeader.h"
+#include "ESAT_CCSDSPrimaryHeader.h"
+#include "ESAT_Buffer.h"
 
 size_t ESAT_CCSDSPrimaryHeader::printTo(Print& output) const
 {
@@ -150,7 +151,7 @@ boolean ESAT_CCSDSPrimaryHeader::readFrom(Stream& input)
 {
   byte octets[LENGTH];
   ESAT_Buffer data(octets, sizeof(octets));
-  const boolean correctRead = data.readFrom(input);
+  const boolean correctRead = data.readFrom(input, sizeof(octets));
   if (!correctRead)
   {
     return false;
@@ -168,17 +169,17 @@ boolean ESAT_CCSDSPrimaryHeader::readFrom(Stream& input)
     (firstWord & PACKET_VERSION_NUMBER_MASK)
     >> PACKET_VERSION_NUMBER_OFFSET;
   packetType =
-    (firstWord & PACKET_TYPE_MASK)
-    >> PACKET_TYPE_OFFSET;
+    PacketType((firstWord & PACKET_TYPE_MASK)
+               >> PACKET_TYPE_OFFSET);
   secondaryHeaderFlag =
-    (firstWord & SECONDARY_HEADER_FLAG_MASK)
-    >> SECONDARY_HEADER_FLAG_OFFSET;
+    SecondaryHeaderFlag((firstWord & SECONDARY_HEADER_FLAG_MASK)
+                        >> SECONDARY_HEADER_FLAG_OFFSET);
   applicationProcessIdentifier =
     (firstWord & APPLICATION_PROCESS_IDENTIFIER_MASK)
     >> APPLICATION_PROCESS_IDENTIFIER_OFFSET;
   sequenceFlags =
-    (secondWord & SEQUENCE_FLAGS_MASK)
-    >> SEQUENCE_FLAGS_OFFSET;
+    SequenceFlags((secondWord & SEQUENCE_FLAGS_MASK)
+                  >> SEQUENCE_FLAGS_OFFSET);
   packetSequenceCount =
     (secondWord & PACKET_SEQUENCE_COUNT_MASK)
     >> PACKET_SEQUENCE_COUNT_OFFSET;
@@ -196,7 +197,7 @@ boolean ESAT_CCSDSPrimaryHeader::writeTo(Stream& output) const
      & PACKET_VERSION_NUMBER_MASK)
     | ((packetType << PACKET_TYPE_OFFSET)
        & PACKET_TYPE_MASK)
-    | ((secondaryHeaderFlag << SECONDARY_HEADER_FLAT_OFFSET)
+    | ((secondaryHeaderFlag << SECONDARY_HEADER_FLAG_OFFSET)
        & SECONDARY_HEADER_FLAG_MASK)
     | ((applicationProcessIdentifier << APPLICATION_PROCESS_IDENTIFIER_OFFSET)
       & APPLICATION_PROCESS_IDENTIFIER_MASK);
