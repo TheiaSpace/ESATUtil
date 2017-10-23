@@ -23,6 +23,7 @@ ESAT_KISSStream::ESAT_KISSStream():
   backendBuffer(),
   decoderState(WAITING_FOR_FRAME_START)
 {
+  setTimeout(0);
 }
 
 ESAT_KISSStream::ESAT_KISSStream(Stream& stream,
@@ -32,6 +33,7 @@ ESAT_KISSStream::ESAT_KISSStream(Stream& stream,
   backendBuffer(buffer, bufferLength),
   decoderState(WAITING_FOR_FRAME_START)
 {
+  setTimeout(0);
 }
 
 int ESAT_KISSStream::available()
