@@ -24,6 +24,7 @@ ESAT_Buffer::ESAT_Buffer():
   bytesInBuffer(0),
   readWritePosition(0)
 {
+  setTimeout(0);
 }
 
 ESAT_Buffer::ESAT_Buffer(byte array[], const unsigned long length):
@@ -32,6 +33,7 @@ ESAT_Buffer::ESAT_Buffer(byte array[], const unsigned long length):
   bytesInBuffer(0),
   readWritePosition(0)
 {
+  setTimeout(0);
 }
 
 int ESAT_Buffer::available()

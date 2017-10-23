@@ -23,6 +23,7 @@ ESAT_CCSDSPacket::ESAT_CCSDSPacket():
   primaryHeader(),
   packetData()
 {
+  setTimeout(0);
 }
 
 ESAT_CCSDSPacket::ESAT_CCSDSPacket(byte* const buffer,
@@ -30,6 +31,7 @@ ESAT_CCSDSPacket::ESAT_CCSDSPacket(byte* const buffer,
   primaryHeader(),
   packetData(buffer, bufferLength)
 {
+  setTimeout(0);
 }
 
 int ESAT_CCSDSPacket::available()

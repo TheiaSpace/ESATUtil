@@ -23,6 +23,7 @@ ESAT_KISSStream::ESAT_KISSStream():
   backendBuffer(),
   decoderState(WAITING_FOR_FRAME_START)
 {
+  setTimeout(0);
 }
 
 ESAT_KISSStream::ESAT_KISSStream(Stream& stream,
@@ -32,6 +33,7 @@ ESAT_KISSStream::ESAT_KISSStream(Stream& stream,
   backendBuffer(buffer, bufferLength),
   decoderState(WAITING_FOR_FRAME_START)
 {
+  setTimeout(0);
 }
 
 int ESAT_KISSStream::available()
@@ -216,10 +218,8 @@ boolean ESAT_KISSStream::receiveFrame()
   {
     reset();
   }
-  const int available = backendStream->available();
-  for (unsigned int i = 0;
-       (i < available) && (decoderState != FINISHED);
-       i++)
+  while ((backendStream->available() > 0)
+         && (decoderState != FINISHED))
   {
     const byte datum = backendStream->read();
     if (datum >= 0)
