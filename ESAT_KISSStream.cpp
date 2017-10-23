@@ -212,7 +212,7 @@ boolean ESAT_KISSStream::receiveFrame()
   {
     reset();
   }
-  if (backendBuffer.available() <= 0)
+  if (backendBuffer.length() >= backendBuffer.capacity())
   {
     reset();
   }
