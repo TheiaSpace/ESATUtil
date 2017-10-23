@@ -218,10 +218,8 @@ boolean ESAT_KISSStream::receiveFrame()
   {
     reset();
   }
-  const int available = backendStream->available();
-  for (unsigned int i = 0;
-       (i < available) && (decoderState != FINISHED);
-       i++)
+  while ((backendStream->available() > 0)
+         && (decoderState != FINISHED))
   {
     const byte datum = backendStream->read();
     if (datum >= 0)
