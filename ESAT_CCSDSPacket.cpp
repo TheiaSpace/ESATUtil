@@ -250,14 +250,7 @@ byte ESAT_CCSDSPacket::readByte()
 signed char ESAT_CCSDSPacket::readChar()
 {
   const byte datum = readByte();
-  if (datum > 127)
-  {
-    return -((signed char) ((~datum) + 1));
-  }
-  else
-  {
-    return datum;
-  }
+  return ESAT_Util.byteToChar(datum);
 }
 
 float ESAT_CCSDSPacket::readFloat()
@@ -280,27 +273,13 @@ boolean ESAT_CCSDSPacket::readFrom(Stream& input)
 int ESAT_CCSDSPacket::readInt()
 {
   const word datum = readWord();
-  if (datum > 32767U)
-  {
-    return -int((~datum) + 1U);
-  }
-  else
-  {
-    return datum;
-  }
+  return ESAT_Util.wordToInt(datum);
 }
 
 long ESAT_CCSDSPacket::readLong()
 {
   const unsigned long datum = readUnsignedLong();
-  if (datum > 2147483647UL)
-  {
-    return -long((~datum) + 1UL);
-  }
-  else
-  {
-    return datum;
-  }
+  return ESAT_Util.unsignedLongToLong(datum);
 }
 
 ESAT_CCSDSPrimaryHeader ESAT_CCSDSPacket::readPrimaryHeader() const
@@ -387,14 +366,7 @@ void ESAT_CCSDSPacket::writeByte(const byte datum)
 
 void ESAT_CCSDSPacket::writeChar(const signed char datum)
 {
-  if (datum < 0)
-  {
-    writeByte(~((byte) -(datum + 1)));
-  }
-  else
-  {
-    writeByte(datum);
-  }
+  writeByte(ESAT_Util.charToByte(datum));
 }
 
 void ESAT_CCSDSPacket::writeFloat(const float datum)
@@ -405,26 +377,12 @@ void ESAT_CCSDSPacket::writeFloat(const float datum)
 
 void ESAT_CCSDSPacket::writeInt(const int datum)
 {
-  if (datum < 0)
-  {
-    writeWord(~((word) -(datum + 1)));
-  }
-  else
-  {
-    writeWord(datum);
-  }
+  writeWord(ESAT_Util.intToWord(datum));
 }
 
 void ESAT_CCSDSPacket::writeLong(const long datum)
 {
-  if (datum < 0)
-  {
-    writeUnsignedLong(~((unsigned long) -(datum + 1)));
-  }
-  else
-  {
-    writeUnsignedLong(datum);
-  }
+  writeUnsignedLong(ESAT_Util.longToUnsignedLong(datum));
 }
 
 void ESAT_CCSDSPacket::writePrimaryHeader(const ESAT_CCSDSPrimaryHeader datum)

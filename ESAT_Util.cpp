@@ -18,6 +18,30 @@
 
 #include "ESAT_Util.h"
 
+signed char ESAT_UtilClass::byteToChar(const byte bits) const
+{
+  if (bits > 127)
+  {
+    return -((signed char) ((~bits) + 1));
+  }
+  else
+  {
+    return bits;
+  }
+}
+
+byte ESAT_UtilClass::charToByte(const signed char number) const
+{
+  if (number < 0)
+  {
+    return ~((byte) -(number + 1));
+  }
+  else
+  {
+    return number;
+  }
+}
+
 byte ESAT_UtilClass::decodeBinaryCodedDecimalByte(const byte number) const
 {
   const byte tens =
@@ -140,6 +164,30 @@ word ESAT_UtilClass::hexadecimalToWord(const String hexadecimalNumber) const
   return number;
 }
 
+word ESAT_UtilClass::intToWord(const int number) const
+{
+  if (number < 0)
+  {
+    return ~((word) -(number + 1));
+  }
+  else
+  {
+    return number;
+  }
+}
+
+unsigned long ESAT_UtilClass::longToUnsignedLong(const long number) const
+{
+  if (number < 0)
+  {
+    return ~((unsigned long) -(number + 1));
+  }
+  else
+  {
+    return number;
+  }
+}
+
 String ESAT_UtilClass::pad(const String text,
                            const char padding,
                            const unsigned int length) const
@@ -158,11 +206,35 @@ word ESAT_UtilClass::swapWordBytes(const word number) const
   return word(lowByte(number), highByte(number));
 }
 
+long ESAT_UtilClass::unsignedLongToLong(const unsigned long bits) const
+{
+  if (bits > 2147483647UL)
+  {
+    return -long((~bits) + 1UL);
+  }
+  else
+  {
+    return bits;
+  }
+}
+
 String ESAT_UtilClass::wordToHexadecimal(const word number) const
 {
   String text =
     byteToHexadecimal(highByte(number)) + byteToHexadecimal(lowByte(number));
   return text;
+}
+
+int ESAT_UtilClass::wordToInt(const word bits) const
+{
+  if (bits > 32767U)
+  {
+    return -int((~bits) + 1U);
+  }
+  else
+  {
+    return bits;
+  }
 }
 
 ESAT_UtilClass ESAT_Util;
