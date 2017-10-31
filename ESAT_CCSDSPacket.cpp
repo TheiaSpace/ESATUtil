@@ -67,47 +67,6 @@ boolean ESAT_CCSDSPacket::copyTo(ESAT_CCSDSPacket& target)
   return packetData.writeTo(target);
 }
 
-unsigned long ESAT_CCSDSPacket::floatToLong(const float number)
-{
-  if (number == 0)
-  {
-    return 0x00000000ul;
-  }
-  if (number == NAN)
-  {
-    return 0xFFFFFFFFul;
-  }
-  if (number == INFINITY)
-  {
-    return 0x7F800000ul;
-  }
-  if (number == -INFINITY)
-  {
-    return 0xFF800000ul;
-  }
-  const unsigned long signBit = ((number >= 0) ? 0 : 1);
-  float mantissa = number;
-  if (mantissa < 0)
-  {
-    mantissa = -mantissa;
-  }
-  int exponent = 0;
-  while (mantissa >= 2)
-  {
-    mantissa = mantissa / 2;
-    exponent = exponent + 1;
-  }
-  while (mantissa < 1)
-  {
-    mantissa = 2 * mantissa;
-    exponent = exponent - 1;
-  }
-  mantissa = (mantissa - 1) * 8388608.5;
-  const unsigned long mantissaBits = ((unsigned long) mantissa) & 0x007FFFFF;
-  const unsigned long exponentBits = exponent + 127;
-  return (signBit << 31) | (exponentBits << 23) | mantissaBits;
-}
-
 void ESAT_CCSDSPacket::flush()
 {
   primaryHeader.packetDataLength = packetData.length();
@@ -117,50 +76,6 @@ void ESAT_CCSDSPacket::flush()
 unsigned long ESAT_CCSDSPacket::length() const
 {
   return primaryHeader.LENGTH + primaryHeader.packetDataLength;
-}
-
-float ESAT_CCSDSPacket::longToFloat(const unsigned long bits)
-{
-  if (bits == 0x00000000ul)
-  {
-    return 0;
-  }
-  if (bits >= 0xFF000001ul)
-  {
-    return NAN;
-  }
-  if (bits == 0x7F800000ul)
-  {
-    return INFINITY;
-  }
-  if (bits == 0xFF800000ul)
-  {
-    return -INFINITY;
-  }
-  const unsigned long signBit = (bits >> 31) & 0x00000001;
-  const unsigned long exponentBits = (bits >> 23) & 0x000000FF;
-  const unsigned long mantissaBits = bits & 0x007FFFFF;
-  float number = 1 + mantissaBits / 8388608.5;
-  if (signBit == 1)
-  {
-    number = -number;
-  }
-  int exponent = exponentBits - 127;
-  if (exponent > 0)
-  {
-    for (int i = 0; i < exponent; i++)
-    {
-      number = 2 * number;
-    }
-  }
-  if (exponent < 0)
-  {
-    for (int i = 0; i > exponent; i--)
-    {
-      number = number / 2;
-    }
-  }
-  return number;
 }
 
 int ESAT_CCSDSPacket::peek()
@@ -250,20 +165,13 @@ byte ESAT_CCSDSPacket::readByte()
 signed char ESAT_CCSDSPacket::readChar()
 {
   const byte datum = readByte();
-  if (datum > 127)
-  {
-    return -((signed char) ((~datum) + 1));
-  }
-  else
-  {
-    return datum;
-  }
+  return ESAT_Util.byteToChar(datum);
 }
 
 float ESAT_CCSDSPacket::readFloat()
 {
   const unsigned long bits = readUnsignedLong();
-  return longToFloat(bits);
+  return ESAT_Util.unsignedLongToFloat(bits);
 }
 
 boolean ESAT_CCSDSPacket::readFrom(Stream& input)
@@ -280,27 +188,13 @@ boolean ESAT_CCSDSPacket::readFrom(Stream& input)
 int ESAT_CCSDSPacket::readInt()
 {
   const word datum = readWord();
-  if (datum > 32767U)
-  {
-    return -int((~datum) + 1U);
-  }
-  else
-  {
-    return datum;
-  }
+  return ESAT_Util.wordToInt(datum);
 }
 
 long ESAT_CCSDSPacket::readLong()
 {
   const unsigned long datum = readUnsignedLong();
-  if (datum > 2147483647UL)
-  {
-    return -long((~datum) + 1UL);
-  }
-  else
-  {
-    return datum;
-  }
+  return ESAT_Util.unsignedLongToLong(datum);
 }
 
 ESAT_CCSDSPrimaryHeader ESAT_CCSDSPacket::readPrimaryHeader() const
@@ -387,44 +281,23 @@ void ESAT_CCSDSPacket::writeByte(const byte datum)
 
 void ESAT_CCSDSPacket::writeChar(const signed char datum)
 {
-  if (datum < 0)
-  {
-    writeByte(~((byte) -(datum + 1)));
-  }
-  else
-  {
-    writeByte(datum);
-  }
+  writeByte(ESAT_Util.charToByte(datum));
 }
 
 void ESAT_CCSDSPacket::writeFloat(const float datum)
 {
-  const unsigned long bits = floatToLong(datum);
+  const unsigned long bits = ESAT_Util.floatToUnsignedLong(datum);
   writeUnsignedLong(bits);
 }
 
 void ESAT_CCSDSPacket::writeInt(const int datum)
 {
-  if (datum < 0)
-  {
-    writeWord(~((word) -(datum + 1)));
-  }
-  else
-  {
-    writeWord(datum);
-  }
+  writeWord(ESAT_Util.intToWord(datum));
 }
 
 void ESAT_CCSDSPacket::writeLong(const long datum)
 {
-  if (datum < 0)
-  {
-    writeUnsignedLong(~((unsigned long) -(datum + 1)));
-  }
-  else
-  {
-    writeUnsignedLong(datum);
-  }
+  writeUnsignedLong(ESAT_Util.longToUnsignedLong(datum));
 }
 
 void ESAT_CCSDSPacket::writePrimaryHeader(const ESAT_CCSDSPrimaryHeader datum)

@@ -18,6 +18,30 @@
 
 #include "ESAT_Util.h"
 
+signed char ESAT_UtilClass::byteToChar(const byte bits) const
+{
+  if (bits > 127)
+  {
+    return -((signed char) ((~bits) + 1));
+  }
+  else
+  {
+    return bits;
+  }
+}
+
+byte ESAT_UtilClass::charToByte(const signed char number) const
+{
+  if (number < 0)
+  {
+    return ~((byte) -(number + 1));
+  }
+  else
+  {
+    return number;
+  }
+}
+
 byte ESAT_UtilClass::decodeBinaryCodedDecimalByte(const byte number) const
 {
   const byte tens =
@@ -61,6 +85,47 @@ String ESAT_UtilClass::byteToHexadecimal(const byte number) const
   String unpaddedText = String(int(number), HEX);
   String paddedText = pad(unpaddedText, '0', 2);
   return paddedText;
+}
+
+unsigned long ESAT_UtilClass::floatToUnsignedLong(const float number) const
+{
+  if (number == 0)
+  {
+    return 0x00000000ul;
+  }
+  if (number == NAN)
+  {
+    return 0xFFFFFFFFul;
+  }
+  if (number == INFINITY)
+  {
+    return 0x7F800000ul;
+  }
+  if (number == -INFINITY)
+  {
+    return 0xFF800000ul;
+  }
+  const unsigned long signBit = ((number >= 0) ? 0 : 1);
+  float mantissa = number;
+  if (mantissa < 0)
+  {
+    mantissa = -mantissa;
+  }
+  int exponent = 0;
+  while (mantissa >= 2)
+  {
+    mantissa = mantissa / 2;
+    exponent = exponent + 1;
+  }
+  while (mantissa < 1)
+  {
+    mantissa = 2 * mantissa;
+    exponent = exponent - 1;
+  }
+  mantissa = (mantissa - 1) * 8388608.5;
+  const unsigned long mantissaBits = ((unsigned long) mantissa) & 0x007FFFFF;
+  const unsigned long exponentBits = exponent + 127;
+  return (signBit << 31) | (exponentBits << 23) | mantissaBits;
 }
 
 byte ESAT_UtilClass::hexadecimalToByte(const String hexadecimalNumber) const
@@ -140,6 +205,30 @@ word ESAT_UtilClass::hexadecimalToWord(const String hexadecimalNumber) const
   return number;
 }
 
+word ESAT_UtilClass::intToWord(const int number) const
+{
+  if (number < 0)
+  {
+    return ~((word) -(number + 1));
+  }
+  else
+  {
+    return number;
+  }
+}
+
+unsigned long ESAT_UtilClass::longToUnsignedLong(const long number) const
+{
+  if (number < 0)
+  {
+    return ~((unsigned long) -(number + 1));
+  }
+  else
+  {
+    return number;
+  }
+}
+
 String ESAT_UtilClass::pad(const String text,
                            const char padding,
                            const unsigned int length) const
@@ -158,11 +247,79 @@ word ESAT_UtilClass::swapWordBytes(const word number) const
   return word(lowByte(number), highByte(number));
 }
 
+float ESAT_UtilClass::unsignedLongToFloat(const unsigned long bits) const
+{
+  if (bits == 0x00000000ul)
+  {
+    return 0;
+  }
+  if (bits >= 0xFF000001ul)
+  {
+    return NAN;
+  }
+  if (bits == 0x7F800000ul)
+  {
+    return INFINITY;
+  }
+  if (bits == 0xFF800000ul)
+  {
+    return -INFINITY;
+  }
+  const unsigned long signBit = (bits >> 31) & 0x00000001;
+  const unsigned long exponentBits = (bits >> 23) & 0x000000FF;
+  const unsigned long mantissaBits = bits & 0x007FFFFF;
+  float number = 1 + mantissaBits / 8388608.5;
+  if (signBit == 1)
+  {
+    number = -number;
+  }
+  int exponent = exponentBits - 127;
+  if (exponent > 0)
+  {
+    for (int i = 0; i < exponent; i++)
+    {
+      number = 2 * number;
+    }
+  }
+  if (exponent < 0)
+  {
+    for (int i = 0; i > exponent; i--)
+    {
+      number = number / 2;
+    }
+  }
+  return number;
+}
+
+long ESAT_UtilClass::unsignedLongToLong(const unsigned long bits) const
+{
+  if (bits > 2147483647UL)
+  {
+    return -long((~bits) + 1UL);
+  }
+  else
+  {
+    return bits;
+  }
+}
+
 String ESAT_UtilClass::wordToHexadecimal(const word number) const
 {
   String text =
     byteToHexadecimal(highByte(number)) + byteToHexadecimal(lowByte(number));
   return text;
+}
+
+int ESAT_UtilClass::wordToInt(const word bits) const
+{
+  if (bits > 32767U)
+  {
+    return -int((~bits) + 1U);
+  }
+  else
+  {
+    return bits;
+  }
 }
 
 ESAT_UtilClass ESAT_Util;

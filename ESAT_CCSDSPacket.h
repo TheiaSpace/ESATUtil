@@ -385,14 +385,6 @@ class ESAT_CCSDSPacket: public Printable, public Stream
 
     // Primary header field of the packet.
     ESAT_CCSDSPrimaryHeader primaryHeader;
-
-    // Return the bits of a floating-point number packed into a 32-bit
-    // integer.
-    unsigned long floatToLong(float number);
-
-    // Return the floating point number encoded in the bits of a
-    // 32-bit integer.
-    float longToFloat(unsigned long bits);
 };
 
 #endif /* ESAT_CCSDSPacket_h */

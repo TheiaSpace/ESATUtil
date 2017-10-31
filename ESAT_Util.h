@@ -26,6 +26,14 @@
 class ESAT_UtilClass
 {
   public:
+    // Return the signed 8-bit integer corresponding to the given
+    // two's-complement bits.
+    signed char byteToChar(byte bits) const;
+
+    // Return the bits of the two's-complement representation
+    // of a signed 8-bit integer.
+    byte charToByte(signed char number) const;
+
     // Decode a binary coded decimal 8-bit number.
     byte decodeBinaryCodedDecimalByte(byte number) const;
 
@@ -41,11 +49,23 @@ class ESAT_UtilClass
     // Return the hexadecimal representation of a one-byte number.
     String byteToHexadecimal(byte number) const;
 
+    // Return the IEEE 754 binary32 bits of the given
+    // single-precision floating-point number.
+    unsigned long floatToUnsignedLong(float number) const;
+
     // Convert a hexadecimal string to a byte.
     byte hexadecimalToByte(String hexadecimalNumber) const;
 
     // Convert a hexadecimal string to a word.
     word hexadecimalToWord(String hexadecimalNumber) const;
+
+    // Return the bits of the two's-complement representation
+    // of a signed 16-bit integer.
+    word intToWord(int number) const;
+
+    // Return the bits of the two's-complement representation
+    // of a signed 32-bit integer.
+    unsigned long longToUnsignedLong(long number) const;
 
     // Pad a string with a leading padding character to a given total length.
     String pad(String text, char padding, unsigned int length) const;
@@ -53,8 +73,20 @@ class ESAT_UtilClass
     // Swap the bytes of a word.
     word swapWordBytes(word number) const;
 
+    // Return the single-precision floating-point number corresponding
+    // to the given IEEE 754 binary32 bits.
+    float unsignedLongToFloat(unsigned long bits) const;
+
+    // Return the signed 32-bit integer corresponding to the given
+    // two's-complement bits.
+    long unsignedLongToLong(unsigned long bits) const;
+
     // Return the hexadecimal representation of a two-byte number.
     String wordToHexadecimal(word number) const;
+
+    // Return the signed 16-bit integer corresponding to the given
+    // two's-complement bits.
+    int wordToInt(word bits) const;
 };
 
 // Global instance of the utility library.
