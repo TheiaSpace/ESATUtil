@@ -49,6 +49,10 @@ class ESAT_UtilClass
     // Return the hexadecimal representation of a one-byte number.
     String byteToHexadecimal(byte number) const;
 
+    // Return the IEEE 754 binary32 bits of the given
+    // single-precision floating-point number.
+    unsigned long floatToUnsignedLong(float number) const;
+
     // Convert a hexadecimal string to a byte.
     byte hexadecimalToByte(String hexadecimalNumber) const;
 
@@ -68,6 +72,10 @@ class ESAT_UtilClass
 
     // Swap the bytes of a word.
     word swapWordBytes(word number) const;
+
+    // Return the single-precision floating-point number corresponding
+    // to the given IEEE 754 binary32 bits.
+    float unsignedLongToFloat(unsigned long bits) const;
 
     // Return the signed 32-bit integer corresponding to the given
     // two's-complement bits.
