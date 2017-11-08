@@ -249,7 +249,9 @@ void ESAT_CCSDSPacket::rewind()
 
 size_t ESAT_CCSDSPacket::write(const uint8_t datum)
 {
-  return packetData.write(datum);
+  const size_t bytesWritten = packetData.write(datum);
+  primaryHeader.packetDataLength = packetData.length();
+  return bytesWritten;
 }
 
 void ESAT_CCSDSPacket::writeBinaryCodedDecimalByte(const byte datum)
