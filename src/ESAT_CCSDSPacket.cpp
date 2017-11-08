@@ -62,7 +62,6 @@ boolean ESAT_CCSDSPacket::copyTo(ESAT_CCSDSPacket& target)
     return false;
   }
   target.writePrimaryHeader(primaryHeader);
-  rewind();
   target.rewind();
   return packetData.writeTo(target);
 }
