@@ -49,12 +49,6 @@ unsigned long ESAT_CCSDSPacket::capacity() const
   return packetData.capacity();
 }
 
-void ESAT_CCSDSPacket::clear()
-{
-  primaryHeader = ESAT_CCSDSPrimaryHeader();
-  packetData.flush();
-}
-
 boolean ESAT_CCSDSPacket::copyTo(ESAT_CCSDSPacket& target)
 {
   if (target.capacity() < packetData.length())
@@ -68,8 +62,8 @@ boolean ESAT_CCSDSPacket::copyTo(ESAT_CCSDSPacket& target)
 
 void ESAT_CCSDSPacket::flush()
 {
-  primaryHeader.packetDataLength = packetData.length();
-  rewind();
+  primaryHeader = ESAT_CCSDSPrimaryHeader();
+  packetData.flush();
 }
 
 unsigned long ESAT_CCSDSPacket::length() const

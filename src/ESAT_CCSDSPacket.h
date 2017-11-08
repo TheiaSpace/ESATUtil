@@ -69,18 +69,15 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // Return the capacity in bytes of the packet data buffer.
     unsigned long capacity() const;
 
-    // Clear the packet by setting all bytes to 0.
-    void clear();
-
     // Copy the whole packet contents to a target packet.
     // The copy will fail if the target packet data buffer is too small.
     // Return true on successful copy; otherwise return false.
     boolean copyTo(ESAT_CCSDSPacket& target);
 
-    // Update the packet data length to match the number of bytes written
-    // to the packet data (the position of the next write operation).
-    // This moves the read/write pointer back to the start of the
-    // packet data.
+    // Clear the packet.
+    // Set all bytes of the primary header to 0.
+    // Set the read/write position to 0.
+    // Set the packet data length to 0.
     void flush();
 
     // Return the total length of the packet, which is the sum
