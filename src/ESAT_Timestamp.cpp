@@ -33,8 +33,8 @@ ESAT_Timestamp::ESAT_Timestamp():
 ESAT_Timestamp::ESAT_Timestamp(const word theYear,
                                const byte theMonth,
                                const byte theDay,
-                               const byte theMinutes,
                                const byte theHours,
+                               const byte theMinutes,
                                const byte theSeconds):
   year(theYear),
   month(theMonth),
