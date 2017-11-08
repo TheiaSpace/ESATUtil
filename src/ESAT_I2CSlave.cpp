@@ -51,19 +51,17 @@ void ESAT_I2CSlaveClass::handleTelecommandPacketDataReception(ESAT_Buffer messag
     requestState = IDLE;
     return;
   }
-  const ESAT_CCSDSPrimaryHeader primaryHeader =
-    telecommand.readPrimaryHeader();
   while ((message.available() > 0)
          && (telecommandPacketDataBytesReceived
-             < primaryHeader.packetDataLength))
+             < telecommandPacketDataLength))
   {
     telecommand.writeByte(message.read());
     telecommandPacketDataBytesReceived =
       telecommandPacketDataBytesReceived + 1;
     if (telecommandPacketDataBytesReceived >=
-        primaryHeader.packetDataLength)
+        telecommandPacketDataLength)
     {
-      telecommand.flush();
+      telecommand.rewind();
       telecommandState = TELECOMMAND_PENDING;
       receiveState = IDLE;
     }
@@ -104,6 +102,7 @@ void ESAT_I2CSlaveClass::handleTelecommandPrimaryHeaderReception(ESAT_Buffer mes
   telecommand.rewind();
   telecommand.writePrimaryHeader(primaryHeader);
   telecommandPacketDataBytesReceived = 0;
+  telecommandPacketDataLength = primaryHeader.packetDataLength;
   receiveState = HANDLE_TELECOMMAND_PACKET_DATA;
   requestState = IDLE;
 }
@@ -326,7 +325,6 @@ void ESAT_I2CSlaveClass::writeTelemetry(ESAT_CCSDSPacket& packet)
     telemetryState = TELEMETRY_INVALID;
     return;
   }
-  telemetry.clear();
   const boolean successfulCopy = packet.copyTo(telemetry);
   if (!successfulCopy)
   {
