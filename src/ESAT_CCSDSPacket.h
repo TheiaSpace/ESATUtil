@@ -75,8 +75,6 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // Copy the whole packet contents to a target packet.
     // The copy will fail if the target packet data buffer is too small.
     // Return true on successful copy; otherwise return false.
-    // The packet must be in a consistent state (i.e. there mustn't
-    // be any write operation after the last flush()).
     boolean copyTo(ESAT_CCSDSPacket& target);
 
     // Update the packet data length to match the number of bytes written
