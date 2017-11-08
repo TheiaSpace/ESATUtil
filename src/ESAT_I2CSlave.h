@@ -131,6 +131,9 @@ class ESAT_I2CSlaveClass
     // Number of received telecommand packet data bytes.
     unsigned long telecommandPacketDataBytesReceived;
 
+    // Expected packet data length of the incoming telecommand packet.
+    unsigned long telecommandPacketDataLength;
+
     // State of the telecommand reception state machine.
     volatile TelecommandState telecommandState;
 

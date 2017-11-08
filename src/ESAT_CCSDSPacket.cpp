@@ -49,12 +49,6 @@ unsigned long ESAT_CCSDSPacket::capacity() const
   return packetData.capacity();
 }
 
-void ESAT_CCSDSPacket::clear()
-{
-  primaryHeader = ESAT_CCSDSPrimaryHeader();
-  packetData.flush();
-}
-
 boolean ESAT_CCSDSPacket::copyTo(ESAT_CCSDSPacket& target)
 {
   if (target.capacity() < packetData.length())
@@ -62,15 +56,14 @@ boolean ESAT_CCSDSPacket::copyTo(ESAT_CCSDSPacket& target)
     return false;
   }
   target.writePrimaryHeader(primaryHeader);
-  rewind();
   target.rewind();
   return packetData.writeTo(target);
 }
 
 void ESAT_CCSDSPacket::flush()
 {
-  primaryHeader.packetDataLength = packetData.length();
-  rewind();
+  primaryHeader = ESAT_CCSDSPrimaryHeader();
+  packetData.flush();
 }
 
 unsigned long ESAT_CCSDSPacket::length() const
@@ -249,7 +242,9 @@ void ESAT_CCSDSPacket::rewind()
 
 size_t ESAT_CCSDSPacket::write(const uint8_t datum)
 {
-  return packetData.write(datum);
+  const size_t bytesWritten = packetData.write(datum);
+  primaryHeader.packetDataLength = packetData.length();
+  return bytesWritten;
 }
 
 void ESAT_CCSDSPacket::writeBinaryCodedDecimalByte(const byte datum)
