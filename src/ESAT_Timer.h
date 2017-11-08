@@ -16,19 +16,29 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESATTimer_h
-#define ESATTimer_h
+#ifndef ESAT_Timer_h
+#define ESAT_Timer_h
 
-#include <Energia.h>
+#include <Arduino.h>
 
-class ESATTimer
+// Simple locking timer for time-sensitive applications that require
+// periodic execution.
+// Use the global instance ESAT_Timer.
+// Set up with ESAT_Timer.begin().
+// Wait until the start of the next cycle with ESAT_Timer.waitUntilNextCycle().
+class ESAT_TimerClass
 {
   public:
-    unsigned int period;
+    // Period of the timer in milliseconds.
+    word period;
 
     // Set the period (in milliseconds)
     // and start the timer.
-    void begin(unsigned int period);
+    void begin(word period);
+
+    // Return the CPU load estimation as the percentage of busy time
+    // during the previous cycle.
+    byte load();
 
     // Return the milliseconds ellapsed
     // since the last wake-up time.
@@ -40,9 +50,14 @@ class ESATTimer
     void waitUntilNextCycle();
 
   private:
-    unsigned long lastWakeUpTime;
+    // Wait time (in milliseconds) of the previous cycle.
+    unsigned long previousWaitTime;
+
+    // Wake-up time (in uptime milliseconds) of the previous cycle.
+    unsigned long previousWakeUpTime;
 };
 
-extern ESATTimer Timer;
+// Global instance of the ESATTimer library.
+extern ESAT_TimerClass ESAT_Timer;
 
-#endif
+#endif /* ESAT_Timer_h */
