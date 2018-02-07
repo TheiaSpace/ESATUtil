@@ -68,7 +68,7 @@ boolean ESAT_I2CMasterClass::readTelemetry(TwoWire& bus,
   const boolean telemetryRequestCorrect =
     writeTelemetryRequest(bus,
                           address,
-                          packetIdentifier,
+                          (const int)packetIdentifier,
                           millisecondsAfterWrites);
   if (!telemetryRequestCorrect)
   {
@@ -104,6 +104,52 @@ boolean ESAT_I2CMasterClass::readTelemetry(TwoWire& bus,
   const ESAT_CCSDSSecondaryHeader secondaryHeader =
     packet.readSecondaryHeader();
   if (secondaryHeader.packetIdentifier != packetIdentifier)
+  {
+    return false;
+  }
+  return true;
+}
+
+boolean ESAT_I2CMasterClass::readTelemetry(TwoWire& bus,
+                                           const byte address,
+                                           ESAT_CCSDSPacket& packet,
+                                           const byte millisecondsAfterWrites,
+                                           const byte attempts,
+                                           const word millisecondsBetweenAttempts)
+{
+  const boolean telemetryRequestCorrect =
+    writeTelemetryRequest(bus,
+                          address,
+                          NEXT_TELEMETRY_PACKET_REQUESTED,
+                          millisecondsAfterWrites);
+  if (!telemetryRequestCorrect)
+  {
+    return false;
+  }
+  const boolean telemetryReady =
+    readTelemetryStatus(bus,
+                        address,
+                        millisecondsAfterWrites,
+                        attempts,
+                        millisecondsBetweenAttempts);
+  if (!telemetryReady)
+  {
+    return false;
+  }
+  const boolean primaryHeaderCorrect =
+    readTelemetryPrimaryHeader(bus,
+                               address,
+                               packet,
+                               millisecondsAfterWrites);
+  if (!primaryHeaderCorrect)
+  {
+    return false;
+  }
+  const boolean packetDataCorrect =
+    readTelemetryPacketData(bus,
+                            address,
+                            packet);
+  if (!packetDataCorrect)
   {
     return false;
   }
@@ -307,12 +353,15 @@ boolean ESAT_I2CMasterClass::writeTelecommandPrimaryHeader(TwoWire& bus,
 
 boolean ESAT_I2CMasterClass::writeTelemetryRequest(TwoWire& bus,
                                                    const byte address,
-                                                   const byte packetIdentifier,
+                                                   const int packetIdentifier,
                                                    const byte millisecondsAfterWrites)
 {
   bus.beginTransmission(address);
   (void) bus.write(TELEMETRY_REQUEST);
-  (void) bus.write(packetIdentifier);
+  if (packetIdentifier != NEXT_TELEMETRY_PACKET_REQUESTED)
+  {
+    (void) bus.write((byte)packetIdentifier);
+  }
   const byte writeStatus = bus.endTransmission();
   delay(millisecondsAfterWrites);
   if (writeStatus == 0)

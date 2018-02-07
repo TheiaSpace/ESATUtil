@@ -28,7 +28,11 @@
 class ESAT_I2CMasterClass
 {
   public:
-    // Read a telemetry packet from the device at the given address.
+    // Possible value of packet identifier. It is used to speficy that any 
+    // available telemetry packet is welcome.
+    static const int NEXT_TELEMETRY_PACKET_REQUESTED = -2;
+
+    // Read an specific telemetry packet from the device at the given address.
     // Wait some milliseconds after each write operation to give
     // the slave time to process the request.
     // Retry several times, waiting several milliseconds, if the
@@ -37,6 +41,19 @@ class ESAT_I2CMasterClass
     boolean readTelemetry(TwoWire& bus,
                           byte address,
                           byte packetIdentifier,
+                          ESAT_CCSDSPacket& packet,
+                          byte millisecondsAfterWrites,
+                          byte attempts,
+                          word millisecondsBetweenAttempts);
+
+    // Read an available telemetry packet from the device at the given address.
+    // Wait some milliseconds after each write operation to give
+    // the slave time to process the request.
+    // Retry several times, waiting several milliseconds, if the
+    // telemetry is not ready.
+    // Return true on success; otherwise return false.
+    boolean readTelemetry(TwoWire& bus,
+                          byte address,
                           ESAT_CCSDSPacket& packet,
                           byte millisecondsAfterWrites,
                           byte attempts,
@@ -151,7 +168,7 @@ class ESAT_I2CMasterClass
     // Return true on success; otherwise return false.
     boolean writeTelemetryRequest(TwoWire& bus,
                                   byte address,
-                                  byte packetIdentifier,
+                                  int packetIdentifier,
                                   byte millisecondsAfterWrites);
 };
 

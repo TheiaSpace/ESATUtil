@@ -121,16 +121,25 @@ void ESAT_I2CSlaveClass::handleTelecommandStatusReception(ESAT_Buffer message)
 
 void ESAT_I2CSlaveClass::handleTelemetryRequestReception(ESAT_Buffer message)
 {
-  if (message.length() != 1)
+  if (message.length() == 1)
+  {
+    telemetryPacketIdentifier = (int)message.read();
+    telemetryState = TELEMETRY_NOT_READY;
+    receiveState = IDLE;
+    requestState = HANDLE_TELEMETRY_REQUEST;
+  }
+  else if (message.length() == 0)
+  {
+    telemetryPacketIdentifier = NEXT_TELEMETRY_PACKET_REQUESTED;
+    telemetryState = TELEMETRY_NOT_READY;
+    receiveState = IDLE;
+    requestState = HANDLE_TELEMETRY_REQUEST;
+  }
+  else
   {
     receiveState = IDLE;
     requestState = IDLE;
-    return;
   }
-  telemetryPacketIdentifier = message.read();
-  telemetryState = TELEMETRY_NOT_READY;
-  receiveState = IDLE;
-  requestState = HANDLE_TELEMETRY_REQUEST;
 }
 
 void ESAT_I2CSlaveClass::handleTelemetryStatusReception(ESAT_Buffer message)
@@ -264,11 +273,15 @@ int ESAT_I2CSlaveClass::requestedTelemetryPacket()
   {
     return NO_TELEMETRY_PACKET_REQUESTED;
   }
-  if (telemetryPacketIdentifier < 0)
+  if (telemetryPacketIdentifier == NEXT_TELEMETRY_PACKET_REQUESTED)
+  {
+    return NEXT_TELEMETRY_PACKET_REQUESTED;
+  }
+  else if (telemetryPacketIdentifier < 0)
   {
     return NO_TELEMETRY_PACKET_REQUESTED;
   }
-  if (telemetryPacketIdentifier > 255)
+  else if (telemetryPacketIdentifier > 255)
   {
     return NO_TELEMETRY_PACKET_REQUESTED;
   }
@@ -318,12 +331,15 @@ void ESAT_I2CSlaveClass::writeTelemetry(ESAT_CCSDSPacket& packet)
     telemetryState = TELEMETRY_INVALID;
     return;
   }
-  const ESAT_CCSDSSecondaryHeader secondaryHeader =
-    packet.readSecondaryHeader();
-  if (secondaryHeader.packetIdentifier != telemetryPacketIdentifier)
+  if (telemetryPacketIdentifier != NEXT_TELEMETRY_PACKET_REQUESTED)
   {
-    telemetryState = TELEMETRY_INVALID;
-    return;
+    const ESAT_CCSDSSecondaryHeader secondaryHeader =
+      packet.readSecondaryHeader();
+    if (secondaryHeader.packetIdentifier != telemetryPacketIdentifier)
+    {
+      telemetryState = TELEMETRY_INVALID;
+      return;
+    }
   }
   const boolean successfulCopy = packet.copyTo(telemetry);
   if (!successfulCopy)

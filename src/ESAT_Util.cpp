@@ -42,6 +42,18 @@ byte ESAT_UtilClass::charToByte(const signed char number) const
   }
 }
 
+boolean ESAT_UtilClass::compareByteArray(byte array1[],byte array2[], byte arraysSize)
+{
+  for(uint8_t indx = 0; indx < arraysSize; indx++)
+  {
+    if(array1[indx] != array2[indx])
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
 byte ESAT_UtilClass::decodeBinaryCodedDecimalByte(const byte number) const
 {
   const byte tens =
@@ -245,6 +257,11 @@ String ESAT_UtilClass::pad(const String text,
 word ESAT_UtilClass::swapWordBytes(const word number) const
 {
   return word(lowByte(number), highByte(number));
+}
+
+unsigned long ESAT_UtilClass::unsignedLong(word highWord, word lowWord)
+{
+  return (unsigned long)highWord<<16 + (unsigned long)lowWord;
 }
 
 float ESAT_UtilClass::unsignedLongToFloat(const unsigned long bits) const

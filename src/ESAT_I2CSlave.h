@@ -33,6 +33,10 @@ class ESAT_I2CSlaveClass
     // pending telemetry packet request.
     static const int NO_TELEMETRY_PACKET_REQUESTED = -1;
 
+    // Return value of requestTelemetryPacket() when telemetry ID 
+    // was not specified.
+    static const int NEXT_TELEMETRY_PACKET_REQUESTED = -2;
+
     // Configure the I2C slave to listen on the given I2C interface
     // (register the I2C reception and request handlers).
     // The I2C interface must be already initiated.
@@ -141,7 +145,7 @@ class ESAT_I2CSlaveClass
     ESAT_CCSDSPacket telemetry;
 
     // Identifier of the requested telemetry packet.
-    volatile byte telemetryPacketIdentifier;
+    volatile int telemetryPacketIdentifier;
 
     // State of the telemetry request state machine.
     volatile TelemetryState telemetryState;
