@@ -18,7 +18,7 @@
 
 #include "ESAT_CRC8.h"
 
-void ESAT_CRC8Class::begin(const byte POLYNOMIAL)
+void ESAT_CRC8::begin(const byte POLYNOMIAL)
 {
   byte  remainder;
   const byte TOP_BIT = 0x80;
@@ -46,7 +46,7 @@ void ESAT_CRC8Class::begin(const byte POLYNOMIAL)
 }
 
 
-byte ESAT_CRC8Class::add(byte remainder, byte message[], byte dataLength)
+byte ESAT_CRC8::add(byte remainder, byte message[], byte dataLength)
 {
   byte data;
   // Divide the message by the polynomial, a indx at a time.
@@ -59,7 +59,7 @@ byte ESAT_CRC8Class::add(byte remainder, byte message[], byte dataLength)
   return remainder;
 }
 
-byte ESAT_CRC8Class::read(byte message[], byte dataLength)
+byte ESAT_CRC8::read(byte message[], byte dataLength)
 {
   return add(0, message, dataLength);
 }

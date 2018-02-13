@@ -25,7 +25,7 @@
 // After that, you can get the CRC8 of a message with read().
 // Also you can add more bytes at the end of the message without recalculing
 // it from the beginning with add().
-class ESAT_CRC8Class
+class ESAT_CRC8
 {
   public:
     // We take into account that the most significant bit of
