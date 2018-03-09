@@ -21,26 +21,30 @@
 
 #include <arduino.h>
 
-// 
+// It handles a list of flags. The flag ID can go from 0 to 
+// (MAXIMUM_NUMBER_OF_FLAG - 1). You can clear() all the flags (set as false),
+// read() the value of one (true or false) or set the value (true or false)
+// with write(). Also you can get the next activated flag (its value is true)
+// with readNext().
 class ESAT_FlagContainer
 {
   public:
-    // 
-    void copyFrom(ESAT_FlagContainer FlagContainer);
-
-    // 
+    // Read the current status of the "flagID" flag.
     boolean read(byte flagID);
-    
-    //
+
+    // Return the flag ID of the first activated flag turned on.
+    // It do not change the value of any flag.
+    // If all the flags are deactivated, returns ERROR_STATUS.
     int readNext();
 
-    //
+    // Deactivate all the flags (all the flags value set as false).
     void clear();
 
-    // 
+    // Write the value of a flag
     void write(byte flagID, boolean value);
 
   private:
+    // MAXIMUM_NUMBER_OF_FLAG has to be a multiple of NUMBER_OF_BITS_PER_BYTE
     static const word MAXIMUM_NUMBER_OF_FLAG = 256;
     static const byte NUMBER_OF_BITS_PER_BYTE = 8;
     byte flagValue[MAXIMUM_NUMBER_OF_FLAG/NUMBER_OF_BITS_PER_BYTE];

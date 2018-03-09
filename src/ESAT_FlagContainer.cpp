@@ -18,14 +18,6 @@
 
 #include "ESAT_FlagContainer.h"
 
-void ESAT_FlagContainer::copyFrom(ESAT_FlagContainer FlagContainer)
-{
-  for(byte index = 0; index < MAXIMUM_NUMBER_OF_FLAG/NUMBER_OF_BITS_PER_BYTE; index++)
-  {
-    flagValue[index] = FlagContainer.flagValue[index];
-  }
-}
-
 boolean ESAT_FlagContainer::read(byte flagID)
 {
   byte arrayIndex = flagID/NUMBER_OF_BITS_PER_BYTE;
