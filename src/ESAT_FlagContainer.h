@@ -19,7 +19,7 @@
 #ifndef ESAT_FLAG_CONTAINER_H
 #define ESAT_FLAG_CONTAINER_H
 
-#include <arduino.h>
+#include <Arduino.h>
 
 // It handles a list of flags. The flag ID can go from 0 to 
 // (MAXIMUM_NUMBER_OF_FLAG - 1). You can clear() all the flags (set as false),

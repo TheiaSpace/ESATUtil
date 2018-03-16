@@ -19,7 +19,7 @@
 #ifndef ESAT_CRC8_CHECKSUM_H
 #define ESAT_CRC8_CHECKSUM_H
 
-#include <arduino.h>
+#include <Arduino.h>
 
 // To use this class, first you have to enter the polinomial with begin().
 // After that, you can get the CRC8 of a message with read().
