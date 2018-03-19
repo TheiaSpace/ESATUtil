@@ -33,7 +33,7 @@ boolean ESAT_SoftwareClock::isRunning() const
   return running;
 }
 
-ESAT_Timestamp ESAT_SoftwareClock::read() const
+ESAT_Timestamp ESAT_SoftwareClock::read()
 {
   if (running)
   {

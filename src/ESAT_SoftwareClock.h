@@ -17,7 +17,7 @@
  */
 
 #include <Arduino.h>
-#include "ESAT_Timestamp.h"
+#include "ESAT_Clock.h"
 
 #ifndef ESAT_SoftwareClock_h
 #define ESAT_SoftwareClock_h
@@ -25,7 +25,7 @@
 // Software real-time clock.
 // Once itialized with the current timestamp, it provides a real-time
 // clock and calendar function with second resolution.
-class ESAT_SoftwareClock
+class ESAT_SoftwareClock: public ESAT_Clock
 {
   public:
     // Instantiate a new software real-time clock.
@@ -42,7 +42,7 @@ class ESAT_SoftwareClock
     // Return the current timestamp.
     // If the RTC is not initialized before calling this method,
     // return the invalid timestamp 0000-00-00T00:00:00.
-    ESAT_Timestamp read() const;
+    ESAT_Timestamp read();
 
     // Set the time to the given timestamp.
     void write(ESAT_Timestamp timestamp);
