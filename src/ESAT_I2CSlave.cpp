@@ -18,69 +18,38 @@
 
 #include "ESAT_I2CSlave.h"
 
+const int ESAT_I2CSlaveClass::NO_PACKET_REQUESTED = -1;
+const int ESAT_I2CSlaveClass::NO_TELEMETRY_PACKET_REQUESTED = -1;
+const int ESAT_I2CSlaveClass::NEXT_TELEMETRY_PACKET_REQUESTED = -2;
+const int ESAT_I2CSlaveClass::NEXT_TELECOMMAND_PACKET_REQUESTED = -3;
+
 void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
-                               byte telecommandPacketDataBuffer[],
-                               const word telecommandPacketDataBufferLength,
-                               byte telemetryPacketDataBuffer[],
-                               const word telemetryPacketDataBufferLength)
+                               byte masterWritePacketDataBuffer[],
+                               const word masterWritePacketDataBufferLength,
+                               byte masterReadPacketDataBuffer[],
+                               const word masterReadPacketDataBufferLength)
 {
   bus = &i2cInterface;
-  receiveState = IDLE;
-  requestState = IDLE;
-  telecommand = ESAT_CCSDSPacket(telecommandPacketDataBuffer,
-                                 telecommandPacketDataBufferLength);
-  telecommandState = TELECOMMAND_NOT_PENDING;
-  telemetry = ESAT_CCSDSPacket(telemetryPacketDataBuffer,
-                               telemetryPacketDataBufferLength);
-  telemetryState = TELEMETRY_NOT_REQUESTED;
+  i2cState = IDLE;
+  masterWritePacket = ESAT_CCSDSPacket(masterWritePacketDataBuffer,
+                                       masterWritePacketDataBufferLength);
+  masterWriteState = WRITE_BUFFER_EMPTY;
+  masterReadPacket = ESAT_CCSDSPacket(masterReadPacketDataBuffer,
+                                      masterReadPacketDataBufferLength);
+  masterReadState = PACKET_NOT_REQUESTED;
   bus->onReceive(receiveEvent);
   bus->onRequest(requestEvent);
 }
 
-void ESAT_I2CSlaveClass::handleTelecommandPacketDataReception(ESAT_Buffer message)
+void ESAT_I2CSlaveClass::handleWritePrimaryHeaderReception(ESAT_Buffer message)
 {
-  if (telecommandState == TELECOMMAND_PENDING)
+  i2cState = IDLE;
+  if (masterWriteState == WRITE_BUFFER_FULL)
   {
-    receiveState = IDLE;
-    requestState = IDLE;
-    return;
-  }
-  if (receiveState != HANDLE_TELECOMMAND_PACKET_DATA)
-  {
-    receiveState = IDLE;
-    requestState = IDLE;
-    return;
-  }
-  while ((message.available() > 0)
-         && (telecommandPacketDataBytesReceived
-             < telecommandPacketDataLength))
-  {
-    telecommand.writeByte(message.read());
-    telecommandPacketDataBytesReceived =
-      telecommandPacketDataBytesReceived + 1;
-    if (telecommandPacketDataBytesReceived >=
-        telecommandPacketDataLength)
-    {
-      telecommand.rewind();
-      telecommandState = TELECOMMAND_PENDING;
-      receiveState = IDLE;
-    }
-  }
-  requestState = IDLE;
-}
-
-void ESAT_I2CSlaveClass::handleTelecommandPrimaryHeaderReception(ESAT_Buffer message)
-{
-  if (telecommandState == TELECOMMAND_PENDING)
-  {
-    receiveState = IDLE;
-    requestState = IDLE;
     return;
   }
   if (message.length() != ESAT_CCSDSPrimaryHeader::LENGTH)
   {
-    receiveState = IDLE;
-    requestState = IDLE;
     return;
   }
   message.rewind();
@@ -88,126 +57,169 @@ void ESAT_I2CSlaveClass::handleTelecommandPrimaryHeaderReception(ESAT_Buffer mes
   const boolean correctRead = primaryHeader.readFrom(message);
   if (!correctRead)
   {
-    receiveState = IDLE;
-    requestState = IDLE;
     return;
   }
-  if (primaryHeader.packetType
-      != primaryHeader.TELECOMMAND)
+  masterWritePacket.rewind();
+  masterWritePacket.writePrimaryHeader(primaryHeader);
+  masterWritePacketDataBytesReceived = 0;
+  masterWritePacketDataLength = primaryHeader.packetDataLength;
+  masterWriteState = WRITING_PACKET_DATA;
+}
+
+void ESAT_I2CSlaveClass::handleWritePacketDataReception(ESAT_Buffer message)
+{
+  i2cState = IDLE;
+  if (masterWriteState != WRITING_PACKET_DATA)
   {
-    receiveState = IDLE;
-    requestState = IDLE;
     return;
   }
-  telecommand.rewind();
-  telecommand.writePrimaryHeader(primaryHeader);
-  telecommandPacketDataBytesReceived = 0;
-  telecommandPacketDataLength = primaryHeader.packetDataLength;
-  receiveState = HANDLE_TELECOMMAND_PACKET_DATA;
-  requestState = IDLE;
-}
-
-void ESAT_I2CSlaveClass::handleTelecommandStatusReception(ESAT_Buffer message)
-{
-  if (message.length() != 0)
+  while ((message.available() > 0)
+         && (masterWritePacketDataBytesReceived
+             < masterWritePacketDataLength))
   {
-    receiveState = IDLE;
-    requestState = IDLE;
-    return;
-  }
-  receiveState = IDLE;
-  requestState = HANDLE_TELECOMMAND_STATUS;
-}
-
-void ESAT_I2CSlaveClass::handleTelemetryRequestReception(ESAT_Buffer message)
-{
-  if (message.length() != 1)
-  {
-    receiveState = IDLE;
-    requestState = IDLE;
-    return;
-  }
-  telemetryPacketIdentifier = message.read();
-  telemetryState = TELEMETRY_NOT_READY;
-  receiveState = IDLE;
-  requestState = HANDLE_TELEMETRY_REQUEST;
-}
-
-void ESAT_I2CSlaveClass::handleTelemetryStatusReception(ESAT_Buffer message)
-{
-  if (message.length() != 0)
-  {
-    receiveState = IDLE;
-    requestState = IDLE;
-    return;
-  }
-  receiveState = IDLE;
-  requestState = HANDLE_TELEMETRY_STATUS;
-}
-
-void ESAT_I2CSlaveClass::handleTelemetryVectorReception(ESAT_Buffer message)
-{
-  if (message.length() != 0)
-  {
-    receiveState = IDLE;
-    requestState = IDLE;
-    return;
-  }
-  receiveState = IDLE;
-  requestState = HANDLE_TELEMETRY_VECTOR_PRIMARY_HEADER;
-}
-
-void ESAT_I2CSlaveClass::handleTelecommandStatusRequest()
-{
-  (void) bus->write(telecommandState);
-  requestState = IDLE;
-}
-
-void ESAT_I2CSlaveClass::handleTelemetryStatusRequest()
-{
-  (void) bus->write(telemetryState);
-  requestState = IDLE;
-}
-
-void ESAT_I2CSlaveClass::handleTelemetryVectorPacketDataRequest()
-{
-  if (telemetryState != TELEMETRY_READY)
-  {
-    requestState = IDLE;
-    return;
-  }
-  for (byte i = 0; i < I2C_CHUNK_LENGTH; i++)
-  {
-    (void) bus->write(telemetry.readByte());
-    if (telemetry.available() == 0)
+    masterWritePacket.writeByte(message.read());
+    masterWritePacketDataBytesReceived =
+      masterWritePacketDataBytesReceived + 1;
+    if (masterWritePacketDataBytesReceived >=
+        masterWritePacketDataLength)
     {
-      requestState = IDLE;
-      telemetryState = TELEMETRY_NOT_REQUESTED;
+      masterWritePacket.rewind();
+      masterWriteState = WRITE_BUFFER_FULL;
     }
   }
 }
 
-void ESAT_I2CSlaveClass::handleTelemetryVectorPrimaryHeaderRequest()
+void ESAT_I2CSlaveClass::handleWriteStateReception(ESAT_Buffer message)
 {
-  if (telemetryState != TELEMETRY_READY)
+  if (message.length() != 0)
   {
-    requestState = IDLE;
+    i2cState = IDLE;
+  }
+  else
+  {
+    i2cState = REQUEST_WRITE_STATE;
+  }
+}
+
+void ESAT_I2CSlaveClass::handleReadTelemetryReception(ESAT_Buffer message)
+{
+  i2cState = IDLE;
+  if (message.length() == 1)
+  {
+    masterReadRequestedPacket = message.read();
+    masterReadState = PACKET_NOT_READY;
+  }
+  else if (message.length() == 0)
+  {
+    masterReadRequestedPacket = NEXT_TELEMETRY_PACKET_REQUESTED;
+    masterReadState = PACKET_NOT_READY;
+  }
+}
+
+void ESAT_I2CSlaveClass::handleReadStateReception(ESAT_Buffer message)
+{
+  if (message.length() != 0)
+  {
+    i2cState = IDLE;
+  }
+  else
+  {
+    i2cState = REQUEST_READ_STATE;
+  }
+}
+
+void ESAT_I2CSlaveClass::handleReadPacketReception(ESAT_Buffer message)
+{
+  if (message.length() != 0)
+  {
+    i2cState = IDLE;
+  }
+  else
+  {
+    i2cState = REQUEST_READ_PACKET;
+  }
+}
+
+void ESAT_I2CSlaveClass::handleReadTelecommandReception(ESAT_Buffer message)
+{
+  i2cState = IDLE;
+  if (message.length() == 0)
+  {
+    masterReadRequestedPacket = NEXT_TELECOMMAND_PACKET_REQUESTED;
+    masterReadState = PACKET_NOT_READY;
+  }
+}
+
+void ESAT_I2CSlaveClass::handleResetTelemetryQueueReception(ESAT_Buffer message)
+{
+  i2cState = IDLE;
+  if (message.length() == 0)
+  {
+    resetTelemetryQueue = true;
+  }
+}
+
+void ESAT_I2CSlaveClass::handleWriteStateRequest()
+{
+  (void) bus->write(masterWriteState);
+}
+
+void ESAT_I2CSlaveClass::handleReadStateRequest()
+{
+  (void) bus->write(masterReadState);
+}
+
+void ESAT_I2CSlaveClass::handleReadPacketRequest()
+{
+  switch (masterReadState)
+  {
+    case PACKET_READY:
+      handleReadPacketPrimaryHeaderRequest();
+      break;
+    case READING_PACKET_DATA:
+      handleReadPacketPacketDataRequest();
+      break;
+    default:
+      break;
+  }
+}
+
+void ESAT_I2CSlaveClass::handleReadPacketPrimaryHeaderRequest()
+{
+  if (masterReadState != PACKET_READY)
+  {
     return;
   }
   const ESAT_CCSDSPrimaryHeader primaryHeader =
-    telemetry.readPrimaryHeader();
+    masterReadPacket.readPrimaryHeader();
   (void) primaryHeader.writeTo(*bus);
-  telemetry.rewind();
-  requestState = HANDLE_TELEMETRY_VECTOR_PACKET_DATA;
+  masterReadPacket.rewind();
+  masterReadState = READING_PACKET_DATA;
 }
 
-boolean ESAT_I2CSlaveClass::readTelecommand(ESAT_CCSDSPacket& packet)
+void ESAT_I2CSlaveClass::handleReadPacketPacketDataRequest()
 {
-  if (telecommandState == TELECOMMAND_PENDING)
+  if (masterReadState != READING_PACKET_DATA)
   {
-    boolean successfulCopy = telecommand.copyTo(packet);
+    return;
+  }
+  for (byte i = 0; i < I2C_CHUNK_LENGTH; i++)
+  {
+    (void) bus->write(masterReadPacket.readByte());
+    if (masterReadPacket.available() == 0)
+    {
+      masterReadState = PACKET_NOT_REQUESTED;
+    }
+  }
+}
+
+boolean ESAT_I2CSlaveClass::readPacket(ESAT_CCSDSPacket& packet)
+{
+  if (masterWriteState == WRITE_BUFFER_FULL)
+  {
+    const boolean successfulCopy = masterWritePacket.copyTo(packet);
     packet.rewind();
-    telecommandState = TELECOMMAND_NOT_PENDING;
+    masterWriteState = WRITE_BUFFER_EMPTY;
     return successfulCopy;
   }
   else
@@ -234,104 +246,144 @@ void ESAT_I2CSlaveClass::receiveEvent(const int numberOfBytes)
   }
   switch (registerNumber)
   {
-    case TELECOMMAND_PRIMARY_HEADER:
-      ESAT_I2CSlave.handleTelecommandPrimaryHeaderReception(message);
+    case WRITE_PRIMARY_HEADER:
+      ESAT_I2CSlave.handleWritePrimaryHeaderReception(message);
       break;
-    case TELECOMMAND_PACKET_DATA:
-      ESAT_I2CSlave.handleTelecommandPacketDataReception(message);
+    case WRITE_PACKET_DATA:
+      ESAT_I2CSlave.handleWritePacketDataReception(message);
       break;
-    case TELECOMMAND_STATUS:
-      ESAT_I2CSlave.handleTelecommandStatusReception(message);
+    case WRITE_STATE:
+      ESAT_I2CSlave.handleWriteStateReception(message);
       break;
-    case TELEMETRY_REQUEST:
-      ESAT_I2CSlave.handleTelemetryRequestReception(message);
+    case READ_TELEMETRY:
+      ESAT_I2CSlave.handleReadTelemetryReception(message);
       break;
-    case TELEMETRY_STATUS:
-      ESAT_I2CSlave.handleTelemetryStatusReception(message);
+    case READ_STATE:
+      ESAT_I2CSlave.handleReadStateReception(message);
       break;
-    case TELEMETRY_VECTOR:
-      ESAT_I2CSlave.handleTelemetryVectorReception(message);
+    case READ_PACKET:
+      ESAT_I2CSlave.handleReadPacketReception(message);
+      break;
+    case READ_TELECOMMAND:
+      ESAT_I2CSlave.handleReadTelecommandReception(message);
+      break;
+    case RESET_TELEMETRY_QUEUE:
+      ESAT_I2CSlave.handleResetTelemetryQueueReception(message);
       break;
     default:
-      ESAT_I2CSlave.receiveState = IDLE;
+      ESAT_I2CSlave.i2cState = IDLE;
       break;
   }
 }
 
-int ESAT_I2CSlaveClass::requestedTelemetryPacket()
+int ESAT_I2CSlaveClass::requestedPacket()
 {
-  if (telemetryState != TELEMETRY_NOT_READY)
+  if (masterReadState != PACKET_NOT_READY)
   {
-    return NO_TELEMETRY_PACKET_REQUESTED;
+    return NO_PACKET_REQUESTED;
   }
-  if (telemetryPacketIdentifier < 0)
-  {
-    return NO_TELEMETRY_PACKET_REQUESTED;
-  }
-  if (telemetryPacketIdentifier > 255)
-  {
-    return NO_TELEMETRY_PACKET_REQUESTED;
-  }
-  return telemetryPacketIdentifier;
+  return masterReadRequestedPacket;
 }
 
 void ESAT_I2CSlaveClass::requestEvent()
 {
-  switch (ESAT_I2CSlave.requestState)
+  switch (ESAT_I2CSlave.i2cState)
   {
-    case HANDLE_TELECOMMAND_STATUS:
-      ESAT_I2CSlave.handleTelecommandStatusRequest();
+    case REQUEST_WRITE_STATE:
+      ESAT_I2CSlave.handleWriteStateRequest();
       break;
-    case HANDLE_TELEMETRY_STATUS:
-      ESAT_I2CSlave.handleTelemetryStatusRequest();
+    case REQUEST_READ_STATE:
+      ESAT_I2CSlave.handleReadStateRequest();
       break;
-    case HANDLE_TELEMETRY_VECTOR_PRIMARY_HEADER:
-      ESAT_I2CSlave.handleTelemetryVectorPrimaryHeaderRequest();
-      break;
-    case HANDLE_TELEMETRY_VECTOR_PACKET_DATA:
-      ESAT_I2CSlave.handleTelemetryVectorPacketDataRequest();
+    case REQUEST_READ_PACKET:
+      ESAT_I2CSlave.handleReadPacketRequest();
       break;
     default:
       break;
   }
 }
 
-void ESAT_I2CSlaveClass::rejectTelemetryRequest()
+void ESAT_I2CSlaveClass::rejectPacket()
 {
-  if (telemetryState == TELEMETRY_NOT_READY)
+  if (masterReadState == PACKET_NOT_READY)
   {
-    telemetryState = TELEMETRY_REQUEST_REJECTED;
+    masterReadState = PACKET_REJECTED;
   }
 }
 
-void ESAT_I2CSlaveClass::writeTelemetry(ESAT_CCSDSPacket& packet)
+boolean ESAT_I2CSlaveClass::telemetryQueueResetReceived()
 {
-  if (telemetryState != TELEMETRY_NOT_READY)
+  return resetTelemetryQueue;
+}
+
+void ESAT_I2CSlaveClass::updateTelemetryQueueState()
+{
+  if (masterReadRequestedPacket == NEXT_TELEMETRY_PACKET_REQUESTED)
   {
-    return;
+    resetTelemetryQueue = false;
   }
-  packet.rewind();
+}
+
+boolean ESAT_I2CSlaveClass::packetMatchesReadRequest(ESAT_CCSDSPacket& packet)
+{
   const ESAT_CCSDSPrimaryHeader primaryHeader =
     packet.readPrimaryHeader();
-  if (primaryHeader.packetType != primaryHeader.TELEMETRY)
+  if ((masterReadRequestedPacket == NEXT_TELECOMMAND_PACKET_REQUESTED)
+      && (primaryHeader.packetType != primaryHeader.TELECOMMAND))
   {
-    telemetryState = TELEMETRY_INVALID;
+    return false;
+  }
+  if ((masterReadRequestedPacket == NEXT_TELEMETRY_PACKET_REQUESTED)
+      && (primaryHeader.packetType != primaryHeader.TELEMETRY))
+  {
+    return false;
+  }
+  if (masterReadRequestedPacket >= 0) // Named-packet telemetry read request.
+  {
+    if (primaryHeader.secondaryHeaderFlag !=
+        primaryHeader.SECONDARY_HEADER_IS_PRESENT)
+    {
+      return false;
+    }
+    if (primaryHeader.packetDataLength < ESAT_CCSDSSecondaryHeader::LENGTH)
+    {
+      return false;
+    }
+    packet.rewind();
+    const ESAT_CCSDSSecondaryHeader secondaryHeader =
+      packet.readSecondaryHeader();
+    if (primaryHeader.packetType != primaryHeader.TELEMETRY)
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+void ESAT_I2CSlaveClass::writePacket(ESAT_CCSDSPacket& packet)
+{
+  if (masterReadState != PACKET_NOT_READY)
+  {
     return;
   }
-  const ESAT_CCSDSSecondaryHeader secondaryHeader =
-    packet.readSecondaryHeader();
-  if (secondaryHeader.packetIdentifier != telemetryPacketIdentifier)
+  if (packetMatchesReadRequest(packet))
   {
-    telemetryState = TELEMETRY_INVALID;
-    return;
+    updateTelemetryQueueState();
   }
-  const boolean successfulCopy = packet.copyTo(telemetry);
+  else
+  {
+    masterReadState = PACKET_INVALID;
+  }
+  packet.rewind();
+  const boolean successfulCopy = packet.copyTo(masterReadPacket);
   if (!successfulCopy)
   {
-    telemetryState = TELEMETRY_INVALID;
-    return;
+    masterReadState = PACKET_INVALID;
   }
-  telemetryState = TELEMETRY_READY;
+  else
+  {
+    masterReadState = PACKET_READY;
+  }
 }
 
 ESAT_I2CSlaveClass ESAT_I2CSlave;
