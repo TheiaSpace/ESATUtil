@@ -53,7 +53,7 @@ boolean ESAT_CCSDSPacketBuilder::buildPacket(ESAT_CCSDSPacket& packet,
   const boolean userDataCorrect = contents.fillUserData(packet);
   if (userDataCorrect)
   {
-    primaryHeader.packetSequenceCount = primaryHeader.packetSequenceCount + 1;
+    incrementPacketSequenceCount();
     return true;
   }
   else
@@ -79,4 +79,9 @@ boolean ESAT_CCSDSPacketBuilder::fillHeaders(ESAT_CCSDSPacket& packet,
   secondaryHeader.packetIdentifier = packetIdentifier;
   packet.writeSecondaryHeader(secondaryHeader);
   return true;
+}
+
+void ESAT_CCSDSPacketBuilder::incrementPacketSequenceCount()
+{
+  primaryHeader.packetSequenceCount = primaryHeader.packetSequenceCount + 1;
 }
