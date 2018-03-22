@@ -63,13 +63,13 @@ void ESAT_I2CSlaveClass::handleWritePrimaryHeaderReception(ESAT_Buffer message)
   masterWritePacket.writePrimaryHeader(primaryHeader);
   masterWritePacketDataBytesReceived = 0;
   masterWritePacketDataLength = primaryHeader.packetDataLength;
-  masterWriteState = WRITING_PACKET_DATA;
+  masterWriteState = PACKET_DATA_WRITE_IN_PROGRESS;
 }
 
 void ESAT_I2CSlaveClass::handleWritePacketDataReception(ESAT_Buffer message)
 {
   i2cState = IDLE;
-  if (masterWriteState != WRITING_PACKET_DATA)
+  if (masterWriteState != PACKET_DATA_WRITE_IN_PROGRESS)
   {
     return;
   }
@@ -176,7 +176,7 @@ void ESAT_I2CSlaveClass::handleReadPacketRequest()
     case PACKET_READY:
       handleReadPacketPrimaryHeaderRequest();
       break;
-    case READING_PACKET_DATA:
+    case PACKET_DATA_READ_IN_PROGRESS:
       handleReadPacketPacketDataRequest();
       break;
     default:
@@ -194,12 +194,12 @@ void ESAT_I2CSlaveClass::handleReadPacketPrimaryHeaderRequest()
     masterReadPacket.readPrimaryHeader();
   (void) primaryHeader.writeTo(*bus);
   masterReadPacket.rewind();
-  masterReadState = READING_PACKET_DATA;
+  masterReadState = PACKET_DATA_READ_IN_PROGRESS;
 }
 
 void ESAT_I2CSlaveClass::handleReadPacketPacketDataRequest()
 {
-  if (masterReadState != READING_PACKET_DATA)
+  if (masterReadState != PACKET_DATA_READ_IN_PROGRESS)
   {
     return;
   }

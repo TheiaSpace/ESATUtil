@@ -160,7 +160,7 @@ class ESAT_I2CSlaveClass
     {
       WRITE_BUFFER_EMPTY = 0,
       WRITE_BUFFER_FULL = 1,
-      WRITING_PACKET_DATA = 2,
+      PACKET_DATA_WRITE_IN_PROGRESS = 2,
     };
 
     // Possible states of the high-level ESAT CCSDS Space
@@ -172,7 +172,7 @@ class ESAT_I2CSlaveClass
       PACKET_READY = 2,
       PACKET_REJECTED = 3,
       PACKET_INVALID = 4,
-      READING_PACKET_DATA = 5,
+      PACKET_DATA_READ_IN_PROGRESS = 5,
     };
 
     // I2C messages will be sent in chunks of up to 16 bytes.
