@@ -28,7 +28,6 @@ ESAT_CCSDSPacketBuilder::ESAT_CCSDSPacketBuilder(const word applicationProcessId
                                                  const byte minorVersionNumber,
                                                  const byte patchVersionNumber,
                                                  const ESAT_CCSDSPrimaryHeader::PacketType packetType,
-                                                 const word packetSequenceCount,
                                                  ESAT_Clock& theClock):
   clock(&theClock)
 {
@@ -37,7 +36,7 @@ ESAT_CCSDSPacketBuilder::ESAT_CCSDSPacketBuilder(const word applicationProcessId
   primaryHeader.secondaryHeaderFlag = primaryHeader.SECONDARY_HEADER_IS_PRESENT;
   primaryHeader.applicationProcessIdentifier = applicationProcessIdentifier;
   primaryHeader.sequenceFlags = primaryHeader.UNSEGMENTED_USER_DATA;
-  primaryHeader.packetSequenceCount = packetSequenceCount;
+  primaryHeader.packetSequenceCount = 0;
   secondaryHeader.preamble =
     secondaryHeader.CALENDAR_SEGMENTED_TIME_CODE_MONTH_DAY_VARIANT_1_SECOND_RESOLUTION;
   secondaryHeader.majorVersionNumber = majorVersionNumber;

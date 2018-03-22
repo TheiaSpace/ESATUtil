@@ -32,14 +32,12 @@ class ESAT_CCSDSPacketBuilder
 
     // Set up the packet builder for the given application process identifier,
     // version numbers and packet type.
-    // Start the sequence count at the given value.
     // Get the packet time from the provided clock.
     ESAT_CCSDSPacketBuilder(word applicationProcessIdentifier,
                             byte majorVersionNumber,
                             byte minorVersionNumber,
                             byte patchVersionNumber,
                             ESAT_CCSDSPrimaryHeader::PacketType packetType,
-                            word packetSequenceCount,
                             ESAT_Clock& clock);
 
     // Build a new CCSDS packet with the provided packet contents.
