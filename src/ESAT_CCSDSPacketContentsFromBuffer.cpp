@@ -37,6 +37,11 @@ ESAT_CCSDSPacketContentsFromBuffer::ESAT_CCSDSPacketContentsFromBuffer(const byt
 {
 }
 
+boolean ESAT_CCSDSPacketContentsFromBuffer::available()
+{
+  return true;
+}
+
 byte ESAT_CCSDSPacketContentsFromBuffer::packetIdentifier()
 {
   return identifier;

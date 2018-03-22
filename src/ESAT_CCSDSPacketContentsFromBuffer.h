@@ -45,6 +45,9 @@ class ESAT_CCSDSPacketContentsFromBuffer
     ESAT_CCSDSPacketContentsFromBuffer(byte identifier,
                                        ESAT_Buffer& buffer);
 
+    // Return true.
+    boolean available();
+
     // Return the packet identifier.
     byte packetIdentifier();
 

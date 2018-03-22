@@ -33,6 +33,11 @@ class ESAT_CCSDSPacketContents
     // Return the packet identifier.
     virtual byte packetIdentifier() = 0;
 
+    // Return true if a new packet is available:
+    // periodic packets are available once every period, and event
+    // packets are available once some event happens.
+    virtual boolean available() = 0;
+
     // Fill the user data field of the given packet.
     // The write pointer of the packet is already at the start
     // of the user data field.
