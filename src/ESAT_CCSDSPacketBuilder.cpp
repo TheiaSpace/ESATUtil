@@ -48,6 +48,23 @@ ESAT_CCSDSPacketBuilder::ESAT_CCSDSPacketBuilder(const word applicationProcessId
 boolean ESAT_CCSDSPacketBuilder::buildPacket(ESAT_CCSDSPacket& packet,
                                              ESAT_CCSDSPacketContents& contents)
 {
+  const byte packetIdentifier = contents.packetIdentifier();
+  const boolean headersCorrect = fillHeaders(packet, packetIdentifier);
+  const boolean userDataCorrect = contents.fillUserData(packet);
+  if (userDataCorrect)
+  {
+    primaryHeader.packetSequenceCount = primaryHeader.packetSequenceCount + 1;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+boolean ESAT_CCSDSPacketBuilder::fillHeaders(ESAT_CCSDSPacket& packet,
+                                             const byte packetIdentifier)
+{
   if (!clock)
   {
     return false;
@@ -59,16 +76,7 @@ boolean ESAT_CCSDSPacketBuilder::buildPacket(ESAT_CCSDSPacket& packet,
   packet.flush();
   packet.writePrimaryHeader(primaryHeader);
   secondaryHeader.timestamp = clock->read();
-  secondaryHeader.packetIdentifier = contents.packetIdentifier();
+  secondaryHeader.packetIdentifier = packetIdentifier;
   packet.writeSecondaryHeader(secondaryHeader);
-  const boolean userDataCorrect = contents.fillUserData(packet);
-  if (userDataCorrect)
-  {
-    primaryHeader.packetSequenceCount = primaryHeader.packetSequenceCount + 1;
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return true;
 }
