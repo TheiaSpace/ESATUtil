@@ -47,6 +47,12 @@ class ESAT_CCSDSPacketBuilder
     boolean buildPacket(ESAT_CCSDSPacket& packet,
                         ESAT_CCSDSPacketContents& contents);
 
+    // Fill the primary header and secondary header fields
+    // of a CCSDS packet.
+    // Return true on success; otherwise return false.
+    boolean fillHeaders(ESAT_CCSDSPacket& packet,
+                        const byte packetIdentifier);
+
   private:
     // Use this clock to fill the timestamp of the packets.
     ESAT_Clock* clock;
