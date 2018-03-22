@@ -43,15 +43,20 @@ class ESAT_CCSDSPacketBuilder
                             ESAT_Clock& clock);
 
     // Build a new CCSDS packet with the provided packet contents.
+    // Increment the packet sequence count on success.
     // Return true on success; otherwise return false.
     boolean buildPacket(ESAT_CCSDSPacket& packet,
                         ESAT_CCSDSPacketContents& contents);
 
     // Fill the primary header and secondary header fields
     // of a CCSDS packet.
+    // Leave the packet sequence count intact.
     // Return true on success; otherwise return false.
     boolean fillHeaders(ESAT_CCSDSPacket& packet,
                         const byte packetIdentifier);
+
+    // Increment the packet sequence count.
+    void incrementPacketSequenceCount();
 
   private:
     // Use this clock to fill the timestamp of the packets.
