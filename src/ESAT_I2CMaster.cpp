@@ -58,7 +58,7 @@ boolean ESAT_I2CMasterClass::canReadPacket(TwoWire& bus,
       case PACKET_INVALID:
         return false;
         break;
-      case READING_PACKET_DATA:
+      case PACKET_DATA_READ_IN_PROGRESS:
         return false;
         break;
       default:
@@ -97,7 +97,7 @@ boolean ESAT_I2CMasterClass::canWritePacket(TwoWire& bus,
       case WRITE_BUFFER_EMPTY:
         return true;
         break;
-      case WRITING_PACKET_DATA:
+      case PACKET_DATA_WRITE_IN_PROGRESS:
         return true;
       case WRITE_BUFFER_FULL:
         delay(millisecondsBetweenAttempts);
