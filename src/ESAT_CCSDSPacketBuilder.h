@@ -51,7 +51,7 @@ class ESAT_CCSDSPacketBuilder
     // Leave the packet sequence count intact.
     // Return true on success; otherwise return false.
     boolean fillHeaders(ESAT_CCSDSPacket& packet,
-                        const byte packetIdentifier);
+                        byte packetIdentifier);
 
     // Increment the packet sequence count.
     void incrementPacketSequenceCount();
