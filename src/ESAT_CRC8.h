@@ -31,7 +31,7 @@ class ESAT_CRC8
     // We take into account that the most significant bit of
     // any generator polynomial is always a one. For example:
     // If polynomial is: x8+x2+x+1, POLYNOMIAL= 0b00000111.
-    void begin(const byte POLYNOMIAL);
+    void begin(byte POLYNOMIAL);
 
     // Calculate the CRC of the given message and return it
     byte read(byte message[], byte dataLength);
