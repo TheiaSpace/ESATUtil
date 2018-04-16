@@ -212,7 +212,7 @@ boolean ESAT_I2CMasterClass::readPacket(TwoWire& bus,
   const boolean packetRequestCorrect =
     requestPacket(bus,
                   address,
-                  NEXT_TELEMETRY_PACKET_REQUESTED,
+                  requestedPacket,
                   millisecondsAfterWrites);
   if (!packetRequestCorrect)
   {
