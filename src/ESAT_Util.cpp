@@ -22,7 +22,7 @@ signed char ESAT_UtilClass::byteToChar(const byte bits) const
 {
   if (bits > 127)
   {
-    return -((signed char) ((~bits) + 1));
+    return -((signed char) (((~bits) + 1U) & 0xFFFF));
   }
   else
   {
@@ -34,7 +34,7 @@ byte ESAT_UtilClass::charToByte(const signed char number) const
 {
   if (number < 0)
   {
-    return ~((byte) -(number + 1));
+    return (~((byte) -(number + 1U))) & 0xFF;
   }
   else
   {
@@ -221,7 +221,7 @@ word ESAT_UtilClass::intToWord(const int number) const
 {
   if (number < 0)
   {
-    return ~((word) -(number + 1));
+    return (~((word) -(number + 1))) & 0xFFFF;
   }
   else
   {
@@ -233,7 +233,7 @@ unsigned long ESAT_UtilClass::longToUnsignedLong(const long number) const
 {
   if (number < 0)
   {
-    return ~((unsigned long) -(number + 1));
+    return (~((unsigned long) -(number + 1))) & 0xFFFFFFFF;
   }
   else
   {
@@ -312,7 +312,7 @@ long ESAT_UtilClass::unsignedLongToLong(const unsigned long bits) const
 {
   if (bits > 2147483647UL)
   {
-    return -long((~bits) + 1UL);
+    return -long(((~bits) + 1UL) & 0xFFFFFFFF);
   }
   else
   {
@@ -331,7 +331,7 @@ int ESAT_UtilClass::wordToInt(const word bits) const
 {
   if (bits > 32767U)
   {
-    return -int((~bits) + 1U);
+    return -int(((~bits) + 1U) & 0xFFFF);
   }
   else
   {
