@@ -331,7 +331,7 @@ int ESAT_UtilClass::wordToInt(const word bits) const
 {
   if (bits > 32767U)
   {
-    return -int((~bits) + 1U);
+    return -int(((~bits) + 1U) & 0xFFFF);
   }
   else
   {
