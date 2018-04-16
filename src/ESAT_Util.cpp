@@ -221,7 +221,7 @@ word ESAT_UtilClass::intToWord(const int number) const
 {
   if (number < 0)
   {
-    return ~((word) -(number + 1));
+    return (~((word) -(number + 1))) & 0xFFFF;
   }
   else
   {
