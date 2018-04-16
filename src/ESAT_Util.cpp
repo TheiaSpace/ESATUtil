@@ -233,7 +233,7 @@ unsigned long ESAT_UtilClass::longToUnsignedLong(const long number) const
 {
   if (number < 0)
   {
-    return ~((unsigned long) -(number + 1));
+    return (~((unsigned long) -(number + 1))) & 0xFFFFFFFF;
   }
   else
   {
