@@ -34,7 +34,7 @@ byte ESAT_UtilClass::charToByte(const signed char number) const
 {
   if (number < 0)
   {
-    return ~((byte) -(number + 1));
+    return (~((byte) -(number + 1U))) & 0xFF;
   }
   else
   {
