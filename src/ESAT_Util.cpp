@@ -312,7 +312,7 @@ long ESAT_UtilClass::unsignedLongToLong(const unsigned long bits) const
 {
   if (bits > 2147483647UL)
   {
-    return -long((~bits) + 1UL);
+    return -long(((~bits) + 1UL) & 0xFFFFFFFF);
   }
   else
   {
