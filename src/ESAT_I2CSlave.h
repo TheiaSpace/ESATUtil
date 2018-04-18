@@ -31,18 +31,18 @@ class ESAT_I2CSlaveClass
   public:
     // Return value of requestedPacket() when there is no
     // pending packet read request.
-    static const int NO_PACKET_REQUESTED;
+    static const int NO_PACKET_REQUESTED = -1;
 
     // Deprecated constant; use NO_PACKET_REQUESTED instead.
-    static const int NO_TELEMETRY_PACKET_REQUESTED __attribute__((deprecated("Use NO_PACKET_REQUESTED instead.")));
+    static const int NO_TELEMETRY_PACKET_REQUESTED __attribute__((deprecated("Use NO_PACKET_REQUESTED instead."))) = -1;
 
     // Return value of requestedPacket() when the request
     // is for a next-packet telemetry request.
-    static const int NEXT_TELEMETRY_PACKET_REQUESTED;
+    static const int NEXT_TELEMETRY_PACKET_REQUESTED = -2;
 
     // Return value of requestedPacket() when the request
     // is for a next-packet telecommand request.
-    static const int NEXT_TELECOMMAND_PACKET_REQUESTED;
+    static const int NEXT_TELECOMMAND_PACKET_REQUESTED = -3;
 
     // Configure the I2C slave to listen on the given I2C interface
     // (register the I2C reception and request handlers).

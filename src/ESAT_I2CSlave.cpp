@@ -18,11 +18,6 @@
 
 #include "ESAT_I2CSlave.h"
 
-const int ESAT_I2CSlaveClass::NO_PACKET_REQUESTED = -1;
-const int ESAT_I2CSlaveClass::NO_TELEMETRY_PACKET_REQUESTED = -1;
-const int ESAT_I2CSlaveClass::NEXT_TELEMETRY_PACKET_REQUESTED = -2;
-const int ESAT_I2CSlaveClass::NEXT_TELECOMMAND_PACKET_REQUESTED = -3;
-
 void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
                                byte masterWritePacketDataBuffer[],
                                const word masterWritePacketDataBufferLength,
