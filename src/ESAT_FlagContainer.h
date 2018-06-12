@@ -75,4 +75,3 @@ class ESAT_FlagContainer: public Printable
 };
 
 #endif
-
