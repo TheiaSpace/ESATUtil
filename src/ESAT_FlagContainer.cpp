@@ -60,16 +60,8 @@ size_t ESAT_FlagContainer::printTo(Print& output) const
 
 boolean ESAT_FlagContainer::read(const byte flagIdentifier) const
 {
-  byte arrayIndex = flagIdentifier/NUMBER_OF_BITS_PER_BYTE;
-  byte mask = 1 << (flagIdentifier % NUMBER_OF_BITS_PER_BYTE);
-  if (flagValue[arrayIndex] & mask)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return bitRead(flagValue[byteIndex(flagIdentifier)],
+                 bitIndex(flagIdentifier));
 }
 
 int ESAT_FlagContainer::readNext() const
