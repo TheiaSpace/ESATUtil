@@ -18,6 +18,14 @@
 
 #include "ESAT_FlagContainer.h"
 
+void ESAT_FlagContainer::clear()
+{
+  for(byte index = 0; index < MAXIMUM_NUMBER_OF_FLAG/NUMBER_OF_BITS_PER_BYTE; index++)
+  {
+    flagValue[index] = 0;
+  }
+}
+
 size_t ESAT_FlagContainer::printTo(Print& output) const
 {
   size_t bytesWritten = 0;
@@ -70,14 +78,6 @@ int ESAT_FlagContainer::readNext() const
     }
   }
   return ERROR_STATUS;
-}
-
-void ESAT_FlagContainer::clear()
-{
-  for(byte index = 0; index < MAXIMUM_NUMBER_OF_FLAG/NUMBER_OF_BITS_PER_BYTE; index++)
-  {
-    flagValue[index] = 0;
-  }
 }
 
 void ESAT_FlagContainer::write(byte flagIdentifier, boolean value)

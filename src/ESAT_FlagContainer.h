@@ -29,6 +29,13 @@
 class ESAT_FlagContainer: public Printable
 {
   public:
+    // Deactivate all the flags (all the flags value set as false).
+    void clear();
+
+    // Print the true flags in human-readable form.
+    // Return the number of characters written.
+    size_t printTo(Print& output) const;
+
     // Read the current status of the "flagIdentifier" flag.
     boolean read(byte flagIdentifier) const;
 
@@ -36,13 +43,6 @@ class ESAT_FlagContainer: public Printable
     // It do not change the value of any flag.
     // If all the flags are deactivated, returns ERROR_STATUS.
     int readNext() const;
-
-    // Deactivate all the flags (all the flags value set as false).
-    void clear();
-
-    // Print the true flags in human-readable form.
-    // Return the number of characters written.
-    size_t printTo(Print& output) const;
 
     // Write the value of a flag
     void write(byte flagIdentifier, boolean value);
