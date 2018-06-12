@@ -18,6 +18,28 @@
 
 #include "ESAT_FlagContainer.h"
 
+size_t ESAT_FlagContainer::printTo(Print& output) const
+{
+  size_t bytesWritten = 0;
+  boolean firstActiveFlagAlreadyPrinted = false;
+  for (int flagIdentifier = 0;
+       flagIdentifier < MAXIMUM_NUMBER_OF_FLAG;
+       flagIdentifier++)
+  {
+    const boolean active = read(flagIdentifier);
+    if (active)
+    {
+      if (firstActiveFlagAlreadyPrinted)
+      {
+        bytesWritten = bytesWritten + output.print(String(", "));
+      }
+      firstActiveFlagAlreadyPrinted = true;
+      bytesWritten = bytesWritten + output.print(String(flagIdentifier, DEC));
+    }
+  }
+  return bytesWritten;
+}
+
 boolean ESAT_FlagContainer::read(byte flagID) const
 {
   byte arrayIndex = flagID/NUMBER_OF_BITS_PER_BYTE;
