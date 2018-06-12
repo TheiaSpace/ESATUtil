@@ -49,8 +49,9 @@ class ESAT_FlagContainer: public Printable
     void write(byte flagIdentifier, boolean active);
 
   private:
-    // MAXIMUM_NUMBER_OF_FLAG has to be a multiple of NUMBER_OF_BITS_PER_BYTE
-    static const word MAXIMUM_NUMBER_OF_FLAG = 256;
+    // Maximum number of flags a flag container can store.
+    // This has to be a multiple of NUMBER_OF_BITS_PER_BYTE.
+    static const word MAXIMUM_NUMBER_OF_FLAGS = 256;
 
     // Return value of readNext() when all flags are inactive.
     static const int NO_ACTIVE_FLAGS = -1;
@@ -58,7 +59,7 @@ class ESAT_FlagContainer: public Printable
     static const byte NUMBER_OF_BITS_PER_BYTE = 8;
 
     // Store flags compactly in this array of bytes: 8 flags per byte.
-    byte flagValue[MAXIMUM_NUMBER_OF_FLAG/NUMBER_OF_BITS_PER_BYTE];
+    byte flagValue[MAXIMUM_NUMBER_OF_FLAGS / NUMBER_OF_BITS_PER_BYTE];
 
     // Return the bit index within the byte corresponding to the given
     // flagIdentifier.
