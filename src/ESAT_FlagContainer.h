@@ -26,19 +26,23 @@
 // read() the value of one (true or false) or set the value (true or false)
 // with write(). Also you can get the next activated flag (its value is true)
 // with readNext().
-class ESAT_FlagContainer
+class ESAT_FlagContainer: public Printable
 {
   public:
     // Read the current status of the "flagID" flag.
-    boolean read(byte flagID);
+    boolean read(byte flagID) const;
 
     // Return the flag ID of the first activated flag turned on.
     // It do not change the value of any flag.
     // If all the flags are deactivated, returns ERROR_STATUS.
-    int readNext();
+    int readNext() const;
 
     // Deactivate all the flags (all the flags value set as false).
     void clear();
+
+    // Print the true flags in human-readable form.
+    // Return the number of characters written.
+    size_t printTo(Print& output) const;
 
     // Write the value of a flag
     void write(byte flagID, boolean value);
