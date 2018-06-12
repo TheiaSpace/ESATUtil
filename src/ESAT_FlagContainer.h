@@ -45,7 +45,7 @@ class ESAT_FlagContainer: public Printable
     int readNext() const;
 
     // Write the value of a flag
-    void write(byte flagIdentifier, boolean value);
+    void write(byte flagIdentifier, boolean active);
 
   private:
     // MAXIMUM_NUMBER_OF_FLAG has to be a multiple of NUMBER_OF_BITS_PER_BYTE

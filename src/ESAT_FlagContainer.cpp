@@ -78,17 +78,16 @@ int ESAT_FlagContainer::readNext() const
   return ERROR_STATUS;
 }
 
-void ESAT_FlagContainer::write(const byte flagIdentifier, const boolean value)
+void ESAT_FlagContainer::write(const byte flagIdentifier, const boolean active)
 {
-  byte arrayIndex = flagIdentifier/NUMBER_OF_BITS_PER_BYTE;
-  byte mask = 1 << (flagIdentifier % NUMBER_OF_BITS_PER_BYTE);
-  if (value)
+  if (active)
   {
-    flagValue[arrayIndex] |= mask;
+    bitSet(flagValue[byteIndex(flagIdentifier)],
+           bitIndex(flagIdentifier));
   }
   else
   {
-    flagValue[arrayIndex] &= ~mask;
+    bitClear(flagValue[byteIndex(flagIdentifier)],
+             bitIndex(flagIdentifier));
   }
-  
 }
