@@ -41,7 +41,8 @@ class ESAT_FlagContainer: public Printable
 
     // Return the flag ID of the first activated flag turned on.
     // It do not change the value of any flag.
-    // If all the flags are deactivated, returns ERROR_STATUS.
+    // If all the flags are deactivated, returns a negative number
+    // (NO_ACTIVE_FLAGS).
     int readNext() const;
 
     // Write the value of a flag
@@ -50,8 +51,11 @@ class ESAT_FlagContainer: public Printable
   private:
     // MAXIMUM_NUMBER_OF_FLAG has to be a multiple of NUMBER_OF_BITS_PER_BYTE
     static const word MAXIMUM_NUMBER_OF_FLAG = 256;
+
+    // Return value of readNext() when all flags are inactive.
+    static const int NO_ACTIVE_FLAGS = -1;
+
     static const byte NUMBER_OF_BITS_PER_BYTE = 8;
-    static const int ERROR_STATUS = -1;
 
     // Store flags compactly in this array of bytes: 8 flags per byte.
     byte flagValue[MAXIMUM_NUMBER_OF_FLAG/NUMBER_OF_BITS_PER_BYTE];

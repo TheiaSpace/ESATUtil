@@ -77,7 +77,7 @@ int ESAT_FlagContainer::readNext() const
       return flagIdentifier;
     }
   }
-  return ERROR_STATUS;
+  return NO_ACTIVE_FLAGS;
 }
 
 void ESAT_FlagContainer::write(const byte flagIdentifier, const boolean active)
