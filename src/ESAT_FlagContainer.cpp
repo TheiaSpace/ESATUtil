@@ -20,18 +20,18 @@
 
 byte ESAT_FlagContainer::bitIndex(const byte flagIdentifier) const
 {
-  return flagIdentifier % NUMBER_OF_BITS_PER_BYTE;
+  return flagIdentifier % NUMBER_OF_FLAGS_PER_BYTE;
 }
 
 byte ESAT_FlagContainer::byteIndex(const byte flagIdentifier) const
 {
-  return flagIdentifier / NUMBER_OF_BITS_PER_BYTE;
+  return flagIdentifier / NUMBER_OF_FLAGS_PER_BYTE;
 }
 
 void ESAT_FlagContainer::clear()
 {
   for (byte index = 0;
-       index < MAXIMUM_NUMBER_OF_FLAGS / NUMBER_OF_BITS_PER_BYTE;
+       index < MAXIMUM_NUMBER_OF_FLAGS / NUMBER_OF_FLAGS_PER_BYTE;
        index++)
   {
     flagValue[index] = 0;
