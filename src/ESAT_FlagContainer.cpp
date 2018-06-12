@@ -18,15 +18,41 @@
 
 #include "ESAT_FlagContainer.h"
 
+byte ESAT_FlagContainer::bitIndex(const byte flag) const
+{
+  return flag % NUMBER_OF_FLAGS_PER_BYTE;
+}
+
+byte ESAT_FlagContainer::byteIndex(const byte flag) const
+{
+  return flag / NUMBER_OF_FLAGS_PER_BYTE;
+}
+
+void ESAT_FlagContainer::clear(const byte flag)
+{
+  bitClear(flagBytes[byteIndex(flag)],
+           bitIndex(flag));
+}
+
+void ESAT_FlagContainer::clearAll()
+{
+  for (byte index = 0;
+       index < NUMBER_OF_FLAG_STORAGE_BYTES;
+       index++)
+  {
+    flagBytes[index] = 0;
+  }
+}
+
 size_t ESAT_FlagContainer::printTo(Print& output) const
 {
   size_t bytesWritten = 0;
   boolean firstActiveFlagAlreadyPrinted = false;
-  for (int flagIdentifier = 0;
-       flagIdentifier < MAXIMUM_NUMBER_OF_FLAG;
-       flagIdentifier++)
+  for (int flag = 0;
+       flag < MAXIMUM_NUMBER_OF_FLAGS;
+       flag++)
   {
-    const boolean active = read(flagIdentifier);
+    const boolean active = read(flag);
     if (active)
     {
       if (firstActiveFlagAlreadyPrinted)
@@ -34,63 +60,34 @@ size_t ESAT_FlagContainer::printTo(Print& output) const
         bytesWritten = bytesWritten + output.print(String(", "));
       }
       firstActiveFlagAlreadyPrinted = true;
-      bytesWritten = bytesWritten + output.print(String(flagIdentifier, DEC));
+      bytesWritten = bytesWritten + output.print(String(flag, DEC));
     }
   }
   return bytesWritten;
 }
 
-boolean ESAT_FlagContainer::read(byte flagID) const
+boolean ESAT_FlagContainer::read(const byte flag) const
 {
-  byte arrayIndex = flagID/NUMBER_OF_BITS_PER_BYTE;
-  byte mask = 1 << (flagID % NUMBER_OF_BITS_PER_BYTE);
-  if (flagValue[arrayIndex] & mask)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return bitRead(flagBytes[byteIndex(flag)],
+                 bitIndex(flag));
 }
 
 int ESAT_FlagContainer::readNext() const
 {
-  for(byte index = 0; index < MAXIMUM_NUMBER_OF_FLAG/NUMBER_OF_BITS_PER_BYTE; index++)
+  for (int flag = 0;
+       flag < MAXIMUM_NUMBER_OF_FLAGS;
+       flag++)
   {
-    if(flagValue[index] > 0)
+    if (read(flag))
     {
-      for(byte bit = 0; bit < NUMBER_OF_BITS_PER_BYTE; bit++)
-      {
-        if(flagValue[index] & (1 << bit))
-        {
-          return index*NUMBER_OF_BITS_PER_BYTE + bit;
-        }
-      }
+      return flag;
     }
   }
-  return ERROR_STATUS;
+  return NO_ACTIVE_FLAGS;
 }
 
-void ESAT_FlagContainer::clear()
+void ESAT_FlagContainer::set(const byte flag)
 {
-  for(byte index = 0; index < MAXIMUM_NUMBER_OF_FLAG/NUMBER_OF_BITS_PER_BYTE; index++)
-  {
-    flagValue[index] = 0;
-  }
-}
-
-void ESAT_FlagContainer::write(byte flagID, boolean value)
-{
-  byte arrayIndex = flagID/NUMBER_OF_BITS_PER_BYTE;
-  byte mask = 1 << (flagID % NUMBER_OF_BITS_PER_BYTE);
-  if (value)
-  {
-    flagValue[arrayIndex] |= mask;
-  }
-  else
-  {
-    flagValue[arrayIndex] &= ~mask;
-  }
-  
+  bitSet(flagBytes[byteIndex(flag)],
+         bitIndex(flag));
 }
