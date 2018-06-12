@@ -16,8 +16,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESAT_FLAG_CONTAINER_H
-#define ESAT_FLAG_CONTAINER_H
+#ifndef ESAT_FlagContainer_h
+#define ESAT_FlagContainer_h
 
 #include <Arduino.h>
 
@@ -74,4 +74,4 @@ class ESAT_FlagContainer: public Printable
     byte byteIndex(byte flagIdentifier) const;
 };
 
-#endif
+#endif /* ESAT_FlagContainer_h */
