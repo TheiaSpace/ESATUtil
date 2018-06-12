@@ -48,7 +48,7 @@ size_t ESAT_FlagContainer::printTo(Print& output) const
   return bytesWritten;
 }
 
-boolean ESAT_FlagContainer::read(byte flagIdentifier) const
+boolean ESAT_FlagContainer::read(const byte flagIdentifier) const
 {
   byte arrayIndex = flagIdentifier/NUMBER_OF_BITS_PER_BYTE;
   byte mask = 1 << (flagIdentifier % NUMBER_OF_BITS_PER_BYTE);
@@ -80,7 +80,7 @@ int ESAT_FlagContainer::readNext() const
   return ERROR_STATUS;
 }
 
-void ESAT_FlagContainer::write(byte flagIdentifier, boolean value)
+void ESAT_FlagContainer::write(const byte flagIdentifier, const boolean value)
 {
   byte arrayIndex = flagIdentifier/NUMBER_OF_BITS_PER_BYTE;
   byte mask = 1 << (flagIdentifier % NUMBER_OF_BITS_PER_BYTE);
