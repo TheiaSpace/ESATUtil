@@ -42,7 +42,8 @@ class ESAT_FlagContainer: public Printable
     // Return the number of characters written.
     size_t printTo(Print& output) const;
 
-    // Read the current status of a flag.
+    // Read the current status of a flag:
+    // true if it is set, false if it is clear.
     boolean read(byte flag) const;
 
     // Return the number of the first flag, starting
