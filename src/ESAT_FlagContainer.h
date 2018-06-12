@@ -59,8 +59,12 @@ class ESAT_FlagContainer: public Printable
     // Number of flags stored in each byte.
     static const byte NUMBER_OF_FLAGS_PER_BYTE = 8;
 
+    // Number of bytes used to store the flags.
+    static constexpr byte NUMBER_OF_FLAG_STORAGE_BYTES =
+      MAXIMUM_NUMBER_OF_FLAGS / NUMBER_OF_FLAGS_PER_BYTE;
+
     // Store flags compactly in this array of bytes: 8 flags per byte.
-    byte flagValue[MAXIMUM_NUMBER_OF_FLAGS / NUMBER_OF_FLAGS_PER_BYTE];
+    byte flagValue[NUMBER_OF_FLAG_STORAGE_BYTES];
 
     // Return the bit index within the byte corresponding to the given
     // flagIdentifier.
