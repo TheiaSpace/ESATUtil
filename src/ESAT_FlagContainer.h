@@ -53,6 +53,13 @@ class ESAT_FlagContainer: public Printable
     static const byte NUMBER_OF_BITS_PER_BYTE = 8;
     byte flagValue[MAXIMUM_NUMBER_OF_FLAG/NUMBER_OF_BITS_PER_BYTE];
     static const int ERROR_STATUS = -1;
+
+    // Return the bit index within the byte corresponding to the given
+    // flagIdentifier.
+    byte bitIndex(byte flagIdentifier) const;
+
+    // Return the byte index corresponding to the given flagIdentifier.
+    byte byteIndex(byte flagIdentifier) const;
 };
 
 #endif

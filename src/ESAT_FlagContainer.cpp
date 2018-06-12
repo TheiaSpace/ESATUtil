@@ -18,6 +18,16 @@
 
 #include "ESAT_FlagContainer.h"
 
+byte ESAT_FlagContainer::bitIndex(const byte flagIdentifier) const
+{
+  return flagIdentifier % NUMBER_OF_BITS_PER_BYTE;
+}
+
+byte ESAT_FlagContainer::byteIndex(const byte flagIdentifier) const
+{
+  return flagIdentifier / NUMBER_OF_BITS_PER_BYTE;
+}
+
 void ESAT_FlagContainer::clear()
 {
   for(byte index = 0; index < MAXIMUM_NUMBER_OF_FLAG/NUMBER_OF_BITS_PER_BYTE; index++)
