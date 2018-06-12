@@ -71,7 +71,7 @@ class ESAT_FlagContainer: public Printable
       MAXIMUM_NUMBER_OF_FLAGS / NUMBER_OF_FLAGS_PER_BYTE;
 
     // Store flags compactly in this array of bytes: 8 flags per byte.
-    byte flagValue[NUMBER_OF_FLAG_STORAGE_BYTES];
+    byte flagBytes[NUMBER_OF_FLAG_STORAGE_BYTES];
 
     // Return the bit index within the byte corresponding to the given
     // flag.

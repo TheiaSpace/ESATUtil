@@ -30,7 +30,7 @@ byte ESAT_FlagContainer::byteIndex(const byte flag) const
 
 void ESAT_FlagContainer::clear(const byte flag)
 {
-  bitClear(flagValue[byteIndex(flag)],
+  bitClear(flagBytes[byteIndex(flag)],
            bitIndex(flag));
 }
 
@@ -40,7 +40,7 @@ void ESAT_FlagContainer::clearAll()
        index < NUMBER_OF_FLAG_STORAGE_BYTES;
        index++)
   {
-    flagValue[index] = 0;
+    flagBytes[index] = 0;
   }
 }
 
@@ -68,7 +68,7 @@ size_t ESAT_FlagContainer::printTo(Print& output) const
 
 boolean ESAT_FlagContainer::read(const byte flag) const
 {
-  return bitRead(flagValue[byteIndex(flag)],
+  return bitRead(flagBytes[byteIndex(flag)],
                  bitIndex(flag));
 }
 
@@ -88,6 +88,6 @@ int ESAT_FlagContainer::readNext() const
 
 void ESAT_FlagContainer::set(const byte flag)
 {
-  bitSet(flagValue[byteIndex(flag)],
+  bitSet(flagBytes[byteIndex(flag)],
          bitIndex(flag));
 }
