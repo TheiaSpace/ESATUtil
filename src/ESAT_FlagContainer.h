@@ -29,8 +29,8 @@
 class ESAT_FlagContainer: public Printable
 {
   public:
-    // Read the current status of the "flagID" flag.
-    boolean read(byte flagID) const;
+    // Read the current status of the "flagIdentifier" flag.
+    boolean read(byte flagIdentifier) const;
 
     // Return the flag ID of the first activated flag turned on.
     // It do not change the value of any flag.
@@ -45,7 +45,7 @@ class ESAT_FlagContainer: public Printable
     size_t printTo(Print& output) const;
 
     // Write the value of a flag
-    void write(byte flagID, boolean value);
+    void write(byte flagIdentifier, boolean value);
 
   private:
     // MAXIMUM_NUMBER_OF_FLAG has to be a multiple of NUMBER_OF_BITS_PER_BYTE
