@@ -51,8 +51,10 @@ class ESAT_FlagContainer: public Printable
     // MAXIMUM_NUMBER_OF_FLAG has to be a multiple of NUMBER_OF_BITS_PER_BYTE
     static const word MAXIMUM_NUMBER_OF_FLAG = 256;
     static const byte NUMBER_OF_BITS_PER_BYTE = 8;
-    byte flagValue[MAXIMUM_NUMBER_OF_FLAG/NUMBER_OF_BITS_PER_BYTE];
     static const int ERROR_STATUS = -1;
+
+    // Store flags compactly in this array of bytes: 8 flags per byte.
+    byte flagValue[MAXIMUM_NUMBER_OF_FLAG/NUMBER_OF_BITS_PER_BYTE];
 
     // Return the bit index within the byte corresponding to the given
     // flagIdentifier.
