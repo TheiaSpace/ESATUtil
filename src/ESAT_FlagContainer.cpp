@@ -66,17 +66,13 @@ boolean ESAT_FlagContainer::read(const byte flagIdentifier) const
 
 int ESAT_FlagContainer::readNext() const
 {
-  for(byte index = 0; index < MAXIMUM_NUMBER_OF_FLAG/NUMBER_OF_BITS_PER_BYTE; index++)
+  for (int flagIdentifier = 0;
+       flagIdentifier < MAXIMUM_NUMBER_OF_FLAG;
+       flagIdentifier++)
   {
-    if(flagValue[index] > 0)
+    if (read(flagIdentifier))
     {
-      for(byte bit = 0; bit < NUMBER_OF_BITS_PER_BYTE; bit++)
-      {
-        if(flagValue[index] & (1 << bit))
-        {
-          return index*NUMBER_OF_BITS_PER_BYTE + bit;
-        }
-      }
+      return flagIdentifier;
     }
   }
   return ERROR_STATUS;
