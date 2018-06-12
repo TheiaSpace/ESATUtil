@@ -18,7 +18,7 @@
 
 #include "ESAT_FlagContainer.h"
 
-boolean ESAT_FlagContainer::read(byte flagID)
+boolean ESAT_FlagContainer::read(byte flagID) const
 {
   byte arrayIndex = flagID/NUMBER_OF_BITS_PER_BYTE;
   byte mask = 1 << (flagID % NUMBER_OF_BITS_PER_BYTE);
@@ -32,7 +32,7 @@ boolean ESAT_FlagContainer::read(byte flagID)
   }
 }
 
-int ESAT_FlagContainer::readNext()
+int ESAT_FlagContainer::readNext() const
 {
   for(byte index = 0; index < MAXIMUM_NUMBER_OF_FLAG/NUMBER_OF_BITS_PER_BYTE; index++)
   {

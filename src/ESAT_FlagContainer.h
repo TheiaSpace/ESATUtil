@@ -30,12 +30,12 @@ class ESAT_FlagContainer
 {
   public:
     // Read the current status of the "flagID" flag.
-    boolean read(byte flagID);
+    boolean read(byte flagID) const;
 
     // Return the flag ID of the first activated flag turned on.
     // It do not change the value of any flag.
     // If all the flags are deactivated, returns ERROR_STATUS.
-    int readNext();
+    int readNext() const;
 
     // Deactivate all the flags (all the flags value set as false).
     void clear();
