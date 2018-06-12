@@ -18,17 +18,23 @@
 
 #include "ESAT_FlagContainer.h"
 
-byte ESAT_FlagContainer::bitIndex(const byte flagIdentifier) const
+byte ESAT_FlagContainer::bitIndex(const byte flag) const
 {
-  return flagIdentifier % NUMBER_OF_FLAGS_PER_BYTE;
+  return flag % NUMBER_OF_FLAGS_PER_BYTE;
 }
 
-byte ESAT_FlagContainer::byteIndex(const byte flagIdentifier) const
+byte ESAT_FlagContainer::byteIndex(const byte flag) const
 {
-  return flagIdentifier / NUMBER_OF_FLAGS_PER_BYTE;
+  return flag / NUMBER_OF_FLAGS_PER_BYTE;
 }
 
-void ESAT_FlagContainer::clear()
+void ESAT_FlagContainer::clear(const byte flag)
+{
+  bitClear(flagValue[byteIndex(flag)],
+           bitIndex(flag));
+}
+
+void ESAT_FlagContainer::clearAll()
 {
   for (byte index = 0;
        index < NUMBER_OF_FLAG_STORAGE_BYTES;
@@ -42,11 +48,11 @@ size_t ESAT_FlagContainer::printTo(Print& output) const
 {
   size_t bytesWritten = 0;
   boolean firstActiveFlagAlreadyPrinted = false;
-  for (int flagIdentifier = 0;
-       flagIdentifier < MAXIMUM_NUMBER_OF_FLAGS;
-       flagIdentifier++)
+  for (int flag = 0;
+       flag < MAXIMUM_NUMBER_OF_FLAGS;
+       flag++)
   {
-    const boolean active = read(flagIdentifier);
+    const boolean active = read(flag);
     if (active)
     {
       if (firstActiveFlagAlreadyPrinted)
@@ -54,42 +60,34 @@ size_t ESAT_FlagContainer::printTo(Print& output) const
         bytesWritten = bytesWritten + output.print(String(", "));
       }
       firstActiveFlagAlreadyPrinted = true;
-      bytesWritten = bytesWritten + output.print(String(flagIdentifier, DEC));
+      bytesWritten = bytesWritten + output.print(String(flag, DEC));
     }
   }
   return bytesWritten;
 }
 
-boolean ESAT_FlagContainer::read(const byte flagIdentifier) const
+boolean ESAT_FlagContainer::read(const byte flag) const
 {
-  return bitRead(flagValue[byteIndex(flagIdentifier)],
-                 bitIndex(flagIdentifier));
+  return bitRead(flagValue[byteIndex(flag)],
+                 bitIndex(flag));
 }
 
 int ESAT_FlagContainer::readNext() const
 {
-  for (int flagIdentifier = 0;
-       flagIdentifier < MAXIMUM_NUMBER_OF_FLAGS;
-       flagIdentifier++)
+  for (int flag = 0;
+       flag < MAXIMUM_NUMBER_OF_FLAGS;
+       flag++)
   {
-    if (read(flagIdentifier))
+    if (read(flag))
     {
-      return flagIdentifier;
+      return flag;
     }
   }
   return NO_ACTIVE_FLAGS;
 }
 
-void ESAT_FlagContainer::write(const byte flagIdentifier, const boolean active)
+void ESAT_FlagContainer::set(const byte flag)
 {
-  if (active)
-  {
-    bitSet(flagValue[byteIndex(flagIdentifier)],
-           bitIndex(flagIdentifier));
-  }
-  else
-  {
-    bitClear(flagValue[byteIndex(flagIdentifier)],
-             bitIndex(flagIdentifier));
-  }
+  bitSet(flagValue[byteIndex(flag)],
+         bitIndex(flag));
 }

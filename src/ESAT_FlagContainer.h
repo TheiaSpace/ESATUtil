@@ -21,32 +21,39 @@
 
 #include <Arduino.h>
 
-// It handles a list of flags. The flag ID can go from 0 to 
-// (MAXIMUM_NUMBER_OF_FLAG - 1). You can clear() all the flags (set as false),
-// read() the value of one (true or false) or set the value (true or false)
-// with write(). Also you can get the next activated flag (its value is true)
-// with readNext().
+// A flag container is a list of numbered boolean flags.
+// There are some operations, like clear(), set() and read(),
+// that are analogous to bitClear(), bitSet() and bitRead():
+// they clear, set and read boolean flags.
+// In addition, it is possible to clear all the flags with clearAll()
+// and get the number of the first true flag with readNext().
+// ESAT_FlagContainer objects are Printable: Print (and thus Stream)
+// objects can print them in human-readable form.
 class ESAT_FlagContainer: public Printable
 {
   public:
+    // Clear a flag (set it to false).
+    void clear(byte flag);
+
     // Deactivate all the flags (all the flags value set as false).
-    void clear();
+    void clearAll();
 
     // Print the true flags in human-readable form.
     // Return the number of characters written.
     size_t printTo(Print& output) const;
 
-    // Read the current status of the "flagIdentifier" flag.
-    boolean read(byte flagIdentifier) const;
+    // Read the current status of a flag.
+    boolean read(byte flag) const;
 
-    // Return the flag ID of the first activated flag turned on.
-    // It do not change the value of any flag.
-    // If all the flags are deactivated, returns a negative number
+    // Return the number of the first flag, starting
+    // from 0, with a true value.
+    // Calling this function doesn't change the value of any flag.
+    // If all the flags are false, return a negative number
     // (NO_ACTIVE_FLAGS).
     int readNext() const;
 
-    // Write the value of a flag
-    void write(byte flagIdentifier, boolean active);
+    // Set a flag to true.
+    void set(byte flag);
 
   private:
     // Maximum number of flags a flag container can store.
@@ -67,11 +74,11 @@ class ESAT_FlagContainer: public Printable
     byte flagValue[NUMBER_OF_FLAG_STORAGE_BYTES];
 
     // Return the bit index within the byte corresponding to the given
-    // flagIdentifier.
-    byte bitIndex(byte flagIdentifier) const;
+    // flag.
+    byte bitIndex(byte flag) const;
 
-    // Return the byte index corresponding to the given flagIdentifier.
-    byte byteIndex(byte flagIdentifier) const;
+    // Return the byte index corresponding to the given flag.
+    byte byteIndex(byte flag) const;
 };
 
 #endif /* ESAT_FlagContainer_h */
