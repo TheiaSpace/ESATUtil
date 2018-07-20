@@ -345,9 +345,13 @@ boolean ESAT_I2CSlaveClass::packetMatchesReadRequest(ESAT_CCSDSPacket& packet)
       return false;
     }
     packet.rewind();
+    if (primaryHeader.packetType != primaryHeader.TELEMETRY)
+    {
+      return false;
+    }
     const ESAT_CCSDSSecondaryHeader secondaryHeader =
       packet.readSecondaryHeader();
-    if (primaryHeader.packetType != primaryHeader.TELEMETRY)
+    if (secondaryHeader.packetIdentifier != masterReadRequestedPacket)
     {
       return false;
     }

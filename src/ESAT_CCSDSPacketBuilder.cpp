@@ -49,6 +49,10 @@ boolean ESAT_CCSDSPacketBuilder::buildPacket(ESAT_CCSDSPacket& packet,
 {
   const byte packetIdentifier = contents.packetIdentifier();
   const boolean headersCorrect = fillHeaders(packet, packetIdentifier);
+  if (!headersCorrect)
+  {
+    return false;
+  }
   const boolean userDataCorrect = contents.fillUserData(packet);
   if (userDataCorrect)
   {

@@ -47,7 +47,7 @@ ESAT_Timestamp::ESAT_Timestamp(const word theYear,
 
 void ESAT_Timestamp::addDays(const unsigned long daysToAdd)
 {
-  for (long i = 0; i < daysToAdd; i++)
+  for (unsigned long i = 0; i < daysToAdd; i++)
   {
     const byte DAYS_PER_MONTH = daysPerMonth(year, month);
     day = day + 1;

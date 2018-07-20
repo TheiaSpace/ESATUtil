@@ -57,7 +57,7 @@ boolean ESAT_UtilClass::compareByteArray(byte array1[],byte array2[], byte array
 byte ESAT_UtilClass::decodeBinaryCodedDecimalByte(const byte number) const
 {
   const byte tens =
-    constrain(number / 0x10, 0, 9);
+    min(number / 0x10, 9);
   const byte ones =
     number - tens * 0x10;
   return 10 * tens + ones;
@@ -66,7 +66,7 @@ byte ESAT_UtilClass::decodeBinaryCodedDecimalByte(const byte number) const
 word ESAT_UtilClass::decodeBinaryCodedDecimalWord(const word number) const
 {
   const word thousands =
-    constrain(number / 0x1000, 0, 9);
+    min(number / 0x1000, 9);
   const word hundreds =
     (number - thousands * 0x1000) / 0x0100;
   const word tens =
@@ -148,7 +148,7 @@ byte ESAT_UtilClass::hexadecimalToByte(const String hexadecimalNumber) const
 word ESAT_UtilClass::hexadecimalToWord(const String hexadecimalNumber) const
 {
   word number = 0;
-  for (int index = 0; index < hexadecimalNumber.length(); index++)
+  for (word index = 0; index < hexadecimalNumber.length(); index++)
   {
     const char character = hexadecimalNumber.charAt(index);
     byte digit = 0;
@@ -261,7 +261,7 @@ word ESAT_UtilClass::swapWordBytes(const word number) const
 
 unsigned long ESAT_UtilClass::unsignedLong(word highWord, word lowWord)
 {
-  return (unsigned long)highWord<<16 + (unsigned long)lowWord;
+  return ((unsigned long) highWord << 16) | ((unsigned long) lowWord);
 }
 
 float ESAT_UtilClass::unsignedLongToFloat(const unsigned long bits) const

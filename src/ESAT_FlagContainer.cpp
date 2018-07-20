@@ -48,7 +48,7 @@ size_t ESAT_FlagContainer::printTo(Print& output) const
 {
   size_t bytesWritten = 0;
   boolean firstActiveFlagAlreadyPrinted = false;
-  for (int flag = 0;
+  for (word flag = 0;
        flag < MAXIMUM_NUMBER_OF_FLAGS;
        flag++)
   {
@@ -74,7 +74,7 @@ boolean ESAT_FlagContainer::read(const byte flag) const
 
 int ESAT_FlagContainer::readNext() const
 {
-  for (int flag = 0;
+  for (word flag = 0;
        flag < MAXIMUM_NUMBER_OF_FLAGS;
        flag++)
   {
