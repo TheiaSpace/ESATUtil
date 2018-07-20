@@ -19,18 +19,16 @@
 #include "ESAT_CCSDSPacket.h"
 #include "ESAT_Util.h"
 
-ESAT_CCSDSPacket::ESAT_CCSDSPacket():
-  primaryHeader(),
-  packetData()
+ESAT_CCSDSPacket::ESAT_CCSDSPacket()
 {
+  packetData = ESAT_Buffer(nullptr, 0);
   setTimeout(0);
 }
 
 ESAT_CCSDSPacket::ESAT_CCSDSPacket(byte* const buffer,
-                                   const unsigned long bufferLength):
-  primaryHeader(),
-  packetData(buffer, bufferLength)
+                                   const unsigned long bufferLength)
 {
+  packetData = ESAT_Buffer(buffer, bufferLength);
   setTimeout(0);
 }
 
