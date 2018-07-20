@@ -33,7 +33,7 @@ class ESAT_UtilClass
     // Return the bits of the two's-complement representation
     // of a signed 8-bit integer.
     byte charToByte(signed char number) const;
-    
+
     // Compare 2 byte arrays. Return true if they are equal;
     // otherwise return false.
     boolean compareByteArray(byte array1[],byte array2[], byte arraysSize);
@@ -79,7 +79,7 @@ class ESAT_UtilClass
 
     // Convert 2 words to the unsigned long data type
     unsigned long unsignedLong(word highWord, word lowWord);
-    
+
     // Return the single-precision floating-point number corresponding
     // to the given IEEE 754 binary32 bits.
     float unsignedLongToFloat(unsigned long bits) const;
