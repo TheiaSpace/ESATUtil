@@ -237,7 +237,6 @@ boolean ESAT_I2CMasterClass::readPacket(TwoWire& bus,
   {
     return false;
   }
-  const ESAT_CCSDSPrimaryHeader primaryHeader = packet.readPrimaryHeader();
   const boolean packetDataCorrect =
     readPacketData(bus,
                    address,
