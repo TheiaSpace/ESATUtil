@@ -100,6 +100,7 @@ size_t ESAT_Buffer::printTo(Print& output) const
       bytesWritten
       + output.print(String(buffer[i], HEX));
   }
+  return bytesWritten;
 }
 
 int ESAT_Buffer::read()
