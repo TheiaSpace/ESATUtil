@@ -148,7 +148,7 @@ byte ESAT_UtilClass::hexadecimalToByte(const String hexadecimalNumber) const
 word ESAT_UtilClass::hexadecimalToWord(const String hexadecimalNumber) const
 {
   word number = 0;
-  for (int index = 0; index < hexadecimalNumber.length(); index++)
+  for (word index = 0; index < hexadecimalNumber.length(); index++)
   {
     const char character = hexadecimalNumber.charAt(index);
     byte digit = 0;
