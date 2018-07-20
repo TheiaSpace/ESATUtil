@@ -34,7 +34,7 @@ ESAT_CCSDSPacket::ESAT_CCSDSPacket(byte* const buffer,
 
 int ESAT_CCSDSPacket::available()
 {
-  return constrain(availableBytesToRead(), 0, 0x7FFF);
+  return min(availableBytesToRead(), 0x7FFFF);
 }
 
 unsigned long ESAT_CCSDSPacket::availableBytesToRead() const

@@ -38,7 +38,7 @@ ESAT_Buffer::ESAT_Buffer(byte array[], const unsigned long length):
 
 int ESAT_Buffer::available()
 {
-  return constrain(availableBytes(), 0, 0x7FFF);
+  return min(availableBytes(), 0x7FFF);
 }
 
 unsigned long ESAT_Buffer::availableBytes() const
