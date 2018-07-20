@@ -18,9 +18,9 @@
 
 #include "ESAT_CCSDSPacketBuilder.h"
 
-ESAT_CCSDSPacketBuilder::ESAT_CCSDSPacketBuilder():
-  clock(nullptr)
+ESAT_CCSDSPacketBuilder::ESAT_CCSDSPacketBuilder()
 {
+  clock = nullptr;
 }
 
 ESAT_CCSDSPacketBuilder::ESAT_CCSDSPacketBuilder(const word applicationProcessIdentifier,
@@ -28,9 +28,9 @@ ESAT_CCSDSPacketBuilder::ESAT_CCSDSPacketBuilder(const word applicationProcessId
                                                  const byte minorVersionNumber,
                                                  const byte patchVersionNumber,
                                                  const ESAT_CCSDSPrimaryHeader::PacketType packetType,
-                                                 ESAT_Clock& theClock):
-  clock(&theClock)
+                                                 ESAT_Clock& theClock)
 {
+  clock = &theClock;
   primaryHeader.packetVersionNumber = 0;
   primaryHeader.packetType = packetType;
   primaryHeader.secondaryHeaderFlag = primaryHeader.SECONDARY_HEADER_IS_PRESENT;

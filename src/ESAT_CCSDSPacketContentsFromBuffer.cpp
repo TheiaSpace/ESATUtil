@@ -24,17 +24,17 @@ ESAT_CCSDSPacketContentsFromBuffer::ESAT_CCSDSPacketContentsFromBuffer()
 
 ESAT_CCSDSPacketContentsFromBuffer::ESAT_CCSDSPacketContentsFromBuffer(const byte theIdentifier,
                                                                        byte array[],
-                                                                       const unsigned long length):
-  identifier(theIdentifier),
-  buffer(array, length)
+                                                                       const unsigned long length)
 {
+  identifier = theIdentifier;
+  buffer = ESAT_Buffer(array, length);
 }
 
 ESAT_CCSDSPacketContentsFromBuffer::ESAT_CCSDSPacketContentsFromBuffer(const byte theIdentifier,
-                                                                       ESAT_Buffer& theBuffer):
-  identifier(theIdentifier),
-  buffer(theBuffer)
+                                                                       ESAT_Buffer& theBuffer)
 {
+  identifier = theIdentifier;
+  buffer = theBuffer;
 }
 
 boolean ESAT_CCSDSPacketContentsFromBuffer::available()

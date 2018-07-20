@@ -18,21 +18,21 @@
 
 #include "ESAT_KISSStream.h"
 
-ESAT_KISSStream::ESAT_KISSStream():
-  backendStream(nullptr),
-  backendBuffer(),
-  decoderState(WAITING_FOR_FRAME_START)
+ESAT_KISSStream::ESAT_KISSStream()
 {
+  backendStream = nullptr;
+  backendBuffer = ESAT_Buffer();
+  decoderState = WAITING_FOR_FRAME_START;
   setTimeout(0);
 }
 
 ESAT_KISSStream::ESAT_KISSStream(Stream& stream,
                                  byte buffer[],
-                                 unsigned long bufferLength):
-  backendStream(&stream),
-  backendBuffer(buffer, bufferLength),
-  decoderState(WAITING_FOR_FRAME_START)
+                                 unsigned long bufferLength)
 {
+  backendStream = &stream;
+  backendBuffer = ESAT_Buffer(buffer, bufferLength);
+  decoderState = WAITING_FOR_FRAME_START;
   setTimeout(0);
 }
 

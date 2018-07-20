@@ -18,21 +18,21 @@
 
 #include "ESAT_Buffer.h"
 
-ESAT_Buffer::ESAT_Buffer():
-  buffer(nullptr),
-  bufferCapacity(0),
-  bytesInBuffer(0),
-  readWritePosition(0)
+ESAT_Buffer::ESAT_Buffer()
 {
+  buffer = nullptr;
+  bufferCapacity = 0;
+  bytesInBuffer = 0;
+  readWritePosition = 0;
   setTimeout(0);
 }
 
-ESAT_Buffer::ESAT_Buffer(byte array[], const unsigned long length):
-  buffer(array),
-  bufferCapacity(length),
-  bytesInBuffer(0),
-  readWritePosition(0)
+ESAT_Buffer::ESAT_Buffer(byte array[], const unsigned long length)
 {
+  buffer = array;
+  bufferCapacity = length;
+  bytesInBuffer = 0;
+  readWritePosition = 0;
   setTimeout(0);
 }
 
