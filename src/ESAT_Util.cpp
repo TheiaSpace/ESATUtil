@@ -271,7 +271,7 @@ unsigned long ESAT_UtilClass::unsignedLong(const byte highByte,
 
 unsigned long ESAT_UtilClass::unsignedLong(word highWord, word lowWord) const
 {
-  return ((unsigned long) highWord << 16) | ((unsigned long) lowWord);
+  return (((unsigned long) highWord) << 16) | ((unsigned long) lowWord);
 }
 
 float ESAT_UtilClass::unsignedLongToFloat(const unsigned long bits) const
