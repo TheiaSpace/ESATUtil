@@ -259,9 +259,19 @@ word ESAT_UtilClass::swapWordBytes(const word number) const
   return word(lowByte(number), highByte(number));
 }
 
-unsigned long ESAT_UtilClass::unsignedLong(word highWord, word lowWord)
+unsigned long ESAT_UtilClass::unsignedLong(const byte highByte,
+                                           const byte mediumHighByte,
+                                           const byte mediumLowByte,
+                                           const byte lowByte) const
 {
-  return ((unsigned long) highWord << 16) | ((unsigned long) lowWord);
+  const word highWord = word(highByte, mediumHighByte);
+  const word lowWord = word(mediumLowByte, lowByte);
+  return unsignedLong(highWord, lowWord);
+}
+
+unsigned long ESAT_UtilClass::unsignedLong(word highWord, word lowWord) const
+{
+  return (((unsigned long) highWord) << 16) | ((unsigned long) lowWord);
 }
 
 float ESAT_UtilClass::unsignedLongToFloat(const unsigned long bits) const
