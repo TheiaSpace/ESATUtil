@@ -77,6 +77,13 @@ class ESAT_UtilClass
     // Swap the bytes of a word.
     word swapWordBytes(word number) const;
 
+    // Return the 32-bit unsigned integer made from the given bytes,
+    // from most significant byte to least significant byte.
+    unsigned long unsignedLong(byte highByte,
+                               byte mediumHighByte,
+                               byte mediumLowByte,
+                               byte lowByte);
+
     // Convert 2 words to the unsigned long data type
     unsigned long unsignedLong(word highWord, word lowWord);
 
