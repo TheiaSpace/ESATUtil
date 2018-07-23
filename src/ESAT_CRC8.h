@@ -34,12 +34,12 @@ class ESAT_CRC8
     void begin(byte POLYNOMIAL);
 
     // Calculate the CRC of the given message and return it
-    byte read(byte message[], byte dataLength);
+    byte read(const byte message[], byte dataLength);
 
     // It allows to recalculate the CRC adding the new "message" to the
     // previous calculated CRC. In this way you can calculate the CRC of
     // splitted message.
-    byte add(byte previousCRC, byte message[], byte dataLength);
+    byte add(byte previousCRC, const byte message[], byte dataLength);
 
   private:
     byte CRCTable[256];
