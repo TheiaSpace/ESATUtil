@@ -84,7 +84,8 @@ class ESAT_UtilClass
                                byte mediumLowByte,
                                byte lowByte) const;
 
-    // Convert 2 words to the unsigned long data type
+    // Return the 32-bit unsigned integer made from the given words,
+    // from most significant word to least significant word.
     unsigned long unsignedLong(word highWord, word lowWord) const;
 
     // Return the single-precision floating-point number corresponding
