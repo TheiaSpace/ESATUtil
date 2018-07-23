@@ -82,10 +82,10 @@ class ESAT_UtilClass
     unsigned long unsignedLong(byte highByte,
                                byte mediumHighByte,
                                byte mediumLowByte,
-                               byte lowByte);
+                               byte lowByte) const;
 
     // Convert 2 words to the unsigned long data type
-    unsigned long unsignedLong(word highWord, word lowWord);
+    unsigned long unsignedLong(word highWord, word lowWord) const;
 
     // Return the single-precision floating-point number corresponding
     // to the given IEEE 754 binary32 bits.
