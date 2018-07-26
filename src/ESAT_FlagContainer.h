@@ -32,6 +32,9 @@
 class ESAT_FlagContainer: public Printable
 {
   public:
+    // Return value of readNext() when all flags are inactive.
+    static const int NO_ACTIVE_FLAGS = -1;
+
     // Clear a flag (set it to false).
     void clear(byte flag);
 
@@ -60,9 +63,6 @@ class ESAT_FlagContainer: public Printable
     // Maximum number of flags a flag container can store.
     // This has to be a multiple of NUMBER_OF_FLAGS_PER_BYTE.
     static const word MAXIMUM_NUMBER_OF_FLAGS = 256;
-
-    // Return value of readNext() when all flags are inactive.
-    static const int NO_ACTIVE_FLAGS = -1;
 
     // Number of flags stored in each byte.
     static const byte NUMBER_OF_FLAGS_PER_BYTE = 8;
