@@ -337,6 +337,46 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // This leaves the read/write pointer untouched.
     void writePrimaryHeader(ESAT_CCSDSPrimaryHeader primaryHeader);
 
+    // Rewind and then write the primary header and secondary header
+    // of a telecommand packet with secondary header present and
+    // unsegmented user data.
+    // Use the provided application process identifier, packet
+    // sequence count, timestamp, major version number, minor version
+    // number, patch version number and packet identifier for the
+    // headers.
+    // This advances the read/write pointer just past the secondary
+    // header, but limited to the packet data buffer length.
+    // The written value is undefined if there are fewer than 12 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
+    void writeTelecommandHeaders(word applicationProcessIdentifier,
+                                 word packetSequenceCount,
+                                 ESAT_Timestamp timestamp,
+                                 byte majorVersionNumber,
+                                 byte minorVersionNumber,
+                                 byte patchVersionNumber,
+                                 byte packetIdentifier);
+
+    // Rewind and then write the primary header and secondary header
+    // of a telemetry packet with secondary header present and
+    // unsegmented user data.
+    // Use the provided application process identifier, packet
+    // sequence count, timestamp, major version number, minor version
+    // number, patch version number and packet identifier for the
+    // headers.
+    // This moves the read/write pointer to 12, just after the
+    // secondary header, but limited to the packet data buffer length.
+    // The written value is undefined if there are fewer than 12 bytes
+    // before reaching the end of the packet data, but no data will be
+    // written beyond the packet data buffer.
+    void writeTelemetryHeaders(word applicationProcessIdentifier,
+                               word packetSequenceCount,
+                               ESAT_Timestamp timestamp,
+                               byte majorVersionNumber,
+                               byte minorVersionNumber,
+                               byte patchVersionNumber,
+                               byte packetIdentifier);
+
     // Append a timestamp to the packet data.
     // The raw datum is stored in big-endian byte order, encoded as a
     // calendar segmented time code, month of year/day of month

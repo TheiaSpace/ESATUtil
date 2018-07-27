@@ -23,40 +23,42 @@ ESAT_CCSDSPacketBuilder::ESAT_CCSDSPacketBuilder()
   clock = nullptr;
 }
 
-ESAT_CCSDSPacketBuilder::ESAT_CCSDSPacketBuilder(const word applicationProcessIdentifier,
-                                                 const byte majorVersionNumber,
-                                                 const byte minorVersionNumber,
-                                                 const byte patchVersionNumber,
-                                                 const ESAT_CCSDSPrimaryHeader::PacketType packetType,
+ESAT_CCSDSPacketBuilder::ESAT_CCSDSPacketBuilder(const word theApplicationProcessIdentifier,
+                                                 const byte theMajorVersionNumber,
+                                                 const byte theMinorVersionNumber,
+                                                 const byte thePatchVersionNumber,
                                                  ESAT_Clock& theClock)
 {
+  applicationProcessIdentifier = theApplicationProcessIdentifier;
+  majorVersionNumber = theMajorVersionNumber;
+  minorVersionNumber = theMinorVersionNumber;
+  patchVersionNumber = thePatchVersionNumber;
   clock = &theClock;
-  primaryHeader.packetVersionNumber = 0;
-  primaryHeader.packetType = packetType;
-  primaryHeader.secondaryHeaderFlag = primaryHeader.SECONDARY_HEADER_IS_PRESENT;
-  primaryHeader.applicationProcessIdentifier = applicationProcessIdentifier;
-  primaryHeader.sequenceFlags = primaryHeader.UNSEGMENTED_USER_DATA;
-  primaryHeader.packetSequenceCount = 0;
-  secondaryHeader.preamble =
-    secondaryHeader.CALENDAR_SEGMENTED_TIME_CODE_MONTH_DAY_VARIANT_1_SECOND_RESOLUTION;
-  secondaryHeader.majorVersionNumber = majorVersionNumber;
-  secondaryHeader.minorVersionNumber = minorVersionNumber;
-  secondaryHeader.patchVersionNumber = patchVersionNumber;
+  packetSequenceCount = 0;
 }
 
-boolean ESAT_CCSDSPacketBuilder::buildPacket(ESAT_CCSDSPacket& packet,
-                                             ESAT_CCSDSPacketContents& contents)
+boolean ESAT_CCSDSPacketBuilder::buildTelecommandPacket(ESAT_CCSDSPacket& packet,
+                                                        ESAT_CCSDSPacketContents& contents)
 {
-  const byte packetIdentifier = contents.packetIdentifier();
-  const boolean headersCorrect = fillHeaders(packet, packetIdentifier);
-  if (!headersCorrect)
+  if (!clock)
   {
     return false;
   }
+  if (packet.capacity() < ESAT_CCSDSSecondaryHeader::LENGTH)
+  {
+    return false;
+  }
+  packet.writeTelecommandHeaders(applicationProcessIdentifier,
+                                 packetSequenceCount,
+                                 clock->read(),
+                                 majorVersionNumber,
+                                 minorVersionNumber,
+                                 patchVersionNumber,
+                                 contents.packetIdentifier());
   const boolean userDataCorrect = contents.fillUserData(packet);
   if (userDataCorrect)
   {
-    incrementPacketSequenceCount();
+    packetSequenceCount = packetSequenceCount + 1;
     return true;
   }
   else
@@ -65,26 +67,32 @@ boolean ESAT_CCSDSPacketBuilder::buildPacket(ESAT_CCSDSPacket& packet,
   }
 }
 
-boolean ESAT_CCSDSPacketBuilder::fillHeaders(ESAT_CCSDSPacket& packet,
-                                             const byte packetIdentifier)
+boolean ESAT_CCSDSPacketBuilder::buildTelemetryPacket(ESAT_CCSDSPacket& packet,
+                                                      ESAT_CCSDSPacketContents& contents)
 {
   if (!clock)
   {
     return false;
   }
-  if (packet.capacity() < secondaryHeader.LENGTH)
+  if (packet.capacity() < ESAT_CCSDSSecondaryHeader::LENGTH)
   {
     return false;
   }
-  packet.flush();
-  packet.writePrimaryHeader(primaryHeader);
-  secondaryHeader.timestamp = clock->read();
-  secondaryHeader.packetIdentifier = packetIdentifier;
-  packet.writeSecondaryHeader(secondaryHeader);
-  return true;
-}
-
-void ESAT_CCSDSPacketBuilder::incrementPacketSequenceCount()
-{
-  primaryHeader.packetSequenceCount = primaryHeader.packetSequenceCount + 1;
+  packet.writeTelemetryHeaders(applicationProcessIdentifier,
+                               packetSequenceCount,
+                               clock->read(),
+                               majorVersionNumber,
+                               minorVersionNumber,
+                               patchVersionNumber,
+                               contents.packetIdentifier());
+  const boolean userDataCorrect = contents.fillUserData(packet);
+  if (userDataCorrect)
+  {
+    packetSequenceCount = packetSequenceCount + 1;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }

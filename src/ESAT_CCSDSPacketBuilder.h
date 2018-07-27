@@ -31,40 +31,50 @@ class ESAT_CCSDSPacketBuilder
     ESAT_CCSDSPacketBuilder();
 
     // Set up the packet builder for the given application process identifier,
-    // version numbers and packet type.
+    // and version numbers.
+    // Start with a 0 packet sequence count.
     // Get the packet time from the provided clock.
     ESAT_CCSDSPacketBuilder(word applicationProcessIdentifier,
                             byte majorVersionNumber,
                             byte minorVersionNumber,
                             byte patchVersionNumber,
-                            ESAT_CCSDSPrimaryHeader::PacketType packetType,
                             ESAT_Clock& clock);
 
-    // Build a new CCSDS packet with the provided packet contents.
+    // Build a new CCSDS telecommand packet with the provided packet
+    // contents.
     // Increment the packet sequence count on success.
     // Return true on success; otherwise return false.
-    boolean buildPacket(ESAT_CCSDSPacket& packet,
-                        ESAT_CCSDSPacketContents& contents);
+    boolean buildTelecommandPacket(ESAT_CCSDSPacket& packet,
+                                   ESAT_CCSDSPacketContents& contents);
 
-    // Fill the primary header and secondary header fields
-    // of a CCSDS packet.
-    // Leave the packet sequence count intact.
+    // Build a new CCSDS telemetry packet with the provided packet
+    // contents.
+    // Increment the packet sequence count on success.
     // Return true on success; otherwise return false.
-    boolean fillHeaders(ESAT_CCSDSPacket& packet,
-                        byte packetIdentifier);
-
-    // Increment the packet sequence count.
-    void incrementPacketSequenceCount();
+    boolean buildTelemetryPacket(ESAT_CCSDSPacket& packet,
+                                 ESAT_CCSDSPacketContents& contents);
 
   private:
+    // Application process identifier.
+    // Each logical subsystem should have its own unique application
+    // process identifier (e.g., the attitude determination and
+    // control subsystem has its own application process identifier).
+    word applicationProcessIdentifier;
+
+    // Packet sequence count.
+    // Each application process keeps its own packet sequence count,
+    // which is incremented every time it generates a new packet.
+    word packetSequenceCount;
+
+    // Version number in major.minor.patch format
+    // as defined in the Semantic Versioning 2.0.0 standard.
+    // Each application process has a version number.
+    byte majorVersionNumber;
+    byte minorVersionNumber;
+    byte patchVersionNumber;
+
     // Use this clock to fill the timestamp of the packets.
     ESAT_Clock* clock;
-
-    // Primary header template.
-    ESAT_CCSDSPrimaryHeader primaryHeader;
-
-    // Secondary header template.
-    ESAT_CCSDSSecondaryHeader secondaryHeader;
 };
 
 #endif /* ESAT_CCSDSPacketBuilder_h */

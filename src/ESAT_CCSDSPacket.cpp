@@ -308,6 +308,62 @@ void ESAT_CCSDSPacket::writeSecondaryHeader(const ESAT_CCSDSSecondaryHeader datu
   writeByte(datum.packetIdentifier);
 }
 
+void ESAT_CCSDSPacket::writeTelecommandHeaders(const word applicationProcessIdentifier,
+                                               const word packetSequenceCount,
+                                               const ESAT_Timestamp timestamp,
+                                               const byte majorVersionNumber,
+                                               const byte minorVersionNumber,
+                                               const byte patchVersionNumber,
+                                               const byte packetIdentifier)
+{
+  rewind();
+  ESAT_CCSDSPrimaryHeader primaryHeader;
+  primaryHeader.packetVersionNumber = 0;
+  primaryHeader.packetType = ESAT_CCSDSPrimaryHeader::TELECOMMAND;
+  primaryHeader.secondaryHeaderFlag = primaryHeader.SECONDARY_HEADER_IS_PRESENT;
+  primaryHeader.applicationProcessIdentifier = applicationProcessIdentifier;
+  primaryHeader.sequenceFlags = primaryHeader.UNSEGMENTED_USER_DATA;
+  primaryHeader.packetSequenceCount = packetSequenceCount;
+  writePrimaryHeader(primaryHeader);
+  ESAT_CCSDSSecondaryHeader secondaryHeader;
+  secondaryHeader.preamble =
+    secondaryHeader.CALENDAR_SEGMENTED_TIME_CODE_MONTH_DAY_VARIANT_1_SECOND_RESOLUTION;
+  secondaryHeader.timestamp = timestamp;
+  secondaryHeader.majorVersionNumber = majorVersionNumber;
+  secondaryHeader.minorVersionNumber = minorVersionNumber;
+  secondaryHeader.patchVersionNumber = patchVersionNumber;
+  secondaryHeader.packetIdentifier = packetIdentifier;
+  writeSecondaryHeader(secondaryHeader);
+}
+
+void ESAT_CCSDSPacket::writeTelemetryHeaders(const word applicationProcessIdentifier,
+                                             const word packetSequenceCount,
+                                             const ESAT_Timestamp timestamp,
+                                             const byte majorVersionNumber,
+                                             const byte minorVersionNumber,
+                                             const byte patchVersionNumber,
+                                             const byte packetIdentifier)
+{
+  rewind();
+  ESAT_CCSDSPrimaryHeader primaryHeader;
+  primaryHeader.packetVersionNumber = 0;
+  primaryHeader.packetType = ESAT_CCSDSPrimaryHeader::TELEMETRY;
+  primaryHeader.secondaryHeaderFlag = primaryHeader.SECONDARY_HEADER_IS_PRESENT;
+  primaryHeader.applicationProcessIdentifier = applicationProcessIdentifier;
+  primaryHeader.sequenceFlags = primaryHeader.UNSEGMENTED_USER_DATA;
+  primaryHeader.packetSequenceCount = packetSequenceCount;
+  writePrimaryHeader(primaryHeader);
+  ESAT_CCSDSSecondaryHeader secondaryHeader;
+  secondaryHeader.preamble =
+    secondaryHeader.CALENDAR_SEGMENTED_TIME_CODE_MONTH_DAY_VARIANT_1_SECOND_RESOLUTION;
+  secondaryHeader.timestamp = timestamp;
+  secondaryHeader.majorVersionNumber = majorVersionNumber;
+  secondaryHeader.minorVersionNumber = minorVersionNumber;
+  secondaryHeader.patchVersionNumber = patchVersionNumber;
+  secondaryHeader.packetIdentifier = packetIdentifier;
+  writeSecondaryHeader(secondaryHeader);
+}
+
 void ESAT_CCSDSPacket::writeTimestamp(const ESAT_Timestamp datum)
 {
   writeBinaryCodedDecimalWord(datum.year);
