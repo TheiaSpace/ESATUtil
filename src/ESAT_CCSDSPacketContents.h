@@ -28,6 +28,14 @@
 class ESAT_CCSDSPacketContents
 {
   public:
+    // Next packet contents object in the list of packet contents objects.
+    // ESAT_CCSDSPacketBuilder uses this to keep a linked list of
+    // registered packet contents: it can traverse the list by going
+    // from one packet contents object to the next packet contents
+    // object until reaching the end of the list at nullptr.
+    // Only ESAT_CCSDSPacketBuilder should care about this.
+    ESAT_CCSDSPacketContents* nextPacketContents;
+
     virtual ~ESAT_CCSDSPacketContents() {};
 
     // Return true if a new packet is available:
