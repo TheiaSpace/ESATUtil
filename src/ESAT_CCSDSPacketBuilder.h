@@ -40,19 +40,39 @@ class ESAT_CCSDSPacketBuilder
                             byte patchVersionNumber,
                             ESAT_Clock& clock);
 
-    // Build a new CCSDS telecommand packet with the provided packet
-    // contents.
-    // Increment the packet sequence count on success.
-    // Return true on success; otherwise return false.
-    boolean buildTelecommandPacket(ESAT_CCSDSPacket& packet,
-                                   ESAT_CCSDSPacketContents& contents);
+    // Add a new entry to the queue of packet contents.
+    void addPacketContents(ESAT_CCSDSPacketContents& contents);
 
-    // Build a new CCSDS telemetry packet with the provided packet
-    // contents.
-    // Increment the packet sequence count on success.
+    // Build a new CCSDS telecommand packet with the contents of the
+    // current element of the queue of packet contents objects.
+    // Advance the queue of packet contents objects.
     // Return true on success; otherwise return false.
-    boolean buildTelemetryPacket(ESAT_CCSDSPacket& packet,
-                                 ESAT_CCSDSPacketContents& contents);
+    boolean buildNextTelecommandPacket(ESAT_CCSDSPacket& packet);
+
+    // Build a new CCSDS telemetry packet with the contents of the
+    // packet contents object that matches the given identifier.
+    // Don't modify the queue of packet contents.
+    // Return true on success; otherwise return false.
+    boolean buildNamedTelemetryPacket(ESAT_CCSDSPacket& packet,
+                                      byte identifier);
+
+    // Build a new CCSDS telemetry packet with the contents of the
+    // current element of the queue of packet contents objects.
+    // Advance the queue of packet contents objects.
+    // Return true on success; otherwise return false.
+    boolean buildNextTelemetryPacket(ESAT_CCSDSPacket& packet);
+
+    // Disable the emission of the packet with given identifier.
+    void disablePacket(byte identifier);
+
+    // Enable the emission of the packet with given identifier.
+    void enablePacket(byte identifier);
+
+    // Rewind the queue of packet contents.
+    // The next call to buildNextTelecommandPacket()
+    // or buildNextTelemetryPacket() will use the packet contents
+    // object at the start of the queue.
+    void rewindPacketContentsQueue();
 
   private:
     // Application process identifier.
@@ -75,6 +95,26 @@ class ESAT_CCSDSPacketBuilder
 
     // Use this clock to fill the timestamp of the packets.
     ESAT_Clock* clock;
+
+    // Start of the queue of packet contents.
+    ESAT_CCSDSPacketContents* firstPacketContents;
+
+    // Current object of the queue of packet contents.
+    ESAT_CCSDSPacketContents* packetContents;
+
+    // Build a new CCSDS telecommand packet with the provided packet
+    // contents.
+    // Increment the packet sequence count on success.
+    // Return true on success; otherwise return false.
+    boolean buildTelecommandPacket(ESAT_CCSDSPacket& packet,
+                                   ESAT_CCSDSPacketContents& contents);
+
+    // Build a new CCSDS telemetry packet with the provided packet
+    // contents.
+    // Increment the packet sequence count on success.
+    // Return true on success; otherwise return false.
+    boolean buildTelemetryPacket(ESAT_CCSDSPacket& packet,
+                                 ESAT_CCSDSPacketContents& contents);
 };
 
 #endif /* ESAT_CCSDSPacketBuilder_h */
