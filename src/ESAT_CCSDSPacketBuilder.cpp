@@ -21,6 +21,8 @@
 ESAT_CCSDSPacketBuilder::ESAT_CCSDSPacketBuilder()
 {
   clock = nullptr;
+  firstPacketContents = nullptr;
+  packetContents = nullptr;
 }
 
 ESAT_CCSDSPacketBuilder::ESAT_CCSDSPacketBuilder(const word theApplicationProcessIdentifier,
@@ -35,6 +37,30 @@ ESAT_CCSDSPacketBuilder::ESAT_CCSDSPacketBuilder(const word theApplicationProces
   patchVersionNumber = thePatchVersionNumber;
   clock = &theClock;
   packetSequenceCount = 0;
+  firstPacketContents = nullptr;
+  packetContents = nullptr;
+}
+
+void ESAT_CCSDSPacketBuilder::addPacketContents(ESAT_CCSDSPacketContents& newPacketContents)
+{
+  if (firstPacketContents == nullptr)
+  {
+    packetContents = &newPacketContents;
+    firstPacketContents = &newPacketContents;
+  }
+  else
+  {
+    for (ESAT_CCSDSPacketContents* contents = firstPacketContents;
+         contents != nullptr;
+         contents = contents->nextPacketContents)
+    {
+      if (contents->nextPacketContents == nullptr)
+      {
+        contents->nextPacketContents = &newPacketContents;
+        return;
+      }
+    }
+  }
 }
 
 boolean ESAT_CCSDSPacketBuilder::buildTelecommandPacket(ESAT_CCSDSPacket& packet,
@@ -45,6 +71,10 @@ boolean ESAT_CCSDSPacketBuilder::buildTelecommandPacket(ESAT_CCSDSPacket& packet
     return false;
   }
   if (packet.capacity() < ESAT_CCSDSSecondaryHeader::LENGTH)
+  {
+    return false;
+  }
+  if (!contents.enabled)
   {
     return false;
   }
@@ -78,6 +108,10 @@ boolean ESAT_CCSDSPacketBuilder::buildTelemetryPacket(ESAT_CCSDSPacket& packet,
   {
     return false;
   }
+  if (!contents.enabled)
+  {
+    return false;
+  }
   packet.writeTelemetryHeaders(applicationProcessIdentifier,
                                packetSequenceCount,
                                clock->read(),
@@ -95,4 +129,76 @@ boolean ESAT_CCSDSPacketBuilder::buildTelemetryPacket(ESAT_CCSDSPacket& packet,
   {
     return false;
   }
+}
+
+boolean ESAT_CCSDSPacketBuilder::buildNextTelecommandPacket(ESAT_CCSDSPacket& packet)
+{
+  if (packetContents == nullptr)
+  {
+    return false;
+  }
+  const boolean gotPacket = buildTelecommandPacket(packet,
+                                                   *packetContents);
+  packetContents = packetContents->nextPacketContents;
+  return gotPacket;
+}
+
+boolean ESAT_CCSDSPacketBuilder::buildNamedTelemetryPacket(ESAT_CCSDSPacket& packet,
+                                                           const byte identifier)
+{
+  for (ESAT_CCSDSPacketContents* contents = firstPacketContents;
+       contents != nullptr;
+       contents = contents->nextPacketContents)
+  {
+    if (contents->packetIdentifier() == identifier)
+    {
+      return buildTelemetryPacket(packet, *contents);
+    }
+  }
+  return false;
+}
+
+boolean ESAT_CCSDSPacketBuilder::buildNextTelemetryPacket(ESAT_CCSDSPacket& packet)
+{
+  if (packetContents == nullptr)
+  {
+    return false;
+  }
+  const boolean gotPacket = buildTelemetryPacket(packet,
+                                                 *packetContents);
+  packetContents = packetContents->nextPacketContents;
+  return gotPacket;
+}
+
+void ESAT_CCSDSPacketBuilder::disablePacket(const byte identifier)
+{
+  for (ESAT_CCSDSPacketContents* contents = packetContents;
+       contents != nullptr;
+       contents = contents->nextPacketContents)
+  {
+    if (contents->packetIdentifier() == identifier)
+    {
+      contents->enabled = false;
+      return;
+    }
+  }
+}
+
+void ESAT_CCSDSPacketBuilder::enablePacket(const byte identifier)
+{
+  for (ESAT_CCSDSPacketContents* contents = packetContents;
+       contents != nullptr;
+       contents = contents->nextPacketContents)
+  {
+    if (contents->packetIdentifier() == identifier)
+    {
+      contents->enabled = true;
+      return;
+    }
+  }
+}
+
+void ESAT_CCSDSPacketBuilder::rewindPacketContentsQueue()
+{
+  packetContents = firstPacketContents;
 }
