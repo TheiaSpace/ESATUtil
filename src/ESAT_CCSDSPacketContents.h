@@ -28,6 +28,10 @@
 class ESAT_CCSDSPacketContents
 {
   public:
+    // Set to true if the emission of this packet is enabled;
+    // otherwise set to false.
+    boolean enabled = false;
+
     // Next packet contents object in the list of packet contents objects.
     // ESAT_CCSDSPacketBuilder uses this to keep a linked list of
     // registered packet contents: it can traverse the list by going
