@@ -91,3 +91,55 @@ void ESAT_FlagContainer::set(const byte flag)
   bitSet(flagBytes[byteIndex(flag)],
          bitIndex(flag));
 }
+
+ESAT_FlagContainer ESAT_FlagContainer::operator&(const ESAT_FlagContainer& flags) const
+{
+  ESAT_FlagContainer result;
+  for (word byteIndex = 0;
+       byteIndex < NUMBER_OF_FLAG_STORAGE_BYTES;
+       byteIndex++)
+  {
+    result.flagBytes[byteIndex] =
+      flagBytes[byteIndex] & flags.flagBytes[byteIndex];
+  }
+  return result;
+}
+
+ESAT_FlagContainer ESAT_FlagContainer::operator~() const
+{
+  ESAT_FlagContainer result;
+  for (word byteIndex = 0;
+       byteIndex < NUMBER_OF_FLAG_STORAGE_BYTES;
+       byteIndex++)
+  {
+    result.flagBytes[byteIndex] =
+      ~flagBytes[byteIndex];
+  }
+  return result;
+}
+
+ESAT_FlagContainer ESAT_FlagContainer::operator|(const ESAT_FlagContainer& flags) const
+{
+  ESAT_FlagContainer result;
+  for (word byteIndex = 0;
+       byteIndex < NUMBER_OF_FLAG_STORAGE_BYTES;
+       byteIndex++)
+  {
+    result.flagBytes[byteIndex] =
+      flagBytes[byteIndex] | flags.flagBytes[byteIndex];
+  }
+  return result;
+}
+
+ESAT_FlagContainer ESAT_FlagContainer::operator^(const ESAT_FlagContainer& flags) const
+{
+  ESAT_FlagContainer result;
+  for (word byteIndex = 0;
+       byteIndex < NUMBER_OF_FLAG_STORAGE_BYTES;
+       byteIndex++)
+  {
+    result.flagBytes[byteIndex] =
+      flagBytes[byteIndex] ^ flags.flagBytes[byteIndex];
+  }
+  return result;
+}
