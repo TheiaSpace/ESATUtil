@@ -23,17 +23,17 @@
 #include "ESAT_CCSDSPacket.h"
 
 // Packet contents interface.
-// Pass ESAT_CCSDSPacketContents to
-// ESAT_CCSDSPacketBuilder.buildPacket() to build CCSDS packets.
+// Use together with ESAT_CCSDSTelemetryPacketBuilder to build
+// telemetry packets.
 class ESAT_CCSDSPacketContents
 {
   public:
     // Next packet contents object in the list of packet contents objects.
-    // ESAT_CCSDSPacketBuilder uses this to keep a linked list of
+    // ESAT_CCSDSTelemetryPacketBuilder uses this to keep a linked list of
     // registered packet contents: it can traverse the list by going
     // from one packet contents object to the next packet contents
     // object until reaching the end of the list at nullptr.
-    // Only ESAT_CCSDSPacketBuilder should care about this.
+    // Only ESAT_CCSDSTelemetryPacketBuilder should care about this.
     ESAT_CCSDSPacketContents* nextPacketContents;
 
     virtual ~ESAT_CCSDSPacketContents() {};
