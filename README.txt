@@ -38,6 +38,11 @@ The secondary header of CCSDS space packets used by ESAT subsystems.
 Build ESAT-flavoured telemetry CCSDS space packets.
 
 
+# ESAT_Clock
+
+Real-time clock interface.
+
+
 # ESAT_I2CMaster
 
 Query other ESAT slave subsystem boards through the I2C bus.
