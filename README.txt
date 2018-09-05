@@ -18,6 +18,11 @@ Stream interface to byte buffers with bounds checking.
 Standard CCSDS space packets.
 
 
+# ESAT_CCSDSPacketContents
+
+ESAT-flavoured CCSDS space packet contents interface.
+
+
 # ESAT_CCSDSPrimaryHeader
 
 The primary header of CCSDS space packets.
