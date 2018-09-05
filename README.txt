@@ -2,6 +2,8 @@ ESAT utility library version 2.1.0.
 
 Shared utility libraries for ESAT.
 
+Use with Arduino 1.8.0 or newer.
+
 
 # ESAT_Buffer
 
