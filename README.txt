@@ -33,6 +33,11 @@ The primary header of CCSDS space packets.
 The secondary header of CCSDS space packets used by ESAT subsystems.
 
 
+# ESAT_CCSDSTelemetryPacketBuilder
+
+Build ESAT-flavoured telemetry CCSDS space packets.
+
+
 # ESAT_I2CMaster
 
 Query other ESAT slave subsystem boards through the I2C bus.
