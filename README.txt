@@ -4,6 +4,9 @@ Shared utility libraries for ESAT.
 
 Use with Arduino 1.8.0 or newer.
 
+The src/directory contains the utility library, which consists of the
+following modules:
+
 
 # ESAT_Buffer
 
