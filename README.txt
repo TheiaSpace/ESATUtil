@@ -48,6 +48,11 @@ Real-time clock interface.
 8-bit cyclic redundancy check.
 
 
+# ESAT_FlagContainer
+
+Collection of 256 boolean flags.
+
+
 # ESAT_I2CMaster
 
 Query other ESAT slave subsystem boards through the I2C bus.
