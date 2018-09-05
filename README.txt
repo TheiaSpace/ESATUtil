@@ -70,7 +70,7 @@ Stream interface to standard KISS frames.
 
 # ESAT_SoftwareClock
 
-Software real-time clock.
+Software real-time clock implementing the ESAT_Clock interface.
 
 
 # ESAT_Timer
