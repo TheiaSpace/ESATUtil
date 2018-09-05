@@ -43,6 +43,11 @@ Build ESAT-flavoured telemetry CCSDS space packets.
 Real-time clock interface.
 
 
+# ESAT_CRC8
+
+8-bit cyclic redundancy check.
+
+
 # ESAT_I2CMaster
 
 Query other ESAT slave subsystem boards through the I2C bus.
