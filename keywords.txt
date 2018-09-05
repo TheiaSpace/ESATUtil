@@ -1,21 +1,41 @@
+#######################################
+# Syntax Coloring Map For ESATUtil
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
 ESAT_Buffer	KEYWORD1
-
 ESAT_CCSDSPacket	KEYWORD1
-
+ESAT_CCSDSPacketContents	KEYWORD1
 ESAT_CCSDSPrimaryHeader	KEYWORD1
-
 ESAT_CCSDSSecondaryHeader	KEYWORD1
-
-ESAT_I2CMaster	KEYWORD1
-
-ESAT_I2CSlave	KEYWORD1
-
+ESAT_CCSDSTelemetryPacketBuilder	KEYWORD1
+ESAT_Clock	KEYWORD1
+ESAT_CRC8	KEYWORD1
+ESAT_FlagContainer	KEYWORD1
+ESAT_I2CMasterClass	KEYWORD1
+ESAT_I2CSlaveClass	KEYWORD1
 ESAT_KISSStream	KEYWORD1
-
 ESAT_SoftwareClock	KEYWORD1
-
-ESAT_Timer	KEYWORD1
-
+ESAT_TimerClass	KEYWORD1
 ESAT_Timestamp	KEYWORD1
+ESAT_UtilClass	KEYWORD1
 
-ESAT_Util	KEYWORD1
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+ESAT_I2CMaster	KEYWORD2
+ESAT_I2CSlave	KEYWORD2
+ESAT_Timer	KEYWORD2
+ESAT_Util	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
