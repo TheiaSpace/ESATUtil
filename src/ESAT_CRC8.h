@@ -18,8 +18,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESAT_CRC8_CHECKSUM_H
-#define ESAT_CRC8_CHECKSUM_H
+#ifndef ESAT_CRC8_H
+#define ESAT_CRC8_H
 
 #include <Arduino.h>
 #include <Stream.h>
@@ -79,5 +79,5 @@ class ESAT_CRC8: public Stream
     int remainder = -1;
 };
 
-#endif
+#endif /* ESAT_CRC8 */
 
