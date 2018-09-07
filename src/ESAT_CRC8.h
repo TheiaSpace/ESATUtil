@@ -22,29 +22,53 @@
 #define ESAT_CRC8_CHECKSUM_H
 
 #include <Arduino.h>
+#include <Stream.h>
 
 // To use this class, first you have to enter the polinomial with begin().
 // After that, you can get the CRC8 of a message with read().
 // Also you can add more bytes at the end of the message without recalculing
 // it from the beginning with add().
-class ESAT_CRC8
+class ESAT_CRC8: public Stream
 {
   public:
+    // Return 1 if the CRC remainder is available
+    // (you wrote data to this CRC stream since the last flush/reset);
+    // otherwise return 0.
+    int available();
+
     // We take into account that the most significant bit of
     // any generator polynomial is always a one. For example:
     // If polynomial is: x8+x2+x+1, POLYNOMIAL= 0b00000111.
     void begin(byte POLYNOMIAL);
 
-    // Calculate the CRC of the given message and return it
-    byte read(const byte message[], byte dataLength);
+    // Reset the CRC computation.
+    void flush();
 
-    // It allows to recalculate the CRC adding the new "message" to the
-    // previous calculated CRC. In this way you can calculate the CRC of
-    // splitted message.
-    byte add(byte previousCRC, const byte message[], byte dataLength);
+    // Return the CRC remainder if it is available
+    // (you wrote data to this CRC stream since the last flush/reset);
+    // otherwise return -1.
+    int peek();
+
+    // Return the CRC remainder if it is available
+    // (you wrote data to this CRC stream since the last flush/reset);
+    // otherwise return -1.
+    // Reset the CRC computation.
+    int read();
+
+    // Update the CRC remainder with a new byte datum.
+    // Return 1.
+    size_t write(uint8_t datum);
+
+    // Import size_t Print::write(const uint8_t* buffer, size_t bufferLength).
+    // Update the CRC remainder with the given message buffer.
+    // Return the number of bytes written.
+    using Print::write;
 
   private:
     byte CRCTable[256];
+
+    // Current CRC remainder.
+    int remainder = -1;
 };
 
 #endif

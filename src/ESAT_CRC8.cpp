@@ -20,6 +20,18 @@
 
 #include "ESAT_CRC8.h"
 
+int ESAT_CRC8::available()
+{
+  if (peek() >= 0)
+  {
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
+}
+
 void ESAT_CRC8::begin(const byte POLYNOMIAL)
 {
   byte  remainder;
@@ -45,23 +57,33 @@ void ESAT_CRC8::begin(const byte POLYNOMIAL)
     // Store the result into the table.
     CRCTable[dividend] = remainder;
   }
+  flush();
 }
 
-
-byte ESAT_CRC8::add(byte remainder, const byte message[], byte dataLength)
+void ESAT_CRC8::flush()
 {
-  byte data;
-  // Divide the message by the polynomial, a indx at a time.
-  for (int indx = 0; indx < dataLength; ++indx)
-  {
-      data = message[indx] ^ remainder;
-      remainder = CRCTable[data];
-  }
-  // The final remainder is the CRC.
+  remainder = -1;
+}
+
+int ESAT_CRC8::peek()
+{
   return remainder;
 }
 
-byte ESAT_CRC8::read(const byte message[], byte dataLength)
+int ESAT_CRC8::read()
 {
-  return add(0, message, dataLength);
+  const int crc = peek();
+  flush();
+  return crc;
+}
+
+size_t ESAT_CRC8::write(const uint8_t datum)
+{
+  if (remainder == -1)
+  {
+    remainder = 0;
+  }
+  const byte index = byte(datum) ^ byte(remainder);
+  remainder = CRCTable[index];
+  return 1;
 }
