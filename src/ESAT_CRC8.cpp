@@ -20,19 +20,7 @@
 
 #include "ESAT_CRC8.h"
 
-int ESAT_CRC8::available()
-{
-  if (peek() >= 0)
-  {
-    return 1;
-  }
-  else
-  {
-    return 0;
-  }
-}
-
-void ESAT_CRC8::begin(const byte POLYNOMIAL)
+ESAT_CRC8::ESAT_CRC8(const byte POLYNOMIAL)
 {
   byte  remainder;
   const byte TOP_BIT = 0x80;
@@ -58,6 +46,18 @@ void ESAT_CRC8::begin(const byte POLYNOMIAL)
     CRCTable[dividend] = remainder;
   }
   flush();
+}
+
+int ESAT_CRC8::available()
+{
+  if (peek() >= 0)
+  {
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
 }
 
 void ESAT_CRC8::flush()

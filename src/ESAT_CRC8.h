@@ -31,15 +31,15 @@
 class ESAT_CRC8: public Stream
 {
   public:
+    // We take into account that the most significant bit of
+    // any generator polynomial is always a one. For example:
+    // If polynomial is: x8+x2+x+1, POLYNOMIAL= 0b00000111.
+    ESAT_CRC8(byte polynomial);
+
     // Return 1 if the CRC remainder is available
     // (you wrote data to this CRC stream since the last flush/reset);
     // otherwise return 0.
     int available();
-
-    // We take into account that the most significant bit of
-    // any generator polynomial is always a one. For example:
-    // If polynomial is: x8+x2+x+1, POLYNOMIAL= 0b00000111.
-    void begin(byte POLYNOMIAL);
 
     // Reset the CRC computation.
     void flush();
