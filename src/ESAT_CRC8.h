@@ -24,10 +24,10 @@
 #include <Arduino.h>
 #include <Stream.h>
 
-// To use this class, first you have to enter the polinomial with begin().
-// After that, you can get the CRC8 of a message with read().
-// Also you can add more bytes at the end of the message without recalculing
-// it from the beginning with add().
+// 8-bit cyclic redundancy check (CRC) calculator with Stream interface.
+// Write your message to the CRC calculator and then read the CRC
+// remainder (either resetting the CRC calculation with read() or not
+// resetting it with peek()).
 class ESAT_CRC8: public Stream
 {
   public:
