@@ -20,31 +20,9 @@
 
 #include "ESAT_CRC8.h"
 
-ESAT_CRC8::ESAT_CRC8(const byte POLYNOMIAL)
+ESAT_CRC8::ESAT_CRC8(const byte thePolynomial)
 {
-  byte  remainder;
-  const byte TOP_BIT = 0x80;
-  // Compute the remainder of each possible dividend.
-  for (int dividend = 0; dividend < 256; ++dividend)
-  {
-    // Start with the dividend followed by zeros.
-    remainder = dividend;
-    // Perform modulo-2 division, a bit at a time.
-    for (byte bit = 8; bit > 0; --bit)
-    {
-      // Try to divide the current data bit.
-      if (remainder & TOP_BIT)
-      {
-          remainder = (remainder << 1) ^ POLYNOMIAL;
-      }
-      else
-      {
-          remainder = (remainder << 1);
-      }
-    }
-    // Store the result into the table.
-    CRCTable[dividend] = remainder;
-  }
+  polynomial = thePolynomial;
   flush();
 }
 
@@ -79,11 +57,24 @@ int ESAT_CRC8::read()
 
 size_t ESAT_CRC8::write(const uint8_t datum)
 {
+  const byte topBit = 7;
   if (remainder == -1)
   {
     remainder = 0;
   }
-  const byte index = byte(datum) ^ byte(remainder);
-  remainder = CRCTable[index];
+  remainder = byte(datum) ^ byte(remainder);
+  // Perform modulo-2 division, a bit at a time.
+  for (byte bit = 8; bit > 0; --bit)
+  {
+    // Try to divide the current data bit.
+    if (bitRead(remainder, topBit))
+    {
+      remainder = byte((remainder << 1) ^ polynomial);
+    }
+    else
+    {
+      remainder = byte(remainder << 1);
+    }
+  }
   return 1;
 }

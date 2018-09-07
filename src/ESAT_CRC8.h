@@ -65,7 +65,12 @@ class ESAT_CRC8: public Stream
     using Print::write;
 
   private:
-    byte CRCTable[256];
+    // Byte representation of the generator polynomial.
+    // The nth bit (the 0th bit being the least significant one)
+    // corresponds to the nth coefficient of the polynomial, with
+    // an implicit 8th bit set to 1.  For example, the byte
+    // B00000111 represents the polynomial x^8 + x^2 + x + 1.
+    byte polynomial;
 
     // Current CRC remainder.
     int remainder = -1;
