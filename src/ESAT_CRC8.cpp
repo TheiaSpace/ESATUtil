@@ -14,54 +14,67 @@
  * See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Theia Space's ESAT OBC library.  If not, see
+ * along with Theia Space's ESAT Util library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
 
 #include "ESAT_CRC8.h"
 
-void ESAT_CRC8::begin(const byte POLYNOMIAL)
+ESAT_CRC8::ESAT_CRC8(const byte thePolynomial)
 {
-  byte  remainder;
-  const byte TOP_BIT = 0x80;
-  // Compute the remainder of each possible dividend.
-  for (int dividend = 0; dividend < 256; ++dividend)
+  polynomial = thePolynomial;
+  flush();
+}
+
+int ESAT_CRC8::available()
+{
+  if (peek() >= 0)
   {
-    // Start with the dividend followed by zeros.
-    remainder = dividend;
-    // Perform modulo-2 division, a bit at a time.
-    for (byte bit = 8; bit > 0; --bit)
-    {
-      // Try to divide the current data bit.
-      if (remainder & TOP_BIT)
-      {
-          remainder = (remainder << 1) ^ POLYNOMIAL;
-      }
-      else
-      {
-          remainder = (remainder << 1);
-      }
-    }
-    // Store the result into the table.
-    CRCTable[dividend] = remainder;
+    return 1;
+  }
+  else
+  {
+    return 0;
   }
 }
 
-
-byte ESAT_CRC8::add(byte remainder, const byte message[], byte dataLength)
+void ESAT_CRC8::flush()
 {
-  byte data;
-  // Divide the message by the polynomial, a indx at a time.
-  for (int indx = 0; indx < dataLength; ++indx)
-  {
-      data = message[indx] ^ remainder;
-      remainder = CRCTable[data];
-  }
-  // The final remainder is the CRC.
+  remainder = -1;
+}
+
+int ESAT_CRC8::peek()
+{
   return remainder;
 }
 
-byte ESAT_CRC8::read(const byte message[], byte dataLength)
+int ESAT_CRC8::read()
 {
-  return add(0, message, dataLength);
+  const int crc = peek();
+  flush();
+  return crc;
+}
+
+size_t ESAT_CRC8::write(const uint8_t datum)
+{
+  const byte topBit = 7;
+  if (remainder == -1)
+  {
+    remainder = 0;
+  }
+  remainder = byte(datum) ^ byte(remainder);
+  // Perform modulo-2 division, a bit at a time.
+  for (byte bit = 8; bit > 0; --bit)
+  {
+    // Try to divide the current data bit.
+    if (bitRead(remainder, topBit))
+    {
+      remainder = byte((remainder << 1) ^ polynomial);
+    }
+    else
+    {
+      remainder = byte(remainder << 1);
+    }
+  }
+  return 1;
 }
