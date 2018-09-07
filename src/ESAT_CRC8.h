@@ -31,9 +31,12 @@
 class ESAT_CRC8: public Stream
 {
   public:
-    // We take into account that the most significant bit of
-    // any generator polynomial is always a one. For example:
-    // If polynomial is: x8+x2+x+1, POLYNOMIAL= 0b00000111.
+    // Create a CRC calculator stream with generator polynomial
+    // represented by the given byte.
+    // The nth bit (the 0th bit being the least significant one)
+    // corresponds to the nth coefficient of the polynomial, with
+    // an implicit 8th bit set to 1.  For example, the byte
+    // B00000111 represents the polynomial x^8 + x^2 + x + 1.
     ESAT_CRC8(byte polynomial);
 
     // Return 1 if the CRC remainder is available
