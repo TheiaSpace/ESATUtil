@@ -129,7 +129,7 @@ ESAT_Timestamp::ComparisonResult ESAT_Timestamp::compareHoursTo(const ESAT_Times
   }
   else
   {
-    if (minutes < timestamp.minutes)
+    if (hours < timestamp.hours)
     {
       return THIS_IS_LOWER;
     }
