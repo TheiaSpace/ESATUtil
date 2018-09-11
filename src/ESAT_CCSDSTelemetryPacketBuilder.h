@@ -66,9 +66,6 @@ class ESAT_CCSDSTelemetryPacketBuilder
     boolean buildNext(ESAT_CCSDSPacket& packet,
                       ESAT_FlagContainer& pendingPackets);
 
-    // Disable the emission of the packet with given identifier.
-    void disable(byte identifier);
-
     // Enable the emission of the packet with given identifier.
     void enable(byte identifier);
 
