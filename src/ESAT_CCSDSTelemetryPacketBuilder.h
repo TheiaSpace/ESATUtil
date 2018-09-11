@@ -66,9 +66,6 @@ class ESAT_CCSDSTelemetryPacketBuilder
     boolean buildNext(ESAT_CCSDSPacket& packet,
                       ESAT_FlagContainer& pendingPackets);
 
-    // Enable the emission of the packet with given identifier.
-    void enable(byte identifier);
-
   private:
     // Application process identifier.
     // Each logical subsystem should have its own unique application
