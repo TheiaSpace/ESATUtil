@@ -24,6 +24,8 @@
 ESAT_CCSDSPacket::ESAT_CCSDSPacket()
 {
   packetData = ESAT_Buffer(nullptr, 0);
+  // Set the timeout for waiting for stream data to zero, as it
+  // doesn't make sense to wait when reading from these packets.
   setTimeout(0);
 }
 
@@ -31,11 +33,15 @@ ESAT_CCSDSPacket::ESAT_CCSDSPacket(byte* const buffer,
                                    const unsigned long bufferLength)
 {
   packetData = ESAT_Buffer(buffer, bufferLength);
+  // Set the timeout for waiting for stream data to zero, as it
+  // doesn't make sense to wait when reading from these packets.
   setTimeout(0);
 }
 
 int ESAT_CCSDSPacket::available()
 {
+  // Truncate the result of availableBytesToRead() to fit a 16-bit
+  // signed integer.
   return min(availableBytesToRead(), 0x7FFFF);
 }
 
@@ -51,10 +57,12 @@ unsigned long ESAT_CCSDSPacket::capacity() const
 
 boolean ESAT_CCSDSPacket::copyTo(ESAT_CCSDSPacket& target)
 {
+  // Just fail when our packet data cannot fit into the target.
   if (target.capacity() < packetData.length())
   {
     return false;
   }
+  // Normal operation: copy out packet into the target packet.
   target.writePrimaryHeader(primaryHeader);
   target.rewind();
   return packetData.writeTo(target);
@@ -62,12 +70,15 @@ boolean ESAT_CCSDSPacket::copyTo(ESAT_CCSDSPacket& target)
 
 void ESAT_CCSDSPacket::flush()
 {
+  // Empty both the primary header and the packet data.
   primaryHeader = ESAT_CCSDSPrimaryHeader();
   packetData.flush();
 }
 
 unsigned long ESAT_CCSDSPacket::length() const
 {
+  // The total packet length is the sum of the length of the primary
+  // header and the length of the packet data.
   return primaryHeader.LENGTH + primaryHeader.packetDataLength;
 }
 
@@ -131,6 +142,7 @@ word ESAT_CCSDSPacket::readBinaryCodedDecimalWord()
 
 boolean ESAT_CCSDSPacket::readBoolean()
 {
+  // Non-zero bytes mean true and zero bytes mean false.
   const byte datum = readByte();
   if (datum > 0)
   {
@@ -144,6 +156,8 @@ boolean ESAT_CCSDSPacket::readBoolean()
 
 byte ESAT_CCSDSPacket::readByte()
 {
+  // Successfully-read bytes are returned as is.
+  // Failures are returned as zero.
   const int datum = read();
   if (datum >= 0)
   {
@@ -171,10 +185,12 @@ boolean ESAT_CCSDSPacket::readFrom(Stream& input)
 {
   const boolean correctPrimaryHeader =
     primaryHeader.readFrom(input);
+  // Fail if the primary header is incorrect.
   if (!correctPrimaryHeader)
   {
     return false;
   }
+  // Normal operation: read the packet data from the stream.
   return packetData.readFrom(input, primaryHeader.packetDataLength);
 }
 
@@ -243,6 +259,7 @@ void ESAT_CCSDSPacket::rewind()
 size_t ESAT_CCSDSPacket::write(const uint8_t datum)
 {
   const size_t bytesWritten = packetData.write(datum);
+  // Keep the packet data length field of the primary header updated.
   primaryHeader.packetDataLength = packetData.length();
   return bytesWritten;
 }
@@ -259,6 +276,7 @@ void ESAT_CCSDSPacket::writeBinaryCodedDecimalWord(const word datum)
 
 void ESAT_CCSDSPacket::writeBoolean(const boolean datum)
 {
+  // Encode true as one and false as zero.
   if (datum)
   {
     writeByte(1);
@@ -379,10 +397,12 @@ void ESAT_CCSDSPacket::writeTimestamp(const ESAT_Timestamp datum)
 boolean ESAT_CCSDSPacket::writeTo(Stream& output) const
 {
   const boolean correctPrimaryHeader = primaryHeader.writeTo(output);
+  // Just fail if we couldn't write the primary header.
   if (!correctPrimaryHeader)
   {
     return false;
   }
+  // Normal operation: write the packet data to the output stream.
   return packetData.writeTo(output);
 }
 

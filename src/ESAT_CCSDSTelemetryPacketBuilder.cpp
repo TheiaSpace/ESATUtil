@@ -121,5 +121,6 @@ ESAT_CCSDSPacketContents* ESAT_CCSDSTelemetryPacketBuilder::find(const byte iden
       return contents;
     }
   }
+  // If we didn't find anything, just return nullptr.
   return nullptr;
 }
