@@ -237,11 +237,9 @@ ESAT_Timestamp ESAT_CCSDSPacket::readTimestamp()
 
 unsigned long ESAT_CCSDSPacket::readUnsignedLong()
 {
-  const unsigned long firstByte = readByte();
-  const unsigned long secondByte = readByte();
-  const unsigned long thirdByte = readByte();
-  const unsigned long fourthByte = readByte();
-  return (firstByte << 24) | (secondByte << 16) | (thirdByte << 8) | fourthByte;
+  const word highWord = readWord();
+  const word lowWord = readWord();
+  return ESAT_Util.unsignedLong(highWord, lowWord);
 }
 
 word ESAT_CCSDSPacket::readWord()
