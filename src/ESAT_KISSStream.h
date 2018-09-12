@@ -43,6 +43,7 @@ class ESAT_KISSStream: public Stream
     // Use the buffer for storing encoded or decoded data.
     // The KISS stream is half-duplex: it cannot be used
     // for reading frames simultaneously with writing frames.
+    // The timeout for block read operations is zero.
     ESAT_KISSStream(Stream& stream,
                     byte buffer[],
                     unsigned long bufferLength);
