@@ -237,11 +237,9 @@ ESAT_Timestamp ESAT_CCSDSPacket::readTimestamp()
 
 unsigned long ESAT_CCSDSPacket::readUnsignedLong()
 {
-  const unsigned long firstByte = readByte();
-  const unsigned long secondByte = readByte();
-  const unsigned long thirdByte = readByte();
-  const unsigned long fourthByte = readByte();
-  return (firstByte << 24) | (secondByte << 16) | (thirdByte << 8) | fourthByte;
+  const word highWord = readWord();
+  const word lowWord = readWord();
+  return ESAT_Util.unsignedLong(highWord, lowWord);
 }
 
 word ESAT_CCSDSPacket::readWord()
@@ -408,10 +406,8 @@ boolean ESAT_CCSDSPacket::writeTo(Stream& output) const
 
 void ESAT_CCSDSPacket::writeUnsignedLong(const unsigned long datum)
 {
-  writeByte((datum >> 24) & B11111111);
-  writeByte((datum >> 16) & B11111111);
-  writeByte((datum >> 8) & B11111111);
-  writeByte(datum & B11111111);
+  writeWord(ESAT_Util.highWord(datum));
+  writeWord(ESAT_Util.lowWord(datum));
 }
 
 void ESAT_CCSDSPacket::writeWord(const word datum)
