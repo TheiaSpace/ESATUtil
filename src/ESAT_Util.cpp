@@ -219,6 +219,11 @@ word ESAT_UtilClass::hexadecimalToWord(const String hexadecimalNumber) const
   return number;
 }
 
+word ESAT_UtilClass::highWord(const unsigned long number) const
+{
+  return (word) (((number & 0xFFFFFFFF) >> 16) & 0xFFFF);
+}
+
 word ESAT_UtilClass::intToWord(const int number) const
 {
   if (number < 0)
@@ -241,6 +246,11 @@ unsigned long ESAT_UtilClass::longToUnsignedLong(const long number) const
   {
     return number;
   }
+}
+
+word ESAT_UtilClass::lowWord(const unsigned long number) const
+{
+  return (word) (number & 0xFFFF);
 }
 
 String ESAT_UtilClass::pad(const String text,

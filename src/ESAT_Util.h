@@ -65,6 +65,10 @@ class ESAT_UtilClass
     // Convert a hexadecimal string to a word.
     word hexadecimalToWord(String hexadecimalNumber) const;
 
+    // Return the most-significant 16-bit unsigned integer word of a
+    // 32-bit unsigned integer.
+    word highWord(unsigned long number) const;
+
     // Return the bits of the two's-complement representation
     // of a signed 16-bit integer.
     word intToWord(int number) const;
@@ -72,6 +76,10 @@ class ESAT_UtilClass
     // Return the bits of the two's-complement representation
     // of a signed 32-bit integer.
     unsigned long longToUnsignedLong(long number) const;
+
+    // Return the least-significant 16-bit unsigned integer word of a
+    // 32-bit unsigned integer.
+    word lowWord(unsigned long number) const;
 
     // Pad a string with a leading padding character to a given total length.
     String pad(String text, char padding, unsigned int length) const;
