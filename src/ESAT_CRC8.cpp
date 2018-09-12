@@ -40,6 +40,7 @@ int ESAT_CRC8::available()
 
 void ESAT_CRC8::flush()
 {
+  // Mark the CRC8 calculator stream as empty with a negative remainder.
   remainder = -1;
 }
 
@@ -58,6 +59,7 @@ int ESAT_CRC8::read()
 size_t ESAT_CRC8::write(const uint8_t datum)
 {
   const byte topBit = 7;
+  // Reset the remainder if the stream is empty.
   if (remainder == -1)
   {
     remainder = 0;
@@ -76,5 +78,6 @@ size_t ESAT_CRC8::write(const uint8_t datum)
       remainder = byte(remainder << 1);
     }
   }
+  // The number of bytes written is always 1.
   return 1;
 }
