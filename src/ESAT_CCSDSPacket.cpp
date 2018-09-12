@@ -408,10 +408,8 @@ boolean ESAT_CCSDSPacket::writeTo(Stream& output) const
 
 void ESAT_CCSDSPacket::writeUnsignedLong(const unsigned long datum)
 {
-  writeByte((datum >> 24) & B11111111);
-  writeByte((datum >> 16) & B11111111);
-  writeByte((datum >> 8) & B11111111);
-  writeByte(datum & B11111111);
+  writeWord(ESAT_Util.highWord(datum));
+  writeWord(ESAT_Util.lowWord(datum));
 }
 
 void ESAT_CCSDSPacket::writeWord(const word datum)
