@@ -37,12 +37,12 @@ class ESAT_SoftwareClock: public ESAT_Clock
     // Set the clock to the given timestamp.
     void begin(ESAT_Timestamp timestamp);
 
-    // Return true if the RTC was initialized and it is running,
+    // Return true if the clock was initialized and it is running,
     // otherwise returns false.
     boolean isRunning() const;
 
     // Return the current timestamp.
-    // If the RTC is not initialized before calling this method,
+    // If the clock is not initialized before calling this method,
     // return the invalid timestamp 0000-00-00T00:00:00.
     ESAT_Timestamp read();
 
