@@ -102,18 +102,6 @@ boolean ESAT_CCSDSTelemetryPacketBuilder::build(ESAT_CCSDSPacket& packet,
   }
 }
 
-boolean ESAT_CCSDSTelemetryPacketBuilder::buildNext(ESAT_CCSDSPacket& packet,
-                                                    ESAT_FlagContainer& pendingPackets)
-{
-  const int next = pendingPackets.readNext();
-  if (next == pendingPackets.NO_ACTIVE_FLAGS)
-  {
-    return false;
-  }
-  pendingPackets.clear(byte(next));
-  return build(packet, byte(next));
-}
-
 ESAT_CCSDSPacketContents* ESAT_CCSDSTelemetryPacketBuilder::find(const byte identifier)
 {
   for (ESAT_CCSDSPacketContents* contents = packetContents;
