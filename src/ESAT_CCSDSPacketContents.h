@@ -38,6 +38,9 @@ class ESAT_CCSDSPacketContents
     // Only ESAT_CCSDSTelemetryPacketBuilder should care about this.
     ESAT_CCSDSPacketContents* nextPacketContents;
 
+    // Trivial destructor.
+    // We need to define it because the C++ programming language
+    // works this way.
     virtual ~ESAT_CCSDSPacketContents() {};
 
     // Return true if a new packet is available:
