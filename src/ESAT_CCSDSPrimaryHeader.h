@@ -24,11 +24,13 @@
 #include <Arduino.h>
 
 // Primary header used for ESAT's packets.  It contains the following fields:
-// - A time code with a preamble (1 byte) followed by a timestamp (7 bytes).
-// - A version number in major.minor.patch format (3 bytes).
-// - A packet identifier (1 byte).
-// The only supported time code format is calendar segmented time code,
-// month of year/day of month variation, 1 second resolution.
+// - The version number of the CCSDS Space Packet (3 bits).
+// - The packet type (1 bit).
+// - The secondary header flag (1 bit).
+// - The application process identifier (11 bits).
+// - The sequence flags (2 bits).
+// - The packet sequence count (14 bits).
+// - The packet data length (16 bits).
 class ESAT_CCSDSPrimaryHeader: public Printable
 {
   public:
@@ -115,6 +117,8 @@ class ESAT_CCSDSPrimaryHeader: public Printable
     // The packet data length is sent as its actual value,
     // minus 1, most significant bit first, on the third 16-bit
     // word of the header.
+    // The on-wire representation of the primary header when the packet
+    // data length has an invalid value is undefined.
     unsigned long packetDataLength;
 
     // Print the primary header in human readable (JSON) form.
