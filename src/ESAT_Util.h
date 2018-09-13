@@ -36,10 +36,6 @@ class ESAT_UtilClass
     // of a signed 8-bit integer.
     byte charToByte(signed char number) const;
 
-    // Compare 2 byte arrays. Return true if they are equal;
-    // otherwise return false.
-    boolean compareByteArray(byte array1[],byte array2[], byte arraysSize);
-
     // Decode a binary coded decimal 8-bit number.
     byte decodeBinaryCodedDecimalByte(byte number) const;
 
