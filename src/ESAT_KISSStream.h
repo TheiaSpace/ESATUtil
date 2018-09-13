@@ -38,7 +38,14 @@ class ESAT_KISSStream: public Stream
     // Empty KISS will not read and will not write.
     ESAT_KISSStream();
 
-    // Instantiate a new KISS stream that will operate
+    // Instantiate a new unbuffered KISS stream that will operate
+    // on the given backend stream.
+    // This KISS stream cannot use for reading: all read
+    // operations will fail because there is no buffer
+    // for storing the decoded data.
+    ESAT_KISSStream(Stream& stream);
+
+    // Instantiate a new buffered KISS stream that will operate
     // on the given backend stream.
     // Use the buffer for storing encoded or decoded data.
     // The KISS stream is half-duplex: it cannot be used
@@ -52,10 +59,14 @@ class ESAT_KISSStream: public Stream
     int available();
 
     // Start writing a KISS frame.
+    // In buffered KISS streams, this writes the frame-start mark
+    // to the buffer; in unbuffered KISS streams, this writes the
+    // frame-start mark directly to the backend stream.
     // Return the number of bytes written.
     size_t beginFrame();
 
-    // Write the contents of the buffer to the backend stream.
+    // Write the contents of the buffer to the backend stream
+    // and reset buffer and the encoder state.
     void flush();
 
     // Return the worst case frame length for a given data length.
@@ -75,7 +86,10 @@ class ESAT_KISSStream: public Stream
     // start the reception of a new frame.
     boolean receiveFrame();
 
-    // Write a byte.
+    // Encode and write a byte.
+    // In buffered KISS streams, this writes the encoded byte
+    // to the buffer; in unbuffered KISS streams, this writes
+    // the encoded byte directly to the backend stream.
     // Return the actual number of bytes written,
     // which may be greater than 1 due to escaping.
     size_t write(uint8_t datum);
@@ -85,8 +99,11 @@ class ESAT_KISSStream: public Stream
     // Return the number of bytes written.
     using Print::write;
 
-    // End writing a KISS frame and flush the contents of the buffer
-    // to the backend stream.
+    // End writing a KISS frame.
+    // In buffered KISS streams, this writes the frame-end mark to the
+    // buffer and writes the buffer contents to the backend stream; in
+    // unbuffered KISS streams, this writes the frame-end mark
+    // directly to the backend stream.
     // Return the number of bytes written.
     // Reset the buffer so that the KISS stream can be used for
     // reading or writing a new frame.
