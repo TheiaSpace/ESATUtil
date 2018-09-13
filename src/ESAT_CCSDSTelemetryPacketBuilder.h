@@ -31,6 +31,8 @@
 class ESAT_CCSDSTelemetryPacketBuilder
 {
   public:
+    // Instantiate an empty telemetry packet builder.
+    // An empty telemetry packet builder won't build packets.
     ESAT_CCSDSTelemetryPacketBuilder();
 
     // Set up the telemetry packet builder for the given application
@@ -47,14 +49,15 @@ class ESAT_CCSDSTelemetryPacketBuilder
     void add(ESAT_CCSDSPacketContents& contents);
 
     // Return a list of available packets as a flag container: flags
-    // set as true correspond to available packets (available()
-    // returns true) and flags set as false correspond to unavailable
+    // set to true correspond to available packets (available()
+    // returns true) and flags set to false correspond to unavailable
     // packets (available() returns false).
     ESAT_FlagContainer available();
 
     // Build a new CCSDS telemetry packet with the contents of the
     // packet contents object that matches the given identifier.
-    // Don't modify the queue of packet contents.
+    // Increment the packet sequence count on success; otherwise leave
+    // it intact.
     // Return true on success; otherwise return false.
     boolean build(ESAT_CCSDSPacket& packet,
                   byte identifier);
