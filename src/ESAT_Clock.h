@@ -28,6 +28,9 @@
 class ESAT_Clock
 {
   public:
+    // Trivial destructor.
+    // We need to define it because the C++ programming language
+    // works this way.
     virtual ~ESAT_Clock() {};
 
     // Return the current timestamp.
