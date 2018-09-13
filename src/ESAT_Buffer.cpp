@@ -26,6 +26,7 @@ ESAT_Buffer::ESAT_Buffer()
   bufferCapacity = 0;
   bytesInBuffer = 0;
   readWritePosition = 0;
+  triedToReadBeyondBufferLength = false;
   // Set the timeout for waiting for stream data to zero, as it
   // doesn't make sense to wait when reading from these buffers.
   setTimeout(0);
@@ -37,6 +38,7 @@ ESAT_Buffer::ESAT_Buffer(byte array[], const unsigned long length)
   bufferCapacity = length;
   bytesInBuffer = 0;
   readWritePosition = 0;
+  triedToReadBeyondBufferLength = false;
   // Set the timeout for waiting for stream data to zero, as it
   // doesn't make sense to wait when reading from these buffers.
   setTimeout(0);
@@ -83,8 +85,10 @@ int ESAT_Buffer::peek()
   // Peeking past the last available byte returns -1.
   if (availableBytes() == 0)
   {
+    triedToReadBeyondBufferLength = true;
     return -1;
   }
+  triedToReadBeyondBufferLength = false;
   return buffer[readWritePosition];
 }
 
@@ -158,6 +162,11 @@ boolean ESAT_Buffer::readFrom(Stream& input, const unsigned long bytesToRead)
 void ESAT_Buffer::rewind()
 {
   readWritePosition = 0;
+}
+
+boolean ESAT_Buffer::triedToReadBeyondLength() const
+{
+  return triedToReadBeyondBufferLength;
 }
 
 size_t ESAT_Buffer::write(const uint8_t datum)

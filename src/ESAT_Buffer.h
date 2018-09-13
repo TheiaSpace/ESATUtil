@@ -78,6 +78,10 @@ class ESAT_Buffer: public Printable, public Stream
     // Set the read/write position to the start of the buffer.
     void rewind();
 
+    // Return true if the last read() or peek() attempt was beyond
+    // the length() of the buffer; otherwise return false.
+    boolean triedToReadBeyondLength() const;
+
     // Write a byte if the read/write position hasn't reached the
     // capacity.
     // Return the actual number of bytes written.
@@ -105,6 +109,10 @@ class ESAT_Buffer: public Printable, public Stream
 
     // Position of the next read or write operation.
     unsigned long readWritePosition;
+
+    // Set to true if the last read() or peek() attempt was beyond
+    // the length() of the buffer; otherwise set to false.
+    boolean triedToReadBeyondBufferLength;
 };
 
 #endif /* ESAT_Buffer_h */
