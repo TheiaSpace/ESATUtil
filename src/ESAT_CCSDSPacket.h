@@ -40,15 +40,7 @@ class ESAT_CCSDSPacket: public Printable, public Stream
 {
   public:
     // Instantiate a CCSDS packet with no packet data field.
-    // Useful for just generating a primary header.
-    // The primary header starts with a raw value of all zeros.
-    // The read/write pointer starts at 0.
-    // The packet data buffer is null and must be assigned
-    // together with the packet data buffer length before
-    // using the packet data.
-    // The packet data buffer length is set to 0 and must be
-    // assigned together with the packet data buffer before using
-    // the packet data.
+    // The packet is invalid and it shouldn't be used in this state.
     ESAT_CCSDSPacket();
 
     // Instantiate a new packet backed with the packet data field
@@ -56,7 +48,7 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // The buffer must be at least 1 byte long.
     // The packet data buffer length will have the value of passed
     // buffer length, which must match the actual buffer length.
-    // The primary header starts with a raw value of all zeros.
+    // The primary header starts with all fields set to 0.
     // The read/write pointer starts at 0.
     ESAT_CCSDSPacket(byte buffer[], unsigned long bufferLength);
 
@@ -226,11 +218,11 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // packet data field (packet payload).
     void rewind();
 
-    // Return true if the last read() or peek() attempt was beyond
+    // Return true if the last read*() or peek() attempt was beyond
     // the length of the packet data field; otherwise return false.
     boolean triedToReadBeyondLength() const;
 
-    // Return true if the last write() attempt was beyond the capacity
+    // Return true if the last write*() attempt was beyond the capacity
     // of the packet data field; otherwise return false.
     boolean triedToWriteBeyondCapacity() const;
 

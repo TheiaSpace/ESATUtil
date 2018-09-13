@@ -40,6 +40,7 @@ class ESAT_KISSStream: public Stream
 
     // Instantiate a new unbuffered KISS stream that will operate
     // on the given backend stream.
+    // Write operations will go unbuffered to the backend stream.
     // This KISS stream cannot use for reading: all read
     // operations will fail because there is no buffer
     // for storing the decoded data.

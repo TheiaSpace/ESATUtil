@@ -30,12 +30,15 @@
 class ESAT_I2CMasterClass
 {
   public:
-
-    // Read an available telecommand packet from the device at the given address.
-    // Wait some milliseconds after each write operation to give
-    // the slave time to process the request.
-    // Retry several times, waiting several milliseconds, if the
-    // telecommand is not ready.
+    // Read a telecommand packet from the device at the given address.
+    // Communicate through the given TwoWire (I2C) bus. You must have
+    // already called bus.begin() (just once) before making any calls
+    // to ESAT_I2CMaster.readTelemetry().
+    // Fill packet with the read telecommand.
+    // Wait some milliseconds (millisecondsAfterWrites) after each
+    // write operation to give the slave time to process the request.
+    // Retry several times (attempts), waiting several milliseconds
+    // (millisecondsBetweenAttempts), if the telemetry is not ready.
     // Return true on success; otherwise return false.
     boolean readTelecommand(TwoWire& bus,
                             byte address,
@@ -44,11 +47,17 @@ class ESAT_I2CMasterClass
                             byte attempts,
                             word millisecondsBetweenAttempts);
 
-    // Read an specific telemetry packet from the device at the given address.
-    // Wait some milliseconds after each write operation to give
-    // the slave time to process the request.
-    // Retry several times, waiting several milliseconds, if the
-    // telemetry is not ready.
+    // Read a named-packet telemetry packet from a slave.
+    // Communicate through the given TwoWire (I2C) bus. You must have
+    // already called bus.begin() (just once) before making any calls
+    // to ESAT_I2CMaster.readTelemetry().
+    // Read a specific telemetry packet (identified by packetType)
+    // from the device at the given address.
+    // Fill packet with the read telemetry.
+    // Wait some milliseconds (millisecondsAfterWrites) after each
+    // write operation to give the slave time to process the request.
+    // Retry several times (attempts), waiting several milliseconds
+    // (millisecondsBetweenAttempts), if the telemetry is not ready.
     // Return true on success; otherwise return false.
     boolean readTelemetry(TwoWire& bus,
                           byte address,
@@ -58,11 +67,17 @@ class ESAT_I2CMasterClass
                           byte attempts,
                           word millisecondsBetweenAttempts);
 
-    // Read an available telemetry packet from the device at the given address.
-    // Wait some milliseconds after each write operation to give
-    // the slave time to process the request.
-    // Retry several times, waiting several milliseconds, if the
-    // telemetry is not ready.
+    // Read a next-packet telecommand packet from a slave.
+    // Communicate through the given TwoWire (I2C) bus. You must have
+    // already called bus.begin() (just once) before making any calls
+    // to ESAT_I2CMaster.readTelecommand().
+    // Read a next-packet telemetry packet from the device at the
+    // given address.
+    // Fill packet with the read telemetry.
+    // Wait some milliseconds (millisecondsAfterWrites) after each
+    // write operation to give the slave time to process the request.
+    // Retry several times (attempts), waiting several milliseconds
+    // (millisecondsBetweenAttempts), if the telemetry is not ready.
     // Return true on success; otherwise return false.
     boolean readTelemetry(TwoWire& bus,
                           byte address,
@@ -71,18 +86,29 @@ class ESAT_I2CMasterClass
                           byte attempts,
                           word millisecondsBetweenAttempts);
 
-    // Reset the telemetry queue of the device at the given address.
-    // Wait a given number of milliseconds after the write operation.
-    // Return true on a successful I2C communication;
-    // otherwise return false.
+    // Reset the telemetry packet queue for next-packet telemetry.
+    // Call this method before a series of calls to
+    // ESAT_I2CMaster.readTelemetry() (with no packetIdentifier: for
+    // next-packet telemetry) to get the telemetry queue ready.
+    // Communicate through the given TwoWire (I2C) bus. You must have
+    // already called bus.begin() (just once) before making any calls
+    // to ESAT_I2CMaster.resetTelemetryQueue().
+    // Reset the queue of the slave at the given address.
+    // Return true on success; otherwise return false.
     boolean resetTelemetryQueue(TwoWire& bus,
                                 byte address);
 
-    // Write a packet to the device at the given address.
-    // Wait some milliseconds after each write operation to give
-    // the slave time to process the request.
-    // Retry several times, waiting several milliseconds, if the
-    // packet queue is full.
+    // Write a packet to a slave.
+    // Communicate through the given TwoWire (I2C) bus. You must have
+    // already called bus.begin() (just once) before any calls to
+    // ESAT_I2CMaster.writeTelecommand().
+    // Write a telecommand packet to the device at the given address.
+    // The read/write pointer of the packet may move.
+    // Wait some milliseconds (millisecondsAfterWrites) after each
+    // write operation to give the slave time to process the request.
+    // Retry several times (attempts), waiting several milliseconds
+    // (millisecondsBetweenAttempts), if the telecommand queue is
+    // full.
     // Return true on success; otherwise return false.
     boolean writePacket(TwoWire& bus,
                              byte address,

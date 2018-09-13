@@ -34,13 +34,13 @@
 class ESAT_FlagContainer: public Printable
 {
   public:
-    // Return value of readNext() when all flags are inactive.
+    // Return value of readNext() when all flags are false.
     static const int NO_ACTIVE_FLAGS = -1;
 
     // Return the number of set or active (true) flags.
     byte available() const;
 
-    // Clear a flag (set it to false).
+    // Set a flag to false.
     void clear(byte flag);
 
     // Deactivate all the flags (all the flags value set as false).
@@ -50,8 +50,7 @@ class ESAT_FlagContainer: public Printable
     // Return the number of characters written.
     size_t printTo(Print& output) const;
 
-    // Read the current status of a flag:
-    // true if it is set, false if it is clear.
+    // Return the value of a flag.
     boolean read(byte flag) const;
 
     // Return the number of the first flag, starting
