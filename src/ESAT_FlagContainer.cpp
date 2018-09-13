@@ -20,6 +20,21 @@
 
 #include "ESAT_FlagContainer.h"
 
+byte ESAT_FlagContainer::available() const
+{
+  byte availableFlags = 0;
+  for (word flag = 0;
+       flag < MAXIMUM_NUMBER_OF_FLAGS;
+       flag++)
+  {
+    if (read(flag))
+    {
+      availableFlags = availableFlags + 1;
+    }
+  }
+  return availableFlags;
+}
+
 byte ESAT_FlagContainer::bitIndex(const byte flag) const
 {
   return flag % NUMBER_OF_FLAGS_PER_BYTE;
