@@ -226,6 +226,14 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // packet data field (packet payload).
     void rewind();
 
+    // Return true if the last read() or peek() attempt was beyond
+    // the length of the packet data field; otherwise return false.
+    boolean triedToReadBeyondLength() const;
+
+    // Return true if the last write() attempt was beyond the capacity
+    // of the packet data field; otherwise return false.
+    boolean triedToWriteBeyondCapacity() const;
+
     // Append an 8-bit unsigned integer to the packet data.
     // This advances the read/write pointer by 1, but limited to the
     // packet data buffer length.

@@ -26,6 +26,8 @@ ESAT_Buffer::ESAT_Buffer()
   bufferCapacity = 0;
   bytesInBuffer = 0;
   readWritePosition = 0;
+  triedToReadBeyondBufferLength = false;
+  triedToWriteBeyondBufferCapacity = false;
   // Set the timeout for waiting for stream data to zero, as it
   // doesn't make sense to wait when reading from these buffers.
   setTimeout(0);
@@ -37,6 +39,8 @@ ESAT_Buffer::ESAT_Buffer(byte array[], const unsigned long length)
   bufferCapacity = length;
   bytesInBuffer = 0;
   readWritePosition = 0;
+  triedToReadBeyondBufferLength = false;
+  triedToWriteBeyondBufferCapacity = false;
   // Set the timeout for waiting for stream data to zero, as it
   // doesn't make sense to wait when reading from these buffers.
   setTimeout(0);
@@ -83,8 +87,10 @@ int ESAT_Buffer::peek()
   // Peeking past the last available byte returns -1.
   if (availableBytes() == 0)
   {
+    triedToReadBeyondBufferLength = true;
     return -1;
   }
+  triedToReadBeyondBufferLength = false;
   return buffer[readWritePosition];
 }
 
@@ -160,21 +166,34 @@ void ESAT_Buffer::rewind()
   readWritePosition = 0;
 }
 
+boolean ESAT_Buffer::triedToReadBeyondLength() const
+{
+  return triedToReadBeyondBufferLength;
+}
+
+boolean ESAT_Buffer::triedToWriteBeyondCapacity() const
+{
+  return triedToWriteBeyondBufferCapacity;
+}
+
 size_t ESAT_Buffer::write(const uint8_t datum)
 {
   // Just fail if we have no backend buffer.
   if (!buffer)
   {
+    triedToWriteBeyondBufferCapacity = true;
     return 0;
   }
   // Just fail if we are above capacity.
   if (readWritePosition >= bufferCapacity)
   {
+    triedToWriteBeyondBufferCapacity = true;
     return 0;
   }
   // Normal operation: write the datum to the current read/write
   // position of the backend buffer, increment the counters and return
   // the number of written bytes (1).
+  triedToWriteBeyondBufferCapacity = false;
   buffer[readWritePosition] = datum;
   readWritePosition = readWritePosition + 1;
   bytesInBuffer = readWritePosition;
