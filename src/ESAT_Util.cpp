@@ -44,18 +44,6 @@ byte ESAT_UtilClass::charToByte(const signed char number) const
   }
 }
 
-boolean ESAT_UtilClass::compareByteArray(byte array1[],byte array2[], byte arraysSize)
-{
-  for(uint8_t indx = 0; indx < arraysSize; indx++)
-  {
-    if(array1[indx] != array2[indx])
-    {
-      return false;
-    }
-  }
-  return true;
-}
-
 byte ESAT_UtilClass::decodeBinaryCodedDecimalByte(const byte number) const
 {
   const byte tens =
