@@ -259,6 +259,11 @@ boolean ESAT_CCSDSPacket::triedToReadBeyondLength() const
   return packetData.triedToReadBeyondLength();
 }
 
+boolean ESAT_CCSDSPacket::triedToWriteBeyondCapacity() const
+{
+  return packetData.triedToWriteBeyondCapacity();
+}
+
 size_t ESAT_CCSDSPacket::write(const uint8_t datum)
 {
   const size_t bytesWritten = packetData.write(datum);
