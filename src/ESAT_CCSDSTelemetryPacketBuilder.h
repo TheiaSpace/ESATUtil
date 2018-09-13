@@ -62,13 +62,6 @@ class ESAT_CCSDSTelemetryPacketBuilder
     boolean build(ESAT_CCSDSPacket& packet,
                   byte identifier);
 
-    // Build a new CCSDS telemetry packet with the contents
-    // that match the next identifier in pendingPackets.
-    // Clear the used identifier in pendingPackets.
-    // Return true on success; otherwise return false.
-    boolean buildNext(ESAT_CCSDSPacket& packet,
-                      ESAT_FlagContainer& pendingPackets);
-
   private:
     // Application process identifier.
     // Each logical subsystem should have its own unique application
