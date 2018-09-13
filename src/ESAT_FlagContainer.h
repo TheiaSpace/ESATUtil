@@ -65,7 +65,7 @@ class ESAT_FlagContainer: public Printable
 
     // Return a flag container with flags that are the and operation
     // of the flags of the operands.
-    ESAT_FlagContainer operator&(const ESAT_FlagContainer& flags) const;
+    ESAT_FlagContainer operator&(const ESAT_FlagContainer flags) const;
 
     // Return a flag container with flags that are the not operation
     // of the flags of the operand.
@@ -73,11 +73,11 @@ class ESAT_FlagContainer: public Printable
 
     // Return a flag container with flags that are the inclusive-or
     // operation of the flags of the operands.
-    ESAT_FlagContainer operator|(const ESAT_FlagContainer& flags) const;
+    ESAT_FlagContainer operator|(const ESAT_FlagContainer flags) const;
 
     // Return a flag container with flags that are the exclusive-or
     // operation of the flags of the operands.
-    ESAT_FlagContainer operator^(const ESAT_FlagContainer& flags) const;
+    ESAT_FlagContainer operator^(const ESAT_FlagContainer flags) const;
 
   private:
     // Maximum number of flags a flag container can store.

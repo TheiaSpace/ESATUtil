@@ -109,7 +109,7 @@ void ESAT_FlagContainer::set(const byte flag)
          bitIndex(flag));
 }
 
-ESAT_FlagContainer ESAT_FlagContainer::operator&(const ESAT_FlagContainer& flags) const
+ESAT_FlagContainer ESAT_FlagContainer::operator&(const ESAT_FlagContainer flags) const
 {
   ESAT_FlagContainer result;
   for (word byteIndex = 0;
@@ -135,7 +135,7 @@ ESAT_FlagContainer ESAT_FlagContainer::operator~() const
   return result;
 }
 
-ESAT_FlagContainer ESAT_FlagContainer::operator|(const ESAT_FlagContainer& flags) const
+ESAT_FlagContainer ESAT_FlagContainer::operator|(const ESAT_FlagContainer flags) const
 {
   ESAT_FlagContainer result;
   for (word byteIndex = 0;
@@ -148,7 +148,7 @@ ESAT_FlagContainer ESAT_FlagContainer::operator|(const ESAT_FlagContainer& flags
   return result;
 }
 
-ESAT_FlagContainer ESAT_FlagContainer::operator^(const ESAT_FlagContainer& flags) const
+ESAT_FlagContainer ESAT_FlagContainer::operator^(const ESAT_FlagContainer flags) const
 {
   ESAT_FlagContainer result;
   for (word byteIndex = 0;
