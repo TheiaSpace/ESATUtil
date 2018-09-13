@@ -87,6 +87,10 @@ boolean ESAT_CCSDSTelemetryPacketBuilder::build(ESAT_CCSDSPacket& packet,
                                patchVersionNumber,
                                identifier);
   const boolean userDataCorrect = contents->fillUserData(packet);
+  if (packet.triedToWriteBeyondCapacity())
+  {
+    return false;
+  }
   if (userDataCorrect)
   {
     packetSequenceCount = packetSequenceCount + 1;
