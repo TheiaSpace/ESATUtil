@@ -28,6 +28,14 @@ ESAT_KISSStream::ESAT_KISSStream()
   setTimeout(0);
 }
 
+ESAT_KISSStream::ESAT_KISSStream(Stream& stream)
+{
+  backendStream = &stream;
+  backendBuffer = ESAT_Buffer();
+  decoderState = WAITING_FOR_FRAME_START;
+  setTimeout(0);
+}
+
 ESAT_KISSStream::ESAT_KISSStream(Stream& stream,
                                  byte buffer[],
                                  unsigned long bufferLength)
@@ -52,7 +60,17 @@ int ESAT_KISSStream::available()
 
 size_t ESAT_KISSStream::append(const byte datum)
 {
-  return backendBuffer.write(datum);
+  // In buffered KISS streams, append the datum to the buffer;
+  // in unbuffered KISS streams, write the datum directly to
+  // the backend stream.
+  if (backendBuffer.capacity() > 0)
+  {
+    return backendBuffer.write(datum);
+  }
+  else
+  {
+    return backendStream->write(datum);
+  }
 }
 
 void ESAT_KISSStream::decode(const byte datum)
