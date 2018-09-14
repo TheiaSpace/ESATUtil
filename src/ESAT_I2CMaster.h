@@ -30,24 +30,45 @@
 class ESAT_I2CMasterClass
 {
   public:
-    // Read a telecommand packet from the device at the given address.
-    // Communicate through the given TwoWire (I2C) bus. You must have
-    // already called bus.begin() (just once) before making any calls
-    // to ESAT_I2CMaster.readTelemetry().
-    // Fill packet with the read telecommand.
-    // Wait some milliseconds (millisecondsAfterWrites) after each
-    // write operation to give the slave time to process the request.
-    // Retry several times (attempts), waiting several milliseconds
-    // (millisecondsBetweenAttempts), if the telemetry is not ready.
-    // Return true on success; otherwise return false.
-    boolean readTelecommand(TwoWire& bus,
-                            byte address,
-                            ESAT_CCSDSPacket& packet,
-                            byte millisecondsAfterWrites,
-                            byte attempts,
-                            word millisecondsBetweenAttempts);
+    // Configure the I2C master node to work with the given I2C bus.
+    // When communicating with a slave, wait some number of
+    // milliseconds (by default, 1 ms) after each write operation to
+    // give the slave time to process the request.
+    // The slave will need then some time to be ready to serve the
+    // request; ask if it is ready up to a given number of attempts
+    // (by default, 100 attempts), waiting the given number of
+    // milliseconds between attempt and attempt (by default, 20 ms).
+    void begin(TwoWire& bus,
+               word millisecondsAfterWrites = 1,
+               word attempts = 100,
+               word millisecondsBetweenAttempts = 20);
 
-    // Read a named-packet telemetry packet from a slave.
+    // Read a telecommand packet from the slave at the given address.
+    // Return true on success; otherwise return false.
+    boolean readTelecommand(ESAT_CCSDSPacket& packet,
+                            byte address);
+
+
+    // Read a named-packet telemetry packet matching the given packet
+    // identifier from the slave at the given address.
+    // Return true on success; otherwise return false.
+    boolean readNamedTelemetry(ESAT_CCSDSPacket& packet,
+                               byte identifier,
+                               byte address);
+
+    // Read a next-packet telemetry packet from the slave at the given
+    // address.
+    // Call ESAT_I2CMaster.resetTelemetryQueue() before a series of
+    // calls to ESAT_I2CMaster.readNextTelemetry() to get the
+    // telemetry queue ready.
+    // Return true on success; otherwise return false.
+    boolean readNextTelemetry(ESAT_CCSDSPacket& packet,
+                              byte address);
+
+    // Deprecated method; use ESAT_I2CMaster.readNamedTelemetry(packet,
+    // packetIdentifier, address) instead.
+    // Read a named-packet telemetry (identified by packetIdentifier)
+    // packet from a slave at the given address.
     // Communicate through the given TwoWire (I2C) bus. You must have
     // already called bus.begin() (just once) before making any calls
     // to ESAT_I2CMaster.readTelemetry().
@@ -65,44 +86,26 @@ class ESAT_I2CMasterClass
                           ESAT_CCSDSPacket& packet,
                           byte millisecondsAfterWrites,
                           byte attempts,
-                          word millisecondsBetweenAttempts);
+                          word millisecondsBetweenAttempts) __attribute__((deprecated("Use ESAT_I2CMaster.readNamedTelemetry(packet, identifier, address) instead.")));
 
-    // Read a next-packet telecommand packet from a slave.
-    // Communicate through the given TwoWire (I2C) bus. You must have
-    // already called bus.begin() (just once) before making any calls
-    // to ESAT_I2CMaster.readTelecommand().
-    // Read a next-packet telemetry packet from the device at the
-    // given address.
-    // Fill packet with the read telemetry.
-    // Wait some milliseconds (millisecondsAfterWrites) after each
-    // write operation to give the slave time to process the request.
-    // Retry several times (attempts), waiting several milliseconds
-    // (millisecondsBetweenAttempts), if the telemetry is not ready.
-    // Return true on success; otherwise return false.
-    boolean readTelemetry(TwoWire& bus,
-                          byte address,
-                          ESAT_CCSDSPacket& packet,
-                          byte millisecondsAfterWrites,
-                          byte attempts,
-                          word millisecondsBetweenAttempts);
-
-    // Reset the telemetry packet queue for next-packet telemetry.
+    // Reset the telemetry packet queue for next-packet telemetry pf
+    // the slave at the given address.
     // Call this method before a series of calls to
-    // ESAT_I2CMaster.readTelemetry() (with no packetIdentifier: for
-    // next-packet telemetry) to get the telemetry queue ready.
-    // Communicate through the given TwoWire (I2C) bus. You must have
-    // already called bus.begin() (just once) before making any calls
-    // to ESAT_I2CMaster.resetTelemetryQueue().
+    // ESAT_I2CMaster.readNextTelemetry() to get the telemetry queue ready.
     // Reset the queue of the slave at the given address.
     // Return true on success; otherwise return false.
-    boolean resetTelemetryQueue(TwoWire& bus,
-                                byte address);
+    boolean resetTelemetryQueue(byte address);
 
-    // Write a packet to a slave.
+    // Write a packet to the slave at the given address.
+    // Return true on success; otherwise return false.
+    boolean writePacket(ESAT_CCSDSPacket& packet, byte address);
+
+    // Deprecated method; use ESAT_I2CMaster.writePacket(address,
+    // packet) instead.
+    // Write a telecommand packet to the device at the given address.
     // Communicate through the given TwoWire (I2C) bus. You must have
     // already called bus.begin() (just once) before any calls to
     // ESAT_I2CMaster.writeTelecommand().
-    // Write a telecommand packet to the device at the given address.
     // The read/write pointer of the packet may move.
     // Wait some milliseconds (millisecondsAfterWrites) after each
     // write operation to give the slave time to process the request.
@@ -110,29 +113,12 @@ class ESAT_I2CMasterClass
     // (millisecondsBetweenAttempts), if the telecommand queue is
     // full.
     // Return true on success; otherwise return false.
-    boolean writePacket(TwoWire& bus,
-                             byte address,
-                             ESAT_CCSDSPacket& packet,
-                             byte millisecondsAfterWrites,
-                             byte attempts,
-                             word millisecondsBetweenAttempts);
-
-    // Deprecated method; use writePacket() instead.
-    // Same functionality as writePacket().
     boolean writeTelecommand(TwoWire& bus,
                              byte address,
                              ESAT_CCSDSPacket& packet,
                              byte millisecondsAfterWrites,
                              byte attempts,
-                             word millisecondsBetweenAttempts) __attribute__((deprecated("Use writePacket instead.")))
-    {
-      return writePacket(bus,
-                         address,
-                         packet,
-                         millisecondsAfterWrites,
-                         attempts,
-                         millisecondsBetweenAttempts);
-    }
+                             word millisecondsBetweenAttempts) __attribute__((deprecated("Use ESAT_I2CMaster.writePacket(packet, address) instead.")));
 
   private:
     // Pass this constant as the requestedPacket argument
@@ -181,30 +167,31 @@ class ESAT_I2CMasterClass
     // I2C messages will be sent in chunks of up to 16 bytes.
     static const byte I2C_CHUNK_LENGTH = 16;
 
+    // Communicate through this bus.
+    TwoWire* bus = nullptr;
+
+    // Ask if the slave is ready to send or receive a packet up to
+    // this number of times.
+    word attempts;
+
+    // When communicating with a slave, wait this number of
+    // milliseconds after each write operation to give the slave time
+    // to process the request
+    word millisecondsAfterWrites;
+
+    // Wait this number of milliseconds between attempts to have
+    // the slave ready to send or receive a packet.
+    word millisecondsBetweenAttempts;
+
     // See if we can read a packet now from the given address.
-    // Wait some milliseconds after each write operation to give
-    // the slave time to process the request.
-    // Retry several times if the telemetry is not ready,
-    // waiting several milliseconds between reattempts.
     // Return true if we can read a packet now; otherwise return false.
-    boolean canReadPacket(TwoWire& bus,
-                           byte address,
-                           byte millisecondsAfterWrites,
-                           byte attempts,
-                           word millisecondsBetweenAttempts);
+    boolean canReadPacket(byte address);
+
 
     // See if we can write packets now to the given address.
-    // Wait some milliseconds after each write operation to give
-    // the slave time to process the request.
-    // Retry several times if the queue is not free,
-    // waiting several milliseconds between reattempts.
     // Return true if it is possible to write a packet now;
     // otherwise return false.
-    boolean canWritePacket(TwoWire& bus,
-                           byte address,
-                           byte millisecondsAfterWrites,
-                           byte attempts,
-                           word millisecondsBetweenAttempts);
+    boolean canWritePacket(byte address);
 
     // Return true if the received packet matches the packet request;
     // otherwise return false.
@@ -216,64 +203,34 @@ class ESAT_I2CMasterClass
     // - NEXT_TELEMETRY_PACKET_REQUESTED: next-packet telemetry;
     // - NEXT_TELECOMMAND_PACKET_REQUESTED: next-packet telecommand;
     // - from 0 to 255: named-packet telemetry with the given packet identifier.
-    // Wait some milliseconds after each write operation to give
-    // the slave time to process the request.
-    // Retry several times, waiting several milliseconds, if the
-    // telecommand is not ready.
     // Return true on success; otherwise return false.
-    boolean readPacket(TwoWire& bus,
-                       byte address,
+    boolean readPacket(ESAT_CCSDSPacket& packet,
                        int requestedPacket,
-                       ESAT_CCSDSPacket& packet,
-                       byte millisecondsAfterWrites,
-                       byte attempts,
-                       byte millisecondsBetweenAttempts);
+                       byte address);
 
     // Read the packet data from the given address.
     // Return true on success; otherwise return false.
-    boolean readPacketData(TwoWire& bus,
-                           byte address,
-                           ESAT_CCSDSPacket& packet);
+    boolean readPacketData(ESAT_CCSDSPacket& packet, byte address);
 
     // Read the packet primary header from the given address.
-    // Wait some milliseconds after each write operation to give
-    // the slave time to process the request.
     // Return true on success; otherwise return false.
-    boolean readPrimaryHeader(TwoWire& bus,
-                              byte address,
-                              ESAT_CCSDSPacket& packet,
-                              byte millisecondsAfterWrites);
+    boolean readPrimaryHeader(ESAT_CCSDSPacket& packet, byte address);
 
-    // Write a packet request for to the given address.
+    // Write a packet request to the given address.
     // The requested packet is either:
     // - NEXT_TELEMETRY_PACKET_REQUESTED: next-packet telemetry;
     // - NEXT_TELECOMMAND_PACKET_REQUESTED: next-packet telecommand;
     // - from 0 to 255: named-packet telemetry with the given packet identifier.
-    // Wait some milliseconds after each write operation to give
-    // the slave time to process the request.
     // Return true on success; otherwise return false.
-    boolean requestPacket(TwoWire& bus,
-                          byte address,
-                          int requestedPacket,
-                          byte millisecondsAfterWrites);
+    boolean requestPacket(int requestedPacket, byte address);
 
     // Write the packet data to the given address.
-    // Wait some milliseconds after each write operation to give
-    // the slave time to process the request.
     // Return true on success; otherwise return false.
-    boolean writePacketData(TwoWire& bus,
-                            byte address,
-                            ESAT_CCSDSPacket& packet,
-                            byte millisecondsAfterWrites);
+    boolean writePacketData(ESAT_CCSDSPacket& packet, byte address);
 
-    // Write the primary header to the given address.
-    // Wait some milliseconds after each write operation to give
-    // the slave time to process the request.
+    // Write the primary header of the packet to the given address.
     // Return true on success; otherwise return false.
-    boolean writePrimaryHeader(TwoWire& bus,
-                               byte address,
-                               ESAT_CCSDSPacket& packet,
-                               byte millisecondsAfterWrites);
+    boolean writePrimaryHeader(ESAT_CCSDSPacket& packet, byte address);
 };
 
 // Global instance of the I2C master library.
