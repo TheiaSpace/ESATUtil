@@ -46,7 +46,7 @@ unsigned long ESAT_TimerClass::elapsedMilliseconds()
 
 unsigned long ESAT_TimerClass::ellapsedMilliseconds()
 {
-  return millis() - previousWakeUpTime;
+  return elapsedMilliseconds();
 }
 
 void ESAT_TimerClass::waitUntilNextCycle()
