@@ -27,7 +27,7 @@ ESAT_SoftwareClock::ESAT_SoftwareClock()
 
 void ESAT_SoftwareClock::begin(ESAT_Timestamp timestamp)
 {
-  setCurrentTime(timestamp);
+  write(timestamp);
 }
 
 boolean ESAT_SoftwareClock::isRunning() const
@@ -52,14 +52,9 @@ ESAT_Timestamp ESAT_SoftwareClock::read()
   }
 }
 
-void ESAT_SoftwareClock::setCurrentTime(ESAT_Timestamp timestamp)
+void ESAT_SoftwareClock::write(ESAT_Timestamp timestamp)
 {
   setMilliseconds = millis();
   setTimestamp = timestamp;
   running = true;
-}
-
-void ESAT_SoftwareClock::write(ESAT_Timestamp timestamp)
-{
-  setCurrentTime(timestamp);
 }

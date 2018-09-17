@@ -59,9 +59,6 @@ class ESAT_SoftwareClock: public ESAT_Clock
 
     // Timestamp given at the last time setting.
     ESAT_Timestamp setTimestamp;
-
-    // Set the time to the given timestamp.
-    void setCurrentTime(ESAT_Timestamp timestamp);
 };
 
 #endif /* ESAT_SoftwareClock_h */
