@@ -30,16 +30,15 @@
 class ESAT_SoftwareClock: public ESAT_Clock
 {
   public:
-    // Instantiate a new software real-time clock.
-    ESAT_SoftwareClock();
-
+    // Deprecated method; use write(timestamp) instead.
     // Initiate the clock so it starts counting time.
     // Set the clock to the given timestamp.
-    void begin(ESAT_Timestamp timestamp);
+    void begin(ESAT_Timestamp timestamp) __attribute__((deprecated("Use write(timestamp) instead.")));
 
+    // Deprecated method.
     // Return true if the clock was initialized and it is running,
     // otherwise returns false.
-    boolean isRunning() const;
+    boolean isRunning() const __attribute__((deprecated));
 
     // Return the current timestamp.
     // If the clock is not initialized before calling this method,
@@ -50,17 +49,11 @@ class ESAT_SoftwareClock: public ESAT_Clock
     void write(ESAT_Timestamp timestamp);
 
   private:
-    // True if the clock is running; false otherwise.
-    boolean running;
-
     // System uptime milliseconds at the last time setting.
     unsigned long setMilliseconds;
 
     // Timestamp given at the last time setting.
     ESAT_Timestamp setTimestamp;
-
-    // Set the time to the given timestamp.
-    void setCurrentTime(ESAT_Timestamp timestamp);
 };
 
 #endif /* ESAT_SoftwareClock_h */

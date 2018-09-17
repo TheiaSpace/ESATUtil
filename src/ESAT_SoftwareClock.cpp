@@ -20,24 +20,29 @@
 
 #include "ESAT_SoftwareClock.h"
 
-ESAT_SoftwareClock::ESAT_SoftwareClock()
-{
-  running = false;
-}
-
 void ESAT_SoftwareClock::begin(ESAT_Timestamp timestamp)
 {
-  setCurrentTime(timestamp);
+  write(timestamp);
 }
 
 boolean ESAT_SoftwareClock::isRunning() const
 {
-  return running;
+  return setTimestamp == ESAT_Timestamp();
 }
 
 ESAT_Timestamp ESAT_SoftwareClock::read()
 {
-  if (running)
+  // If the timestamp at the last time setting is the default
+  // (invalid) timestamp, just return it, as we cannot count
+  // time yet.
+  if (setTimestamp == ESAT_Timestamp())
+  {
+    return setTimestamp;
+  }
+  // If the timestamp at the last time setting isn't the default
+  // (invalid) timestamp, then compute and return the current
+  // timestamp.
+  else
   {
     ESAT_Timestamp timestamp = setTimestamp;
     const unsigned long ellapsedMilliseconds =
@@ -46,20 +51,10 @@ ESAT_Timestamp ESAT_SoftwareClock::read()
     timestamp.addSeconds(ellapsedSeconds);
     return timestamp;
   }
-  else
-  {
-    return ESAT_Timestamp();
-  }
-}
-
-void ESAT_SoftwareClock::setCurrentTime(ESAT_Timestamp timestamp)
-{
-  setMilliseconds = millis();
-  setTimestamp = timestamp;
-  running = true;
 }
 
 void ESAT_SoftwareClock::write(ESAT_Timestamp timestamp)
 {
-  setCurrentTime(timestamp);
+  setMilliseconds = millis();
+  setTimestamp = timestamp;
 }
