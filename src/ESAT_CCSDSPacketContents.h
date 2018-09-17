@@ -36,6 +36,8 @@ class ESAT_CCSDSPacketContents
     // from one packet contents object to the next packet contents
     // object until reaching the end of the list at nullptr.
     // Only ESAT_CCSDSTelemetryPacketBuilder should care about this.
+    // Each packet contents object should be added just one time to
+    // just one ESAT_CCSDSTelemetryPacketBuilder object.
     ESAT_CCSDSPacketContents* nextPacketContents;
 
     // Trivial destructor.
