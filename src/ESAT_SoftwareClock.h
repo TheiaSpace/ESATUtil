@@ -30,9 +30,6 @@
 class ESAT_SoftwareClock: public ESAT_Clock
 {
   public:
-    // Instantiate a new software real-time clock.
-    ESAT_SoftwareClock();
-
     // Deprecated method; use write(timestamp) instead.
     // Initiate the clock so it starts counting time.
     // Set the clock to the given timestamp.

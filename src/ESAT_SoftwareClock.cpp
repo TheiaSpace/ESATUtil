@@ -20,11 +20,6 @@
 
 #include "ESAT_SoftwareClock.h"
 
-ESAT_SoftwareClock::ESAT_SoftwareClock()
-{
-  running = false;
-}
-
 void ESAT_SoftwareClock::begin(ESAT_Timestamp timestamp)
 {
   write(timestamp);
