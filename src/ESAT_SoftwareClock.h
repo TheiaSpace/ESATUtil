@@ -38,9 +38,10 @@ class ESAT_SoftwareClock: public ESAT_Clock
     // Set the clock to the given timestamp.
     void begin(ESAT_Timestamp timestamp) __attribute__((deprecated("Use write(timestamp) instead.")));
 
+    // Deprecated method.
     // Return true if the clock was initialized and it is running,
     // otherwise returns false.
-    boolean isRunning() const;
+    boolean isRunning() const __attribute__((deprecated));
 
     // Return the current timestamp.
     // If the clock is not initialized before calling this method,
