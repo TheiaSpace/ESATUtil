@@ -42,6 +42,10 @@ class ESAT_TimerClass
     // during the previous cycle.
     byte load();
 
+    // Return the milliseconds elapsed
+    // since the last wake-up time.
+    unsigned long elapsedMilliseconds();
+
     // Return the milliseconds ellapsed
     // since the last wake-up time.
     unsigned long ellapsedMilliseconds();

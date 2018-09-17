@@ -39,6 +39,11 @@ byte ESAT_TimerClass::load()
   }
 }
 
+unsigned long ESAT_TimerClass::elapsedMilliseconds()
+{
+  return millis() - previousWakeUpTime;
+}
+
 unsigned long ESAT_TimerClass::ellapsedMilliseconds()
 {
   return millis() - previousWakeUpTime;
