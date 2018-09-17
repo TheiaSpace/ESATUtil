@@ -49,9 +49,6 @@ class ESAT_SoftwareClock: public ESAT_Clock
     void write(ESAT_Timestamp timestamp);
 
   private:
-    // True if the clock is running; false otherwise.
-    boolean running;
-
     // System uptime milliseconds at the last time setting.
     unsigned long setMilliseconds;
 
