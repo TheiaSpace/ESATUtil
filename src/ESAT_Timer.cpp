@@ -39,17 +39,22 @@ byte ESAT_TimerClass::load()
   }
 }
 
-unsigned long ESAT_TimerClass::ellapsedMilliseconds()
+unsigned long ESAT_TimerClass::elapsedMilliseconds()
 {
   return millis() - previousWakeUpTime;
 }
 
+unsigned long ESAT_TimerClass::ellapsedMilliseconds()
+{
+  return elapsedMilliseconds();
+}
+
 void ESAT_TimerClass::waitUntilNextCycle()
 {
-  const unsigned long ellapsedTime = ellapsedMilliseconds();
-  if (ellapsedTime < period)
+  const unsigned long elapsedTime = elapsedMilliseconds();
+  if (elapsedTime < period)
   {
-    const unsigned long waitTime = period - ellapsedTime;
+    const unsigned long waitTime = period - elapsedTime;
     delay(waitTime);
     previousWakeUpTime = previousWakeUpTime + period;
     previousWaitTime = waitTime;

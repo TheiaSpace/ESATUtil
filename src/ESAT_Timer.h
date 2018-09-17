@@ -42,9 +42,14 @@ class ESAT_TimerClass
     // during the previous cycle.
     byte load();
 
-    // Return the milliseconds ellapsed
+    // Return the milliseconds elapsed
     // since the last wake-up time.
-    unsigned long ellapsedMilliseconds();
+    unsigned long elapsedMilliseconds();
+
+    // Deprecated method; use ESAT_Util.elapsedMilliseconds() instead.
+    // Return the milliseconds elapsed
+    // since the last wake-up time.
+    unsigned long ellapsedMilliseconds() __attribute__((deprecated("Use ESAT_Util.elapsedMilliseconds() instead.")));
 
     // Wait until the next cycle is due.
     // The next cycle starts when the timer period has ellapsed since
