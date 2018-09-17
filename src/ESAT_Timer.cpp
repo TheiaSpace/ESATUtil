@@ -51,10 +51,10 @@ unsigned long ESAT_TimerClass::ellapsedMilliseconds()
 
 void ESAT_TimerClass::waitUntilNextCycle()
 {
-  const unsigned long ellapsedTime = ellapsedMilliseconds();
-  if (ellapsedTime < period)
+  const unsigned long elapsedTime = elapsedMilliseconds();
+  if (elapsedTime < period)
   {
-    const unsigned long waitTime = period - ellapsedTime;
+    const unsigned long waitTime = period - elapsedTime;
     delay(waitTime);
     previousWakeUpTime = previousWakeUpTime + period;
     previousWaitTime = waitTime;
