@@ -196,20 +196,6 @@ void ESAT_KISSStream::flush()
   reset();
 }
 
-unsigned long ESAT_KISSStream::frameLength(const unsigned long dataLength)
-{
-  const unsigned long frameStartLength = 1;
-  const unsigned long dataFrameLength = 1;
-  const unsigned long frameEndLength = 1;
-  const unsigned long escapeFactor = 2;
-  const unsigned long totalLength =
-    frameStartLength
-    + dataFrameLength
-    + escapeFactor * dataLength
-    + frameEndLength;
-  return totalLength;
-}
-
 int ESAT_KISSStream::peek()
 {
   return backendBuffer.peek();

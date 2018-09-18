@@ -71,7 +71,19 @@ class ESAT_KISSStream: public Stream
     void flush();
 
     // Return the worst case frame length for a given data length.
-    static unsigned long frameLength(unsigned long dataLength);
+    static constexpr unsigned long frameLength(unsigned long dataLength)
+    {
+      const unsigned long frameStartLength = 1;
+      const unsigned long dataFrameLength = 1;
+      const unsigned long frameEndLength = 1;
+      const unsigned long escapeFactor = 2;
+      const unsigned long totalLength =
+        frameStartLength
+        + dataFrameLength
+        + escapeFactor * dataLength
+        + frameEndLength;
+      return totalLength;
+    }
 
     // Return the next byte (or -1 if no byte could be read)
     // and advance to the next one.
