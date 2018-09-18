@@ -32,6 +32,11 @@ following modules:
 Stream interface to byte buffers with bounds checking.
 
 
+# ESAT_CCSDSKISSBridge
+
+Move CCSDS space packets in KISS frames through a backend stream.
+
+
 # ESAT_CCSDSPacket
 
 Standard CCSDS space packets.
