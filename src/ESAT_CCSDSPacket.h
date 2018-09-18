@@ -149,7 +149,7 @@ class ESAT_CCSDSPacket: public Printable, public Stream
 
     // Fill the packet with incoming data from an input stream.
     // Return true on success; false otherwise.
-    // This leaves the read/write pointer untouched.
+    // The read/write pointer goes to the start of the packet data field.
     boolean readFrom(Stream& input);
 
     // Return the next 16-bit signed integer from the packet data.
