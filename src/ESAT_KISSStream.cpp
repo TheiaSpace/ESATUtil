@@ -46,18 +46,6 @@ ESAT_KISSStream::ESAT_KISSStream(Stream& stream,
   setTimeout(0);
 }
 
-int ESAT_KISSStream::available()
-{
-  if (decoderState == FINISHED)
-  {
-    return backendBuffer.available();
-  }
-  else
-  {
-    return 0;
-  }
-}
-
 size_t ESAT_KISSStream::append(const byte datum)
 {
   // In buffered KISS streams, append the datum to the buffer;
@@ -71,6 +59,28 @@ size_t ESAT_KISSStream::append(const byte datum)
   {
     return backendStream->write(datum);
   }
+}
+
+int ESAT_KISSStream::available()
+{
+  if (decoderState == FINISHED)
+  {
+    return backendBuffer.available();
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+size_t ESAT_KISSStream::beginFrame()
+{
+  reset();
+  const size_t frameEndBytesWritten =
+    append(FRAME_END);
+  const size_t dataFrameBytesWritten =
+    append(DATA_FRAME);
+  return frameEndBytesWritten + dataFrameBytesWritten;
 }
 
 void ESAT_KISSStream::decode(const byte datum)
@@ -167,16 +177,6 @@ void ESAT_KISSStream::decodeFrameStart(const byte datum)
       decoderState = WAITING_FOR_FRAME_START;
       break;
   }
-}
-
-size_t ESAT_KISSStream::beginFrame()
-{
-  reset();
-  const size_t frameEndBytesWritten =
-    append(FRAME_END);
-  const size_t dataFrameBytesWritten =
-    append(DATA_FRAME);
-  return frameEndBytesWritten + dataFrameBytesWritten;
 }
 
 size_t ESAT_KISSStream::endFrame()

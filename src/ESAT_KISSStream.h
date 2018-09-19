@@ -73,6 +73,16 @@ class ESAT_KISSStream: public Stream
     // Return the number of bytes written.
     size_t beginFrame();
 
+    // End writing a KISS frame.
+    // In buffered KISS streams, this writes the frame-end mark to the
+    // buffer and writes the buffer contents to the backend stream; in
+    // unbuffered KISS streams, this writes the frame-end mark
+    // directly to the backend stream.
+    // Return the number of bytes written.
+    // Reset the buffer so that the KISS stream can be used for
+    // reading or writing a new frame.
+    size_t endFrame();
+
     // Write the contents of the buffer to the backend stream
     // and reset buffer and the encoder state.
     void flush();
@@ -114,16 +124,6 @@ class ESAT_KISSStream: public Stream
     // Write a byte buffer of given length.
     // Return the number of bytes written.
     using Print::write;
-
-    // End writing a KISS frame.
-    // In buffered KISS streams, this writes the frame-end mark to the
-    // buffer and writes the buffer contents to the backend stream; in
-    // unbuffered KISS streams, this writes the frame-end mark
-    // directly to the backend stream.
-    // Return the number of bytes written.
-    // Reset the buffer so that the KISS stream can be used for
-    // reading or writing a new frame.
-    size_t endFrame();
 
   private:
     // Decoder states.
