@@ -39,9 +39,21 @@ boolean ESAT_CCSDSPacketToKISSFrameWriter::bufferedWrite(ESAT_CCSDSPacket packet
       ESAT_KISSStream::frameLength(packet.length());
     byte buffer[capacity];
     ESAT_KISSStream writer(*backendStream, buffer, capacity);
-    (void) writer.beginFrame();
-    (void) packet.writeTo(writer);
-    (void) writer.endFrame();
+    const size_t beginBytesWritten = writer.beginFrame();
+    if (beginBytesWritten < 2)
+    {
+      return false;
+    }
+    const boolean correctPacketWrite = packet.writeTo(writer);
+    if (!correctPacketWrite)
+    {
+      return false;
+    }
+    const boolean endBytesWritten = writer.endFrame();
+    if (endBytesWritten < 1)
+    {
+      return false;
+    }
     return true;
   }
   else
@@ -50,14 +62,26 @@ boolean ESAT_CCSDSPacketToKISSFrameWriter::bufferedWrite(ESAT_CCSDSPacket packet
   }
 }
 
-void ESAT_CCSDSPacketToKISSFrameWriter::unbufferedWrite(ESAT_CCSDSPacket packet)
+boolean ESAT_CCSDSPacketToKISSFrameWriter::unbufferedWrite(ESAT_CCSDSPacket packet)
 {
   if (backendStream)
   {
     ESAT_KISSStream writer(*backendStream);
-    (void) writer.beginFrame();
-    (void) packet.writeTo(writer);
-    (void) writer.endFrame();
+    const size_t beginBytesWritten = writer.beginFrame();
+    if (beginBytesWritten < 2)
+    {
+      return false;
+    }
+    const boolean correctPacketWrite = packet.writeTo(writer);
+    if (!correctPacketWrite)
+    {
+      return false;
+    }
+    const boolean endBytesWritten = writer.endFrame();
+    if (endBytesWritten < 1)
+    {
+      return false;
+    }
     return true;
   }
   else
