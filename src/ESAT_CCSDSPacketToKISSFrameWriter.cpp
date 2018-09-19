@@ -31,7 +31,7 @@ ESAT_CCSDSPacketToKISSFrameWriter::ESAT_CCSDSPacketToKISSFrameWriter(Stream& bac
   backendStream = &backend;
 }
 
-void ESAT_CCSDSPacketToKISSFrameWriter::bufferedWrite(ESAT_CCSDSPacket packet)
+boolean ESAT_CCSDSPacketToKISSFrameWriter::bufferedWrite(ESAT_CCSDSPacket packet)
 {
   if (backendStream)
   {
@@ -42,6 +42,11 @@ void ESAT_CCSDSPacketToKISSFrameWriter::bufferedWrite(ESAT_CCSDSPacket packet)
     (void) writer.beginFrame();
     (void) packet.writeTo(writer);
     (void) writer.endFrame();
+    return true;
+  }
+  else
+  {
+    return false;
   }
 }
 
@@ -53,5 +58,10 @@ void ESAT_CCSDSPacketToKISSFrameWriter::unbufferedWrite(ESAT_CCSDSPacket packet)
     (void) writer.beginFrame();
     (void) packet.writeTo(writer);
     (void) writer.endFrame();
+    return true;
+  }
+  else
+  {
+    return false;
   }
 }

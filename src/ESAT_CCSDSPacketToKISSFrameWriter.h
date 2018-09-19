@@ -42,13 +42,15 @@ class ESAT_CCSDSPacketToKISSFrameWriter
     // The write will be buffered and the frame will be written in one
     // operation, which may be faster with some streams, but it will
     // consume more memory than an unbuffered write.
-    void bufferedWrite(ESAT_CCSDSPacket packet);
+    // Return true on success; otherwise return false.
+    boolean bufferedWrite(ESAT_CCSDSPacket packet);
 
     // Write the given packet in a KISS frame to the backend stream.
     // The write will be unbuffered and the frame will be written byte
     // by byte, which may be slower with some streams, but it will
     // consume less memory than a buffered write.
-    void unbufferedWrite(ESAT_CCSDSPacket packet);
+    // Return true on success; otherwise return false.
+    boolean unbufferedWrite(ESAT_CCSDSPacket packet);
 
   private:
     // Write frames to this stream.
