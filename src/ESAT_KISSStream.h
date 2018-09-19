@@ -34,6 +34,9 @@
 class ESAT_KISSStream: public Stream
 {
   public:
+    // Each escaped byte grows by this factor.
+    static const byte ESCAPE_FACTOR = 2;
+
     // Number of bytes of the frame-begin mark (frame-start plus
     // data-frame).
     static const byte FRAME_BEGIN_LENGTH = 2;
