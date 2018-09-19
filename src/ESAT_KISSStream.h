@@ -93,12 +93,9 @@ class ESAT_KISSStream: public Stream
     // Return the worst case frame length for a given data length.
     static constexpr unsigned long frameLength(unsigned long dataLength)
     {
-      const unsigned long escapeFactor = 2;
-      const unsigned long totalLength =
-        FRAME_BEGIN_LENGTH
-        + escapeFactor * dataLength
+      return FRAME_BEGIN_LENGTH
+        + ESCAPE_FACTOR * dataLength
         + FRAME_END_LENGTH;
-      return totalLength;
     }
 
     // Return the next byte (or -1 if no byte could be read)
