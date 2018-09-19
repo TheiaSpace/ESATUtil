@@ -40,7 +40,7 @@ boolean ESAT_CCSDSPacketToKISSFrameWriter::bufferedWrite(ESAT_CCSDSPacket packet
     byte buffer[capacity];
     ESAT_KISSStream writer(*backendStream, buffer, capacity);
     const size_t beginBytesWritten = writer.beginFrame();
-    if (beginBytesWritten < 2)
+    if (beginBytesWritten < writer.FRAME_BEGIN_LENGTH)
     {
       return false;
     }
@@ -50,7 +50,7 @@ boolean ESAT_CCSDSPacketToKISSFrameWriter::bufferedWrite(ESAT_CCSDSPacket packet
       return false;
     }
     const boolean endBytesWritten = writer.endFrame();
-    if (endBytesWritten < 1)
+    if (endBytesWritten < writer.FRAME_END_LENGTH)
     {
       return false;
     }
@@ -68,7 +68,7 @@ boolean ESAT_CCSDSPacketToKISSFrameWriter::unbufferedWrite(ESAT_CCSDSPacket pack
   {
     ESAT_KISSStream writer(*backendStream);
     const size_t beginBytesWritten = writer.beginFrame();
-    if (beginBytesWritten < 2)
+    if (beginBytesWritten < writer.FRAME_BEGIN_LENGTH)
     {
       return false;
     }
@@ -78,7 +78,7 @@ boolean ESAT_CCSDSPacketToKISSFrameWriter::unbufferedWrite(ESAT_CCSDSPacket pack
       return false;
     }
     const boolean endBytesWritten = writer.endFrame();
-    if (endBytesWritten < 1)
+    if (endBytesWritten < writer.FRAME_END_LENGTH)
     {
       return false;
     }

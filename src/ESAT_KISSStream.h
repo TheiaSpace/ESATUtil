@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017-2018 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Util library.
  *
@@ -34,6 +34,13 @@
 class ESAT_KISSStream: public Stream
 {
   public:
+    // Number of bytes of the frame-begin mark (frame-start plus
+    // data-frame).
+    static const byte FRAME_BEGIN_LENGTH = 2;
+
+    // Number of bytes of the frame-end mark.
+    static const byte FRAME_END_LENGTH = 1;
+
     // Instantiate an empty KISS stream.
     // Empty KISS will not read and will not write.
     ESAT_KISSStream();
@@ -73,15 +80,11 @@ class ESAT_KISSStream: public Stream
     // Return the worst case frame length for a given data length.
     static constexpr unsigned long frameLength(unsigned long dataLength)
     {
-      const unsigned long frameStartLength = 1;
-      const unsigned long dataFrameLength = 1;
-      const unsigned long frameEndLength = 1;
       const unsigned long escapeFactor = 2;
       const unsigned long totalLength =
-        frameStartLength
-        + dataFrameLength
+        FRAME_BEGIN_LENGTH
         + escapeFactor * dataLength
-        + frameEndLength;
+        + FRAME_END_LENGTH;
       return totalLength;
     }
 
