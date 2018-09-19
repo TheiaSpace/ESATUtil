@@ -52,6 +52,11 @@ ESAT-flavoured CCSDS space packet contents interface.
 Read CCSDS space packets from KISS frames coming from a stream.
 
 
+# ESAT_CCSDSPacketToKISSFrameWriter
+
+Write CCSDS space packets to KISS frames going through a stream.
+
+
 # ESAT_CCSDSPrimaryHeader
 
 The primary header of CCSDS space packets.
