@@ -34,6 +34,13 @@
 class ESAT_KISSStream: public Stream
 {
   public:
+    // Number of bytes of the frame-begin mark (frame-start plus
+    // data-frame).
+    static const byte FRAME_BEGIN_LENGTH = 2;
+
+    // Number of bytes of the frame-end mark.
+    static const byte FRAME_END_LENGTH = 1;
+
     // Instantiate an empty KISS stream.
     // Empty KISS will not read and will not write.
     ESAT_KISSStream();
