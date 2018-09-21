@@ -24,6 +24,7 @@
 #include <Arduino.h>
 #include "ESAT_Buffer.h"
 #include "ESAT_CCSDSPacket.h"
+#include "ESAT_SemanticVersionNumber.h"
 #include <Wire.h>
 
 // ESAT I2C telecommand and telemetry protocol for I2C slave nodes.
@@ -179,6 +180,9 @@ class ESAT_I2CSlaveClass
 
     // I2C messages will be sent in chunks of up to 16 bytes.
     static const byte I2C_CHUNK_LENGTH = 16;
+
+    // Version number of the CCSDS Space Packet-over-I2C protocol.
+    static const ESAT_SemanticVersionNumber VERSION_NUMBER;
 
     // I2C slave interface.
     TwoWire* bus;

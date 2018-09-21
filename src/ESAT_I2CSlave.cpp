@@ -20,6 +20,8 @@
 
 #include "ESAT_I2CSlave.h"
 
+const ESAT_SemanticVersionNumber ESAT_I2CSlaveClass::VERSION_NUMBER(1, 0, 0);
+
 void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
                                byte masterWritePacketDataBuffer[],
                                const word masterWritePacketDataBufferLength,
