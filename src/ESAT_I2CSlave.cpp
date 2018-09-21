@@ -158,6 +158,12 @@ void ESAT_I2CSlaveClass::handleResetTelemetryQueueReception(ESAT_Buffer message)
   }
 }
 
+void ESAT_I2CSlaveClass::handleProtocolVersionNumberReception(ESAT_Buffer message)
+{
+  (void) message;
+  i2cState = REQUEST_PROTOCOL_VERSION_NUMBER;
+}
+
 void ESAT_I2CSlaveClass::handleWriteStateRequest()
 {
   (void) bus->write(masterWriteState);
@@ -210,6 +216,11 @@ void ESAT_I2CSlaveClass::handleReadPacketPacketDataRequest()
       masterReadState = PACKET_NOT_REQUESTED;
     }
   }
+}
+
+void ESAT_I2CSlaveClass::handleProtocolVersionNumberRequest()
+{
+  (void) VERSION_NUMBER.writeTo(*bus);
 }
 
 boolean ESAT_I2CSlaveClass::readPacket(ESAT_CCSDSPacket& packet)
@@ -269,6 +280,9 @@ void ESAT_I2CSlaveClass::receiveEvent(const int numberOfBytes)
     case RESET_TELEMETRY_QUEUE:
       ESAT_I2CSlave.handleResetTelemetryQueueReception(message);
       break;
+    case PROTOCOL_VERSION_NUMBER:
+      ESAT_I2CSlave.handleProtocolVersionNumberReception(message);
+      break;
     default:
       ESAT_I2CSlave.i2cState = IDLE;
       break;
@@ -296,6 +310,9 @@ void ESAT_I2CSlaveClass::requestEvent()
       break;
     case REQUEST_READ_PACKET:
       ESAT_I2CSlave.handleReadPacketRequest();
+      break;
+    case REQUEST_PROTOCOL_VERSION_NUMBER:
+      ESAT_I2CSlave.handleProtocolVersionNumberRequest();
       break;
     default:
       break;

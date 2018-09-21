@@ -244,6 +244,9 @@ class ESAT_I2CSlaveClass
     // Handle a write to RESET_TELEMETRY_QUEUE.
     void handleResetTelemetryQueueReception(ESAT_Buffer message);
 
+    // Handle a write to PROTOCOL_VERSION_NUMBER.
+    void handleProtocolVersionNumberReception(ESAT_Buffer message);
+
     // Handle a read from WRITE_STATE.
     void handleWriteStateRequest();
 
@@ -258,6 +261,9 @@ class ESAT_I2CSlaveClass
 
     // Handle a read from READ_PACKET (packet data).
     void handleReadPacketPacketDataRequest();
+
+    // Handle a read from PROTOCOL_VERSION_NUMBER.
+    void handleProtocolVersionNumberRequest();
 
     // Return true if the provided packet matches the current read
     // request:
