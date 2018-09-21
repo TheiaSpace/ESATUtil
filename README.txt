@@ -97,6 +97,11 @@ Respond to queries from the master ESAT subsystem through the I2C bus.
 Stream interface to standard KISS frames.
 
 
+# ESAT_SemanticVersionNumber
+
+Version numbers in major.minor.patch format.
+
+
 # ESAT_SoftwareClock
 
 Software real-time clock implementing the ESAT_Clock interface.
