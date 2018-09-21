@@ -44,12 +44,6 @@ class ESAT_I2CMasterClass
                word attempts = 100,
                word millisecondsBetweenAttempts = 20);
 
-    // Read a telecommand packet from the slave at the given address.
-    // Return true on success; otherwise return false.
-    boolean readTelecommand(ESAT_CCSDSPacket& packet,
-                            byte address);
-
-
     // Read a named-packet telemetry packet matching the given packet
     // identifier from the slave at the given address.
     // Return true on success; otherwise return false.
@@ -69,6 +63,11 @@ class ESAT_I2CMasterClass
     // Return the protocol version number of the slave at the given address.
     // The protocol version number is 0.0.0 on error.
     ESAT_SemanticVersionNumber readProtocolVersionNumber(byte address);
+
+    // Read a telecommand packet from the slave at the given address.
+    // Return true on success; otherwise return false.
+    boolean readTelecommand(ESAT_CCSDSPacket& packet,
+                            byte address);
 
     // Deprecated method; use ESAT_I2CMaster.readNamedTelemetry(packet,
     // packetIdentifier, address) instead.
