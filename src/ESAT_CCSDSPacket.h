@@ -22,10 +22,10 @@
 #define ESAT_CCSDSPacket_h
 
 #include <Arduino.h>
-#include <ESAT_Buffer.h>
-#include <ESAT_CCSDSPrimaryHeader.h>
-#include <ESAT_CCSDSSecondaryHeader.h>
-#include <ESAT_Timestamp.h>
+#include "ESAT_Buffer.h"
+#include "ESAT_CCSDSPrimaryHeader.h"
+#include "ESAT_CCSDSSecondaryHeader.h"
+#include "ESAT_Timestamp.h"
 
 // ESAT's CCSDS space packets.
 // These are simple packets following CCSDS Recommendation 133.0-B-1:

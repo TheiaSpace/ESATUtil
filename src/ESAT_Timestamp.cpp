@@ -19,7 +19,7 @@
  */
 
 #include "ESAT_Timestamp.h"
-#include <ESAT_Util.h>
+#include "ESAT_Util.h"
 
 
 ESAT_Timestamp::ESAT_Timestamp()

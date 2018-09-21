@@ -23,7 +23,7 @@
 
 #include <Arduino.h>
 #include <Stream.h>
-#include <ESAT_Buffer.h>
+#include "ESAT_Buffer.h"
 
 // KISS frame writer and reader.
 // Operate on a backend stream.
