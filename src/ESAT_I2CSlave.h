@@ -156,6 +156,7 @@ class ESAT_I2CSlaveClass
       REQUEST_READ_STATE,
       REQUEST_WRITE_STATE,
       REQUEST_READ_PACKET,
+      REQUEST_PROTOCOL_VERSION_NUMBER,
     };
 
     // Possible states of the high-level ESAT CCSDS Space
