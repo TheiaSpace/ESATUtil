@@ -28,6 +28,9 @@
 class ESAT_SemanticVersionNumber: public Printable
 {
   public:
+    // Number of bytes of a semantic version number.
+    static const byte LENGTH = 3;
+
     // Major version number.
     // An increment in the major version number denotes a
     // backwards-incompatible change.
