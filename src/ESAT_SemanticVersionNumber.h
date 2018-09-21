@@ -66,6 +66,10 @@ class ESAT_SemanticVersionNumber: public Printable
     // to a stream.
     // Return true on success; otherwise return false.
     boolean writeTo(Stream& stream) const;
+
+    // Return true if the two operands have the same version numbers;
+    // otherwise return false.
+    boolean operator==(ESAT_SemanticVersionNumber version) const;
 };
 
 #endif /* ESAT_SemanticVersionNumber_h */

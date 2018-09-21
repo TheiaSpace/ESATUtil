@@ -77,3 +77,20 @@ boolean ESAT_SemanticVersionNumber::writeTo(Stream& stream) const
     return true;
   }
 }
+
+boolean ESAT_SemanticVersionNumber::operator==(ESAT_SemanticVersionNumber version) const
+{
+  if (majorVersionNumber != version.majorVersionNumber)
+  {
+    return false;
+  }
+  if (minorVersionNumber != version.minorVersionNumber)
+  {
+    return false;
+  }
+  if (patchVersionNumber != version.patchVersionNumber)
+  {
+    return false;
+  }
+  return true;
+}
