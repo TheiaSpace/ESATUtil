@@ -297,6 +297,23 @@ boolean ESAT_I2CMasterClass::readPrimaryHeader(ESAT_CCSDSPacket& packet,
   return true;
 }
 
+ESAT_SemanticVersionNumber ESAT_I2CMasterClass::readProtocolVersionNumber(const byte address)
+{
+  ESAT_SemanticVersionNumber version(0, 0, 0);
+  if (!bus)
+  {
+    return version;
+  }
+  const byte bytesToRead = ESAT_SemanticVersionNumber::LENGTH;
+  const byte bytesRead = bus->requestFrom(address, bytesToRead);
+  if (bytesRead != bytesToRead)
+  {
+    return version;
+  }
+  (void) version.readFrom(*bus);
+  return version;
+}
+
 boolean ESAT_I2CMasterClass::readTelemetry(TwoWire& i2cInterface,
                                            const byte address,
                                            const byte packetIdentifier,
