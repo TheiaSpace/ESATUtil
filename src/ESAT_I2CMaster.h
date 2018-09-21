@@ -22,7 +22,7 @@
 #define ESAT_I2CMaster_h
 
 #include <Arduino.h>
-#include <ESAT_CCSDSPacket.h>
+#include "ESAT_CCSDSPacket.h"
 #include "ESAT_SemanticVersionNumber.h"
 #include <Wire.h>
 
