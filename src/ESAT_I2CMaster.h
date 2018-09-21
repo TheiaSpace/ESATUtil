@@ -145,6 +145,7 @@ class ESAT_I2CMasterClass
       READ_PACKET = 0x12,
       READ_TELECOMMAND = 0x13,
       RESET_TELEMETRY_QUEUE = 0x14,
+      PROTOCOL_VERSION_NUMBER = 0x20,
     };
 
     // Possible states of the high-level ESAT CCSDS Space

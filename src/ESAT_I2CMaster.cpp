@@ -304,6 +304,13 @@ ESAT_SemanticVersionNumber ESAT_I2CMasterClass::readProtocolVersionNumber(const 
   {
     return version;
   }
+  bus->beginTransmission(address);
+  (void) bus->write(PROTOCOL_VERSION_NUMBER);
+  const byte writeStatus = bus->endTransmission();
+  if (writeStatus != 0)
+  {
+    return version;
+  }
   const byte bytesToRead = ESAT_SemanticVersionNumber::LENGTH;
   const byte bytesRead = bus->requestFrom(address, bytesToRead);
   if (bytesRead != bytesToRead)
