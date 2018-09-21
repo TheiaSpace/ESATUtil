@@ -37,7 +37,7 @@ class ESAT_Clock
     virtual ESAT_Timestamp read() = 0;
 
     // Set the time to the given timestamp.
-    void write(ESAT_Timestamp timestamp);
+    virtual void write(ESAT_Timestamp timestamp) = 0;
 };
 
 #endif /* ESAT_Clock_h */
