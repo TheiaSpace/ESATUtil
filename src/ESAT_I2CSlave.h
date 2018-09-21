@@ -24,6 +24,7 @@
 #include <Arduino.h>
 #include "ESAT_Buffer.h"
 #include "ESAT_CCSDSPacket.h"
+#include "ESAT_SemanticVersionNumber.h"
 #include <Wire.h>
 
 // ESAT I2C telecommand and telemetry protocol for I2C slave nodes.
@@ -145,6 +146,7 @@ class ESAT_I2CSlaveClass
       READ_PACKET = 0x12,
       READ_TELECOMMAND = 0x13,
       RESET_TELEMETRY_QUEUE = 0x14,
+      PROTOCOL_VERSION_NUMBER = 0x20,
     };
 
     // Possible states of the low-level I2C slave state machine.
@@ -154,6 +156,7 @@ class ESAT_I2CSlaveClass
       REQUEST_READ_STATE,
       REQUEST_WRITE_STATE,
       REQUEST_READ_PACKET,
+      REQUEST_PROTOCOL_VERSION_NUMBER,
     };
 
     // Possible states of the high-level ESAT CCSDS Space
@@ -179,6 +182,9 @@ class ESAT_I2CSlaveClass
 
     // I2C messages will be sent in chunks of up to 16 bytes.
     static const byte I2C_CHUNK_LENGTH = 16;
+
+    // Version number of the CCSDS Space Packet-over-I2C protocol.
+    static const ESAT_SemanticVersionNumber VERSION_NUMBER;
 
     // I2C slave interface.
     TwoWire* bus;
@@ -238,6 +244,9 @@ class ESAT_I2CSlaveClass
     // Handle a write to RESET_TELEMETRY_QUEUE.
     void handleResetTelemetryQueueReception(ESAT_Buffer message);
 
+    // Handle a write to PROTOCOL_VERSION_NUMBER.
+    void handleProtocolVersionNumberReception(ESAT_Buffer message);
+
     // Handle a read from WRITE_STATE.
     void handleWriteStateRequest();
 
@@ -252,6 +261,9 @@ class ESAT_I2CSlaveClass
 
     // Handle a read from READ_PACKET (packet data).
     void handleReadPacketPacketDataRequest();
+
+    // Handle a read from PROTOCOL_VERSION_NUMBER.
+    void handleProtocolVersionNumberRequest();
 
     // Return true if the provided packet matches the current read
     // request:

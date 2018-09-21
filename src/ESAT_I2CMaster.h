@@ -23,6 +23,7 @@
 
 #include <Arduino.h>
 #include <ESAT_CCSDSPacket.h>
+#include "ESAT_SemanticVersionNumber.h"
 #include <Wire.h>
 
 // ESAT I2C telecommand and telemetry protocol for I2C master nodes.
@@ -64,6 +65,10 @@ class ESAT_I2CMasterClass
     // Return true on success; otherwise return false.
     boolean readNextTelemetry(ESAT_CCSDSPacket& packet,
                               byte address);
+
+    // Return the protocol version number of the slave at the given address.
+    // The protocol version number is 0.0.0 on error.
+    ESAT_SemanticVersionNumber readProtocolVersionNumber(byte address);
 
     // Deprecated method; use ESAT_I2CMaster.readNamedTelemetry(packet,
     // packetIdentifier, address) instead.
