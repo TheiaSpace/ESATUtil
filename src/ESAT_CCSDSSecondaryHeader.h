@@ -22,7 +22,7 @@
 #define ESAT_CCSDSSecondaryHeader_h
 
 #include <Arduino.h>
-#include <ESAT_Timestamp.h>
+#include "ESAT_Timestamp.h"
 
 // Secondary header used for ESAT's packets.  It contains the following fields:
 // - A time code with a preamble (1 byte) followed by a timestamp (7 bytes).
