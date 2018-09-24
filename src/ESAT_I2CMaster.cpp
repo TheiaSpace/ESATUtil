@@ -518,10 +518,6 @@ boolean ESAT_I2CMasterClass::writeTelecommand(TwoWire& i2cInterface,
                                               const byte numberOfAttempts,
                                               const word numberOfMillisecondsBetweenAttempts)
 {
-  if (!bus)
-  {
-    return false;
-  }
   // Save the original configuration.
   TwoWire* const originalBus =
     bus;
