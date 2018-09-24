@@ -101,8 +101,16 @@ class ESAT_I2CMasterClass
     boolean resetTelemetryQueue(byte address);
 
     // Write a packet to the slave at the given address.
+    // Wait an optional number of microseconds between successive
+    // 15-byte chunks written to the slave to give it some time
+    // to process the received data.  Arduino's Wire library calls
+    // the user data reception function after the stop condition,
+    // so the slave cannot clock-stretch and it is necessary to give
+    // it time manually.
     // Return true on success; otherwise return false.
-    boolean writePacket(ESAT_CCSDSPacket& packet, byte address);
+    boolean writePacket(ESAT_CCSDSPacket& packet,
+                        byte address,
+                        word microsecondsBetweenChunks = 0);
 
     // Deprecated method; use ESAT_I2CMaster.writePacket(address,
     // packet) instead.
@@ -240,12 +248,20 @@ class ESAT_I2CMasterClass
     boolean requestPacket(int requestedPacket, byte address);
 
     // Write the packet data to the given address.
+    // Wait a number of microseconds between chunks
+    // to give the slave time to process the data.
     // Return true on success; otherwise return false.
-    boolean writePacketData(ESAT_CCSDSPacket& packet, byte address);
+    boolean writePacketData(ESAT_CCSDSPacket& packet,
+                            byte address,
+                            word microsecondsBetweenChunks);
 
     // Write the primary header of the packet to the given address.
+    // Wait a number of microseconds between chunks
+    // to give the slave time to process the data.
     // Return true on success; otherwise return false.
-    boolean writePrimaryHeader(ESAT_CCSDSPacket& packet, byte address);
+    boolean writePrimaryHeader(ESAT_CCSDSPacket& packet,
+                               byte address,
+                               word microsecondsBetweenChunks);
 };
 
 // Global instance of the I2C master library.
