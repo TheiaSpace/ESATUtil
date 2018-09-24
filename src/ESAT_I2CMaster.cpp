@@ -434,7 +434,8 @@ boolean ESAT_I2CMasterClass::resetTelemetryQueue(const byte address)
 }
 
 boolean ESAT_I2CMasterClass::writePacket(ESAT_CCSDSPacket& packet,
-                                         const byte address)
+                                         const byte address,
+                                         const word microsecondsBetweenChunks)
 {
   if (!bus)
   {
@@ -447,18 +448,19 @@ boolean ESAT_I2CMasterClass::writePacket(ESAT_CCSDSPacket& packet,
     return false;
   }
   const boolean primaryHeaderCorrect =
-    writePrimaryHeader(packet, address);
+    writePrimaryHeader(packet, address, microsecondsBetweenChunks);
   if (!primaryHeaderCorrect)
   {
     return false;
   }
   const boolean packetDataCorrect =
-    writePacketData(packet, address);
+    writePacketData(packet, address, microsecondsBetweenChunks);
   return packetDataCorrect;
 }
 
 boolean ESAT_I2CMasterClass::writePacketData(ESAT_CCSDSPacket& packet,
-                                             const byte address)
+                                             const byte address,
+                                             const word microsecondsBetweenChunks)
 {
   if (!bus)
   {
@@ -477,6 +479,7 @@ boolean ESAT_I2CMasterClass::writePacketData(ESAT_CCSDSPacket& packet,
       (void) bus->write(packet.readByte());
     }
     const byte writeStatus = bus->endTransmission();
+    delayMicroseconds(microsecondsBetweenChunks);
     // Delay for compatiblity with deprecated method writeTelecommand().
     delay(millisecondsAfterWrites);
     if (writeStatus != 0)
@@ -488,7 +491,8 @@ boolean ESAT_I2CMasterClass::writePacketData(ESAT_CCSDSPacket& packet,
 }
 
 boolean ESAT_I2CMasterClass::writePrimaryHeader(ESAT_CCSDSPacket& packet,
-                                                const byte address)
+                                                const byte address,
+                                                const word microsecondsBetweenChunks)
 {
   if (!bus)
   {
@@ -499,6 +503,7 @@ boolean ESAT_I2CMasterClass::writePrimaryHeader(ESAT_CCSDSPacket& packet,
   const ESAT_CCSDSPrimaryHeader primaryHeader = packet.readPrimaryHeader();
   (void) primaryHeader.writeTo(*bus);
   const byte writeStatus = bus->endTransmission();
+  delayMicroseconds(microsecondsBetweenChunks);
   // Delay for compatiblity with deprecated method writeTelecommand().
   delay(millisecondsAfterWrites);
   if (writeStatus == 0)
