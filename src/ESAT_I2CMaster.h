@@ -32,15 +32,11 @@ class ESAT_I2CMasterClass
 {
   public:
     // Configure the I2C master node to work with the given I2C bus.
-    // When communicating with a slave, wait some number of
-    // milliseconds (by default, 1 ms) after each write operation to
-    // give the slave time to process the request.
-    // The slave will need then some time to be ready to serve the
-    // request; ask if it is ready up to a given number of attempts
+    // The slave will need then some time to be ready to serve
+    // requests; ask if it is ready up to a given number of attempts
     // (by default, 100 attempts), waiting the given number of
     // milliseconds between attempt and attempt (by default, 20 ms).
     void begin(TwoWire& bus,
-               word millisecondsAfterWrites = 1,
                word attempts = 100,
                word millisecondsBetweenAttempts = 20);
 
@@ -181,7 +177,8 @@ class ESAT_I2CMasterClass
 
     // When communicating with a slave, wait this number of
     // milliseconds after each write operation to give the slave time
-    // to process the request
+    // to process the request.  Deprecated methods methods
+    // readTelemetry() and writeTelecommand() need this.
     word millisecondsAfterWrites;
 
     // Wait this number of milliseconds between attempts to have
