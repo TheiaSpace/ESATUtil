@@ -22,12 +22,14 @@
 
 void ESAT_I2CMasterClass::begin(TwoWire& i2cInterface,
                                 const word numberOfAttempts,
-                                const word numberOfMillisecondsBetweenAttempts)
+                                const word initialNumberOfMillisecondsBetweenAttempts,
+                                const float numberOfMillisecondsBetweenAttemptsGrowthFactor)
 {
   bus = &i2cInterface;
   millisecondsAfterWrites = 0;
   attempts = numberOfAttempts;
-  millisecondsBetweenAttempts = numberOfMillisecondsBetweenAttempts;
+  initialDelay = initialNumberOfMillisecondsBetweenAttempts;
+  growthFactor = numberOfMillisecondsBetweenAttemptsGrowthFactor;
 }
 
 boolean ESAT_I2CMasterClass::canReadPacket(const byte address)
@@ -38,6 +40,7 @@ boolean ESAT_I2CMasterClass::canReadPacket(const byte address)
   }
   for (unsigned long i = 0; i < attempts; i++)
   {
+    word retryDelay = initialDelay;
     bus->beginTransmission(address);
     (void) bus->write(READ_STATE);
     const byte writeStatus = bus->endTransmission();
@@ -60,7 +63,8 @@ boolean ESAT_I2CMasterClass::canReadPacket(const byte address)
         return false;
         break;
       case PACKET_NOT_READY:
-        delay(millisecondsBetweenAttempts);
+        delay(retryDelay);
+        retryDelay = growthFactor * retryDelay;
         break;
       case PACKET_READY:
         return true;
@@ -90,6 +94,7 @@ boolean ESAT_I2CMasterClass::canWritePacket(const byte address)
   }
   for (unsigned long i = 0; i < attempts; i++)
   {
+    word retryDelay = initialDelay;
     bus->beginTransmission(address);
     (void) bus->write(WRITE_STATE);
     const byte writeStatus = bus->endTransmission();
@@ -114,7 +119,8 @@ boolean ESAT_I2CMasterClass::canWritePacket(const byte address)
       case PACKET_DATA_WRITE_IN_PROGRESS:
         return true;
       case WRITE_BUFFER_FULL:
-        delay(millisecondsBetweenAttempts);
+        delay(retryDelay);
+        retryDelay = growthFactor * retryDelay;
         break;
       default:
         return false;
@@ -331,25 +337,34 @@ boolean ESAT_I2CMasterClass::readTelemetry(TwoWire& i2cInterface,
                                            const byte numberOfAttempts,
                                            const word numberOfMillisecondsBetweenAttempts)
 {
+  // Save the original configuration.
   TwoWire* const originalBus =
     bus;
   const word originalMillisecondsAfterWrites =
     millisecondsAfterWrites;
   const word originalAttempts =
     attempts;
-  const word originalMillisecondsBetweenAttempts =
-    millisecondsBetweenAttempts;
+  const word originalInitialDelay =
+    initialDelay;
+  const float originalGrowthFactor =
+    growthFactor;
+  // Set a temporary configuration in agreement with the arguments.
   bus = &i2cInterface;
   millisecondsAfterWrites = numberOfMillisecondsAfterWrites;
   attempts = numberOfAttempts;
-  millisecondsBetweenAttempts = numberOfMillisecondsBetweenAttempts;
+  initialDelay = numberOfMillisecondsBetweenAttempts;
+  growthFactor = 1;
+  // Use the new application programming interface to read the packet.
   const boolean correctPacket = readPacket(packet,
                                            packetIdentifier,
                                            address);
+  // Recover the original configuration.
   bus = originalBus;
   millisecondsAfterWrites = originalMillisecondsAfterWrites;
   attempts = originalAttempts;
-  millisecondsBetweenAttempts = originalMillisecondsBetweenAttempts;
+  initialDelay = originalInitialDelay;
+  growthFactor = originalGrowthFactor;
+  // Return the result of the packet read.
   return correctPacket;
 }
 
@@ -507,23 +522,32 @@ boolean ESAT_I2CMasterClass::writeTelecommand(TwoWire& i2cInterface,
   {
     return false;
   }
+  // Save the original configuration.
   TwoWire* const originalBus =
     bus;
   const word originalMillisecondsAfterWrites =
     millisecondsAfterWrites;
   const word originalAttempts =
     attempts;
-  const word originalMillisecondsBetweenAttempts =
-    millisecondsBetweenAttempts;
+  const word originalInitialDelay =
+    initialDelay;
+  const float originalGrowthFactor =
+    growthFactor;
+  // Set a temporary configuration in agreement with the arguments.
   bus = &i2cInterface;
   millisecondsAfterWrites = numberOfMillisecondsAfterWrites;
   attempts = numberOfAttempts;
-  millisecondsBetweenAttempts = numberOfMillisecondsBetweenAttempts;
+  initialDelay = numberOfMillisecondsBetweenAttempts;
+  growthFactor = 1;
+  // Use the new application programming interface to write the packet.
   const boolean correctPacket = writePacket(packet, address);
+  // Recover the original configuration.
   bus = originalBus;
   millisecondsAfterWrites = originalMillisecondsAfterWrites;
   attempts = originalAttempts;
-  millisecondsBetweenAttempts = originalMillisecondsBetweenAttempts;
+  initialDelay = originalInitialDelay;
+  growthFactor = originalGrowthFactor;
+  // Return the result of the packet write.
   return correctPacket;
 }
 

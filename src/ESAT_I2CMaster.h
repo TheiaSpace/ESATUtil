@@ -34,11 +34,15 @@ class ESAT_I2CMasterClass
     // Configure the I2C master node to work with the given I2C bus.
     // The slave will need then some time to be ready to serve
     // requests; ask if it is ready up to a given number of attempts
-    // (by default, 100 attempts), waiting the given number of
-    // milliseconds between attempt and attempt (by default, 20 ms).
+    // (attempts, by default, 10 attempts), waiting some time from one
+    // attempt to the next: starting at a given number of milliseconds
+    // (initialDelay, by default, 1 ms) and growing by a
+    // multiplicative factor (growthFactor, by default, 2) on each new
+    // attempt.
     void begin(TwoWire& bus,
-               word attempts = 100,
-               word millisecondsBetweenAttempts = 20);
+               word attempts = 10,
+               word initialDelay = 1,
+               float growthFactor = 2);
 
     // Read a named-packet telemetry packet matching the given packet
     // identifier from the slave at the given address.
@@ -175,15 +179,24 @@ class ESAT_I2CMasterClass
     // this number of times.
     word attempts;
 
+    // When asking if the slave is ready to send or receive a packet,
+    // multiply the delay time between attempts by this growth factor
+    // on each new attempt.
+    float growthFactor;
+
+    // When asking if the slave is ready to send or receive a packet,
+    // if the slave isn't ready at the first attempt, wait this number
+    // of milliseconds between the first attempt and the second to
+    // have the slave ready to send or receive a packet.  On each new
+    // attempt, the delay time between attempts will grow by the
+    // multiplicative growth factor.
+    word initialDelay;
+
     // When communicating with a slave, wait this number of
     // milliseconds after each write operation to give the slave time
     // to process the request.  Deprecated methods methods
     // readTelemetry() and writeTelecommand() need this.
     word millisecondsAfterWrites;
-
-    // Wait this number of milliseconds between attempts to have
-    // the slave ready to send or receive a packet.
-    word millisecondsBetweenAttempts;
 
     // See if we can read a packet now from the given address.
     // Return true if we can read a packet now; otherwise return false.
