@@ -337,6 +337,7 @@ boolean ESAT_I2CMasterClass::readTelemetry(TwoWire& i2cInterface,
                                            const byte numberOfAttempts,
                                            const word numberOfMillisecondsBetweenAttempts)
 {
+  // Save the original configuration.
   TwoWire* const originalBus =
     bus;
   const word originalMillisecondsAfterWrites =
@@ -347,19 +348,23 @@ boolean ESAT_I2CMasterClass::readTelemetry(TwoWire& i2cInterface,
     initialDelay;
   const float originalGrowthFactor =
     growthFactor;
+  // Set a temporary configuration in agreement with the arguments.
   bus = &i2cInterface;
   millisecondsAfterWrites = numberOfMillisecondsAfterWrites;
   attempts = numberOfAttempts;
   initialDelay = numberOfMillisecondsBetweenAttempts;
   growthFactor = 1;
+  // Use the new application programming interface to read the packet.
   const boolean correctPacket = readPacket(packet,
                                            packetIdentifier,
                                            address);
+  // Recover the original configuration.
   bus = originalBus;
   millisecondsAfterWrites = originalMillisecondsAfterWrites;
   attempts = originalAttempts;
   initialDelay = originalInitialDelay;
   growthFactor = originalGrowthFactor;
+  // Return the result of the packet read.
   return correctPacket;
 }
 
