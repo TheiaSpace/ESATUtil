@@ -38,9 +38,9 @@ boolean ESAT_I2CMasterClass::canReadPacket(const byte address)
   {
     return false;
   }
+  float retryDelay = initialDelay;
   for (unsigned long i = 0; i < attempts; i++)
   {
-    word retryDelay = initialDelay;
     bus->beginTransmission(address);
     (void) bus->write(READ_STATE);
     const byte writeStatus = bus->endTransmission();
