@@ -49,6 +49,21 @@ int ESAT_CRC8::peek()
   return remainder;
 }
 
+size_t ESAT_CRC8::printTo(Print& output) const
+{
+  size_t bytesWritten = 0;
+  bytesWritten = bytesWritten + output.print(String("x^8"));
+  for (int bit = 7; bit >= 0; bit--)
+  {
+    if (bitRead(polynomial, bit))
+    {
+      bytesWritten = bytesWritten + output.print(String(" + x^"));
+      bytesWritten = bytesWritten + output.print(String(bit, DEC));
+    }
+  }
+  return bytesWritten;
+}
+
 int ESAT_CRC8::read()
 {
   const int crc = peek();
