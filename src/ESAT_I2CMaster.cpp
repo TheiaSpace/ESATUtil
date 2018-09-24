@@ -522,6 +522,7 @@ boolean ESAT_I2CMasterClass::writeTelecommand(TwoWire& i2cInterface,
   {
     return false;
   }
+  // Save the original configuration.
   TwoWire* const originalBus =
     bus;
   const word originalMillisecondsAfterWrites =
@@ -532,17 +533,21 @@ boolean ESAT_I2CMasterClass::writeTelecommand(TwoWire& i2cInterface,
     initialDelay;
   const float originalGrowthFactor =
     growthFactor;
+  // Set a temporary configuration in agreement with the arguments.
   bus = &i2cInterface;
   millisecondsAfterWrites = numberOfMillisecondsAfterWrites;
   attempts = numberOfAttempts;
   initialDelay = numberOfMillisecondsBetweenAttempts;
   growthFactor = 1;
+  // Use the new application programming interface to write the packet.
   const boolean correctPacket = writePacket(packet, address);
+  // Recover the original configuration.
   bus = originalBus;
   millisecondsAfterWrites = originalMillisecondsAfterWrites;
   attempts = originalAttempts;
   initialDelay = originalInitialDelay;
   growthFactor = originalGrowthFactor;
+  // Return the result of the packet write.
   return correctPacket;
 }
 
