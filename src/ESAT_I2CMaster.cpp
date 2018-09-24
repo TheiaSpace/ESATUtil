@@ -21,12 +21,11 @@
 #include "ESAT_I2CMaster.h"
 
 void ESAT_I2CMasterClass::begin(TwoWire& i2cInterface,
-                                const word numberOfMillisecondsAfterWrites,
                                 const word numberOfAttempts,
                                 const word numberOfMillisecondsBetweenAttempts)
 {
   bus = &i2cInterface;
-  millisecondsAfterWrites = numberOfMillisecondsAfterWrites;
+  millisecondsAfterWrites = 0;
   attempts = numberOfAttempts;
   millisecondsBetweenAttempts = numberOfMillisecondsBetweenAttempts;
 }
@@ -42,6 +41,7 @@ boolean ESAT_I2CMasterClass::canReadPacket(const byte address)
     bus->beginTransmission(address);
     (void) bus->write(READ_STATE);
     const byte writeStatus = bus->endTransmission();
+    // Delay for compatiblity with deprecated method readTelemetry().
     delay(millisecondsAfterWrites);
     if (writeStatus != 0)
     {
@@ -93,6 +93,7 @@ boolean ESAT_I2CMasterClass::canWritePacket(const byte address)
     bus->beginTransmission(address);
     (void) bus->write(WRITE_STATE);
     const byte writeStatus = bus->endTransmission();
+    // Delay for compatiblity with deprecated method writeTelecommand().
     delay(millisecondsAfterWrites);
     if (writeStatus != 0)
     {
@@ -276,6 +277,7 @@ boolean ESAT_I2CMasterClass::readPrimaryHeader(ESAT_CCSDSPacket& packet,
   {
     return false;
   }
+  // Delay for compatiblity with deprecated method readTelemetry().
   delay(millisecondsAfterWrites);
   ESAT_CCSDSPrimaryHeader primaryHeader;
   const byte headerBytesRead =
@@ -385,6 +387,7 @@ boolean ESAT_I2CMasterClass::requestPacket(const int requestedPacket,
       break;
   }
   const byte writeStatus = bus->endTransmission();
+  // Delay for compatiblity with deprecated method readTelemetry().
   delay(millisecondsAfterWrites);
   if (writeStatus == 0)
   {
@@ -459,6 +462,7 @@ boolean ESAT_I2CMasterClass::writePacketData(ESAT_CCSDSPacket& packet,
       (void) bus->write(packet.readByte());
     }
     const byte writeStatus = bus->endTransmission();
+    // Delay for compatiblity with deprecated method writeTelecommand().
     delay(millisecondsAfterWrites);
     if (writeStatus != 0)
     {
@@ -480,6 +484,7 @@ boolean ESAT_I2CMasterClass::writePrimaryHeader(ESAT_CCSDSPacket& packet,
   const ESAT_CCSDSPrimaryHeader primaryHeader = packet.readPrimaryHeader();
   (void) primaryHeader.writeTo(*bus);
   const byte writeStatus = bus->endTransmission();
+  // Delay for compatiblity with deprecated method writeTelecommand().
   delay(millisecondsAfterWrites);
   if (writeStatus == 0)
   {
