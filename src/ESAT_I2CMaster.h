@@ -34,15 +34,15 @@ class ESAT_I2CMasterClass
     // Configure the I2C master node to work with the given I2C bus.
     // The slave will need then some time to be ready to serve
     // requests; ask if it is ready up to a given number of attempts
-    // (attempts, by default, 10 attempts), waiting some time from one
+    // (attempts, by default, 32 attempts), waiting some time from one
     // attempt to the next: starting at a given number of milliseconds
     // (initialDelay, by default, 1 ms) and growing by a
-    // multiplicative factor (growthFactor, by default, 2) on each new
+    // multiplicative factor (growthFactor, by default, 1.2) on each new
     // attempt.
     void begin(TwoWire& bus,
-               word attempts = 10,
+               word attempts = 32,
                word initialDelay = 1,
-               float growthFactor = 2);
+               float growthFactor = 1.2);
 
     // Read a named-packet telemetry packet matching the given packet
     // identifier from the slave at the given address.
