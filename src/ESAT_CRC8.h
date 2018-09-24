@@ -28,7 +28,7 @@
 // Write your message to the CRC calculator and then read the CRC
 // remainder (either resetting the CRC calculation with read() or not
 // resetting it with peek()).
-class ESAT_CRC8: public Stream
+class ESAT_CRC8: public Printable, public Stream
 {
   public:
     // Create a CRC calculator stream with generator polynomial
@@ -51,6 +51,10 @@ class ESAT_CRC8: public Stream
     // (you wrote data to this CRC stream since the last flush/reset);
     // otherwise return -1.
     int peek();
+
+    // Print the polynomial of this CRC stream in human-readable form
+    // to an output stream.
+    size_t printTo(Print& output) const;
 
     // Return the CRC remainder if it is available
     // (you wrote data to this CRC stream since the last flush/reset);
