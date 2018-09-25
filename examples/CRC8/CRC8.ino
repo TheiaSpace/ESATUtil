@@ -36,7 +36,9 @@ void setup()
 void loop()
 {
   // Print some introductory text.
+  (void) Serial.println(String("#####################"));
   (void) Serial.println(String("CRC8 example program."));
+  (void) Serial.println(String("#####################"));
   (void) Serial.print(String("Polynomial: "));
   (void) Serial.println(crc);
   // Ask the user for input text.
@@ -58,5 +60,6 @@ void loop()
   (void) Serial.println(String(remainder, HEX));
   // End.
   (void) Serial.println(String("End."));
+  (void) Serial.println(String(""));
   delay(1000);
 }
