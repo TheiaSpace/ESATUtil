@@ -32,7 +32,9 @@ void setup()
 
 void loop()
 {
+  (void) Serial.println(String("############################"));
   (void) Serial.println(String("Conversions example program."));
+  (void) Serial.println(String("############################"));
   // Binary coded decimal conversions.
   const word fourDigitNumber = 1729;
   (void) Serial.print(String("Four-digit number: "));
@@ -75,5 +77,6 @@ void loop()
   (void) Serial.println(String(recoveredFloatingPointNumber, 4));
   // End.
   (void) Serial.println(String("End."));
+  (void) Serial.println(String(""));
   delay(1000);
 }
