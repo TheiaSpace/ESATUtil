@@ -61,5 +61,7 @@ void loop()
   {
     (void) Serial.println(String("First timestamp <= second timestamp."));
   }
+  // End.
+  (void) Serial.println(String("End."));
   delay(1000);
 }
