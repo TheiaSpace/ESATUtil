@@ -32,7 +32,9 @@ void setup()
 
 void loop()
 {
+  (void) Serial.println(String("######################"));
   (void) Serial.println(String("Flags example program."));
+  (void) Serial.println(String("######################"));
   // Fill flags1 with powers of two.
   ESAT_FlagContainer flags1;
   flags1.set(1);
@@ -90,5 +92,6 @@ void loop()
   }
   // End.
   (void) Serial.println(String("End."));
+  (void) Serial.println(String(""));
   delay(1000);
 }
