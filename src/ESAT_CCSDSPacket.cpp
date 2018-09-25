@@ -119,7 +119,7 @@ size_t ESAT_CCSDSPacket::printTo(Print& output) const
     + output.println(String("  ],"));
   bytesWritten =
     bytesWritten
-    + output.println(String("}"));
+    + output.print(String("}"));
   return bytesWritten;
 }
 
