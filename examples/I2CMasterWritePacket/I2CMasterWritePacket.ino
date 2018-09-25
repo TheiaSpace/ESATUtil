@@ -53,11 +53,11 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println(String("#################################"));
-  (void) Serial.println(String("I2C master write example program."));
-  (void) Serial.println(String("#################################"));
+  (void) Serial.println("#################################");
+  (void) Serial.println("I2C master write example program.");
+  (void) Serial.println("#################################");
   // Build the input packet.
-  (void) Serial.println(String("Building the packet..."));
+  (void) Serial.println("Building the packet...");
   packet.flush();
   packet.writeTelecommandHeaders(applicationProcessIdentifier,
                                       packetSequenceCount,
@@ -66,21 +66,21 @@ void loop()
                                       minorVersionNumber,
                                       patchVersionNumber,
                                       packetIdentifier);
-  (void) Serial.print(String("Packet contents: "));
+  (void) Serial.print("Packet contents: ");
   (void) Serial.println(packet);
   // Write the packet to the slave.
-  (void) Serial.println(String("Writing the input packet to the slave..."));
+  (void) Serial.println("Writing the input packet to the slave...");
   const boolean wrotePacket = ESAT_I2CMaster.writePacket(packet, slaveAddress);
   if (wrotePacket)
   {
-    (void) Serial.println(String("Packet written successfully."));
+    (void) Serial.println("Packet written successfully.");
   }
   else
   {
-    (void) Serial.println(String("Couldn't write the packet."));
+    (void) Serial.println("Couldn't write the packet.");
   }
   // End.
-  (void) Serial.println(String("End."));
-  (void) Serial.println(String(""));
+  (void) Serial.println("End.");
+  (void) Serial.println("");
   delay(1000);
 }
