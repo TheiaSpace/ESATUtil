@@ -39,7 +39,9 @@ void setup()
 
 void loop()
 {
+  (void) Serial.println(String("###############################"));
   (void) Serial.println(String("Buffer streams example program."));
+  (void) Serial.println(String("###############################"));
   // Clear the buffer.
   (void) Serial.println(String("Clearing (flushing) the buffer..."));
   buffer.flush();
@@ -75,5 +77,6 @@ void loop()
   }
   // End.
   (void) Serial.println(String("End."));
+  (void) Serial.println(String(""));
   delay(1000);
 }
