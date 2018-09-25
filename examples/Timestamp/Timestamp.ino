@@ -32,42 +32,42 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println(String("##########################"));
-  (void) Serial.println(String("Timestamp example program."));
-  (void) Serial.println(String("##########################"));
+  (void) Serial.println("##########################");
+  (void) Serial.println("Timestamp example program.");
+  (void) Serial.println("##########################");
   // First timestamp: launch time of the Apollo 1 mission.
   ESAT_Timestamp firstTimestamp(1969, 7, 16, 13, 32, 0);
   // Second timestamp: just one minute later.
   ESAT_Timestamp secondTimestamp(1969, 7, 16, 13, 33, 0);
   // Print the timestamps.
-  (void) Serial.print(String("First timestamp: "));
+  (void) Serial.print("First timestamp: ");
   (void) Serial.println(firstTimestamp);
-  (void) Serial.print(String("Second timestamp: "));
+  (void) Serial.print("Second timestamp: ");
   (void) Serial.println(secondTimestamp);
   // Timestamp comparison.
   if (firstTimestamp < secondTimestamp)
   {
-    (void) Serial.println(String("First timestamp < second timestamp."));
+    (void) Serial.println("First timestamp < second timestamp.");
   }
   else
   {
-    (void) Serial.println(String("First timestamp >= second timestamp."));
+    (void) Serial.println("First timestamp >= second timestamp.");
   }
   // Timestamp modification.
-  (void) Serial.println(String("Adding 100 seconds to the first timestamp."));
+  (void) Serial.println("Adding 100 seconds to the first timestamp.");
   firstTimestamp.addSeconds(100);
-  (void) Serial.print(String("New value of the first timestamp: "));
+  (void) Serial.print("New value of the first timestamp: ");
   (void) Serial.println(firstTimestamp);
   if (firstTimestamp > secondTimestamp)
   {
-    (void) Serial.println(String("First timestamp > second timestamp."));
+    (void) Serial.println("First timestamp > second timestamp.");
   }
   else
   {
-    (void) Serial.println(String("First timestamp <= second timestamp."));
+    (void) Serial.println("First timestamp <= second timestamp.");
   }
   // End.
-  (void) Serial.println(String("End."));
-  (void) Serial.println(String(""));
+  (void) Serial.println("End.");
+  (void) Serial.println("");
   delay(1000);
 }
