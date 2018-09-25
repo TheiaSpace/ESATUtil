@@ -49,7 +49,7 @@ void loop()
   (void) Serial.println(String("Filling the buffer with random data..."));
   while (buffer.length() < buffer.capacity())
   {
-    (void) buffer.write(random(0, 255));
+    (void) buffer.write(random(0, 256));
   }
   // Print the buffer.
   (void) Serial.print(String("Hexadecimal dump of the buffer: "));
