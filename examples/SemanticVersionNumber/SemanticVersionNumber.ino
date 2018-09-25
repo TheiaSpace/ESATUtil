@@ -32,46 +32,46 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println(String("#########################################"));
-  (void) Serial.println(String("Semantic version numbers example program."));
-  (void) Serial.println(String("#########################################"));
+  (void) Serial.println("#########################################");
+  (void) Serial.println("Semantic version numbers example program.");
+  (void) Serial.println("#########################################");
   // Printing a version number.
   const ESAT_SemanticVersionNumber version(2, 1, 0);
-  (void) Serial.print(String("Version number: "));
+  (void) Serial.print("Version number: ");
   (void) Serial.println(version);
-  (void) Serial.print(String("Major version number: "));
-  (void) Serial.println(String(version.majorVersionNumber, DEC));
-  (void) Serial.print(String("Minor version number: "));
-  (void) Serial.println(String(version.minorVersionNumber, DEC));
-  (void) Serial.print(String("Patch version number: "));
-  (void) Serial.println(String(version.patchVersionNumber, DEC));
+  (void) Serial.print("Major version number: ");
+  (void) Serial.println(version.majorVersionNumber, DEC);
+  (void) Serial.print("Minor version number: ");
+  (void) Serial.println(version.minorVersionNumber, DEC);
+  (void) Serial.print("Patch version number: ");
+  (void) Serial.println(version.patchVersionNumber, DEC);
   // Comparisons.
   if (version == ESAT_SemanticVersionNumber(1, 2, 3))
   {
     (void) Serial.print(version);
-    (void) Serial.print(String(" == "));
+    (void) Serial.print(" == ");
     (void) Serial.println(ESAT_SemanticVersionNumber(1, 2, 3));
   }
   else
   {
     (void) Serial.print(version);
-    (void) Serial.print(String(" != "));
+    (void) Serial.print(" != ");
     (void) Serial.println(ESAT_SemanticVersionNumber(1, 2, 3));
   }
   if (version == ESAT_SemanticVersionNumber(2, 1, 0))
   {
     (void) Serial.print(version);
-    (void) Serial.print(String(" == "));
+    (void) Serial.print(" == ");
     (void) Serial.println(ESAT_SemanticVersionNumber(2, 1, 0));
   }
   else
   {
     (void) Serial.print(version);
-    (void) Serial.print(String(" != "));
+    (void) Serial.print(" != ");
     (void) Serial.println(ESAT_SemanticVersionNumber(2, 1, 0));
   }
   // End.
-  (void) Serial.println(String("End."));
-  (void) Serial.println(String(""));
+  (void) Serial.println("End.");
+  (void) Serial.println("");
   delay(1000);
 }
