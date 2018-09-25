@@ -32,15 +32,17 @@ void setup()
 
 void loop()
 {
+  (void) Serial.println(String("Timestamp example program."));
   // First timestamp: launch time of the Apollo 1 mission.
   ESAT_Timestamp firstTimestamp(1969, 7, 16, 13, 32, 0);
   // Second timestamp: just one minute later.
   ESAT_Timestamp secondTimestamp(1969, 7, 16, 13, 33, 0);
-  (void) Serial.println(String("Timestamp example program."));
+  // Print the timestamps.
   (void) Serial.print(String("First timestamp: "));
   (void) Serial.println(firstTimestamp);
   (void) Serial.print(String("Second timestamp: "));
   (void) Serial.println(secondTimestamp);
+  // Timestamp comparison.
   if (firstTimestamp < secondTimestamp)
   {
     (void) Serial.println(String("First timestamp < second timestamp."));
@@ -49,6 +51,7 @@ void loop()
   {
     (void) Serial.println(String("First timestamp >= second timestamp."));
   }
+  // Timestamp modification.
   (void) Serial.println(String("Adding 100 seconds to the first timestamp."));
   firstTimestamp.addSeconds(100);
   (void) Serial.print(String("New value of the first timestamp: "));
