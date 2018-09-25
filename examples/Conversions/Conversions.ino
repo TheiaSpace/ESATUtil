@@ -32,51 +32,52 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println(String("############################"));
-  (void) Serial.println(String("Conversions example program."));
-  (void) Serial.println(String("############################"));
+  (void) Serial.println("############################");
+  (void) Serial.println("Conversions example program.");
+  (void) Serial.println("############################");
   // Binary coded decimal conversions.
   const word fourDigitNumber = 1729;
-  (void) Serial.print(String("Four-digit number: "));
-  (void) Serial.println(String(fourDigitNumber, DEC));
+  (void) Serial.print("Four-digit number: ");
+  (void) Serial.println(fourDigitNumber, DEC);
   (void) Serial.print("Binary coded decimal bits: ");
   const word binaryCodedDecimalBits =
     ESAT_Util.encodeBinaryCodedDecimalWord(fourDigitNumber);
   (void) Serial.println(ESAT_Util.pad(String(binaryCodedDecimalBits, BIN),
                                       '0',
                                       DEC));
-  (void) Serial.print(String("Four-digit number encoded by the bits: "));
+  (void) Serial.print("Four-digit number encoded by the bits: ");
   const word recoveredFourDigitNumber =
     ESAT_Util.decodeBinaryCodedDecimalWord(binaryCodedDecimalBits);
-  (void) Serial.println(String(recoveredFourDigitNumber, DEC));
+  (void) Serial.println(recoveredFourDigitNumber, DEC);
   // Integer number conversions.
   const long integerNumber = -123456789;
-  (void) Serial.print(String("Integer number: "));
-  (void) Serial.println(String(integerNumber, DEC));
-  (void) Serial.print(String("Bits of the integer number: "));
+  (void) Serial.print("Integer number: ");
+  (void) Serial.println(integerNumber, DEC);
+  (void) Serial.print("Bits of the integer number: ");
   const unsigned long integerNumberBits =
     ESAT_Util.longToUnsignedLong(integerNumber);
   (void) Serial.println(ESAT_Util.pad(String(integerNumberBits, BIN),
                                       '0',
                                       32));
-  (void) Serial.print(String("Integer number encoded by the bits: "));
+  (void) Serial.print("Integer number encoded by the bits: ");
   (void) Serial.println(ESAT_Util.unsignedLongToLong(integerNumberBits), DEC);
   // Floating-point number conversions.
   const float floatingPointNumber = 3.1416;
-  (void) Serial.print(String("Floating-point number: "));
-  (void) Serial.println(String(floatingPointNumber, 4));
-  (void) Serial.print(String("Bits of the floating-point number: "));
+  (void) Serial.print("Floating-point number: ");
+  (void) Serial.println(floatingPointNumber, 4);
+  (void) Serial.print("Bits of the floating-point number: ");
   const unsigned long floatingPointNumberBits =
     ESAT_Util.floatToUnsignedLong(floatingPointNumber);
-  (void) Serial.println(ESAT_Util.pad(String(floatingPointNumberBits, BIN),
+  (void) Serial.println(ESAT_Util.pad(
+                          String(floatingPointNumberBits, BIN),
                                       '0',
                                       32));
-  (void) Serial.print(String("Floating-point number encoded by the bits: "));
+  (void) Serial.print("Floating-point number encoded by the bits: ");
   const float recoveredFloatingPointNumber =
     ESAT_Util.unsignedLongToFloat(floatingPointNumberBits);
-  (void) Serial.println(String(recoveredFloatingPointNumber, 4));
+  (void) Serial.println(recoveredFloatingPointNumber, 4);
   // End.
-  (void) Serial.println(String("End."));
-  (void) Serial.println(String(""));
+  (void) Serial.println("End.");
+  (void) Serial.println("");
   delay(1000);
 }
