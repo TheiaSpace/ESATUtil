@@ -39,39 +39,39 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println(String("######################"));
-  (void) Serial.println(String("Timer example program."));
-  (void) Serial.println(String("######################"));
+  (void) Serial.println("######################");
+  (void) Serial.println("Timer example program.");
+  (void) Serial.println("######################");
   // Wait until the start of the next cycle.
-  (void) Serial.println(String("Waiting until the next cycle..."));
+  (void) Serial.println("Waiting until the next cycle...");
   ESAT_Timer.waitUntilNextCycle();
   // Wake-up.
-  (void) Serial.println(String("Starting a new cycle."));
+  (void) Serial.println("Starting a new cycle.");
   // Print the current processor time.
-  (void) Serial.print(String("Current processor time: "));
-  (void) Serial.print(String(millis(), DEC));
-  (void) Serial.println(String(" milliseconds."));
+  (void) Serial.print("Current processor time: ");
+  (void) Serial.print(millis(), DEC);
+  (void) Serial.println(" milliseconds.");
   // Print the period.
-  (void) Serial.print(String("Period: "));
-  (void) Serial.print(String(ESAT_Timer.period, DEC));
-  (void) Serial.println(String(" milliseconds."));
+  (void) Serial.print("Period: ");
+  (void) Serial.print(ESAT_Timer.period, DEC);
+  (void) Serial.println(" milliseconds.");
   // Print the processor load estimate.
-  (void) Serial.print(String("Processor load: "));
-  (void) Serial.print(String(ESAT_Timer.load()));
-  (void) Serial.println(String(" %."));
+  (void) Serial.print("Processor load: ");
+  (void) Serial.print(ESAT_Timer.load());
+  (void) Serial.println(" %.");
   // Stay busy for a random amount of time.
   const word busyMilliseconds = random(0, ESAT_Timer.period);
-  (void) Serial.print(String("Staying busy until "));
-  (void) Serial.print(String(busyMilliseconds, DEC));
-  (void) Serial.println(String(" milliseconds into the cycle..."));
+  (void) Serial.print("Staying busy until ");
+  (void) Serial.print(busyMilliseconds, DEC);
+  (void) Serial.println(" milliseconds into the cycle...");
   while (ESAT_Timer.elapsedMilliseconds() < busyMilliseconds)
   {
   }
   // Print the elapsed cycle time.
-  (void) Serial.print(String("Elapsed cycle time: "));
-  (void) Serial.print(String(ESAT_Timer.elapsedMilliseconds(), DEC));
-  (void) Serial.println(String(" milliseconds."));
+  (void) Serial.print("Elapsed cycle time: ");
+  (void) Serial.print(ESAT_Timer.elapsedMilliseconds(), DEC);
+  (void) Serial.println(" milliseconds.");
   // End.
-  (void) Serial.println(String("End."));
-  (void) Serial.println(String(""));
+  (void) Serial.println("End.");
+  (void) Serial.println("");
 }
