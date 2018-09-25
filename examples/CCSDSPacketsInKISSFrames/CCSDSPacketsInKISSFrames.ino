@@ -69,7 +69,9 @@ void setup()
 
 void loop()
 {
+  (void) Serial.println(String("###################################################"));
   (void) Serial.println(String("CCSDS Space Packets in KISS frames example program."));
+  (void) Serial.println(String("###################################################"));
   // Build the input packet.
   (void) Serial.println(String("Building the input packet..."));
   inputPacket.flush();
@@ -95,5 +97,6 @@ void loop()
   (void) Serial.println(outputPacket);
   // End.
   (void) Serial.println(String("End."));
+  (void) Serial.println(String(""));
   delay(1000);
 }
