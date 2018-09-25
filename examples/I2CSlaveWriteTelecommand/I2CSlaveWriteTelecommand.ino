@@ -60,21 +60,21 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println(String("############################################"));
-  (void) Serial.println(String("I2C slave write telecommand example program."));
-  (void) Serial.println(String("############################################"));
+  (void) Serial.println("############################################");
+  (void) Serial.println("I2C slave write telecommand example program.");
+  (void) Serial.println("############################################");
   // Get the request.
   const int request = ESAT_I2CSlave.requestedPacket();
   switch (request)
   {
     // No packet was requested.
     case ESAT_I2CSlave.NO_PACKET_REQUESTED:
-      (void) Serial.println(String("No packet was requested."));
+      (void) Serial.println("No packet was requested.");
       break;
     // Telecommand packet request.
     case ESAT_I2CSlave.NEXT_TELECOMMAND_PACKET_REQUESTED:
-      (void) Serial.println(String("Telecommand packet requested."));
-      (void) Serial.println(String("Building the packet..."));
+      (void) Serial.println("Telecommand packet requested.");
+      (void) Serial.println("Building the packet...");
       packet.flush();
       packet.writeTelecommandHeaders(applicationProcessIdentifier,
                                      packetSequenceCount,
@@ -83,18 +83,18 @@ void loop()
                                      minorVersionNumber,
                                      patchVersionNumber,
                                      packetIdentifier);
-      (void) Serial.print(String("Packet contents: "));
+      (void) Serial.print("Packet contents: ");
       (void) Serial.println(packet);
-      (void) Serial.println(String("Writing the packet..."));
+      (void) Serial.println("Writing the packet...");
       ESAT_I2CSlave.writePacket(packet);
       break;
     // Default case: just reject the request.
     default:
-      (void) Serial.println(String("Unsupported request; rejecting..."));
+      (void) Serial.println("Unsupported request; rejecting...");
       ESAT_I2CSlave.rejectPacket();
       break;
   }
-  (void) Serial.println(String("End."));
-  (void) Serial.println(String(""));
+  (void) Serial.println("End.");
+  (void) Serial.println("");
   delay(1000);
 }
