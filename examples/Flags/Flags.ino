@@ -88,6 +88,7 @@ void loop()
     (void) Serial.println(String("."));
     flags1.clear(flags1.readNext());
   }
+  // End.
   (void) Serial.println(String("End."));
   delay(1000);
 }
