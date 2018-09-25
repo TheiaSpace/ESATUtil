@@ -32,9 +32,9 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println(String("######################"));
-  (void) Serial.println(String("Flags example program."));
-  (void) Serial.println(String("######################"));
+  (void) Serial.println("######################");
+  (void) Serial.println("Flags example program.");
+  (void) Serial.println("######################");
   // Fill flags1 with powers of two.
   ESAT_FlagContainer flags1;
   flags1.set(1);
@@ -45,7 +45,7 @@ void loop()
   flags1.set(32);
   flags1.set(64);
   flags1.set(128);
-  (void) Serial.print(String("Active flags in flags1: "));
+  (void) Serial.print("Active flags in flags1: ");
   (void) Serial.println(flags1);
   // Fill flags2 with Fibonacci numbers.
   ESAT_FlagContainer flags2;
@@ -63,35 +63,35 @@ void loop()
   flags2.set(144);
   flags2.set(233);
   // Bitwise operations.
-  (void) Serial.print(String("Active flags in flags2: "));
+  (void) Serial.print("Active flags in flags2: ");
   (void) Serial.println(flags2);
-  (void) Serial.print(String("Active flags in flags1 & flags2: "));
+  (void) Serial.print("Active flags in flags1 & flags2: ");
   (void) Serial.println(flags1 & flags2);
-  (void) Serial.print(String("Active flags in flags1 | flags2: "));
+  (void) Serial.print("Active flags in flags1 | flags2: ");
   (void) Serial.println(flags1 | flags2);
-  (void) Serial.print(String("Active flags in flags1 ^ flags2: "));
+  (void) Serial.print("Active flags in flags1 ^ flags2: ");
   (void) Serial.println(flags1 ^ flags2);
-  (void) Serial.print(String("Active flags in ~flags1: "));
+  (void) Serial.print("Active flags in ~flags1: ");
   (void) Serial.println(~flags1);
   // Iterate over flags1.
   (void) Serial.println("Iterating over flags1...");
   while (flags1.available() > 0)
   {
     // Print the number of available flags.
-    (void) Serial.print(String("Available flags in flags1: "));
-    (void) Serial.print(String(flags1.available(), DEC));
-    (void) Serial.println(String("."));
+    (void) Serial.print("Available flags in flags1: ");
+    (void) Serial.print(flags1.available(), DEC);
+    (void) Serial.println(".");
     // Print the next true flag.
-    (void) Serial.print(String("Next true flag in flags1: "));
-    (void) Serial.println(String(flags1.readNext(), DEC));
+    (void) Serial.print("Next true flag in flags1: ");
+    (void) Serial.println(flags1.readNext(), DEC);
     // Clear the next true flag.
-    (void) Serial.print(String("Clearing flag number "));
-    (void) Serial.print(String(flags1.readNext(), DEC));
-    (void) Serial.println(String("."));
+    (void) Serial.print("Clearing flag number ");
+    (void) Serial.print(flags1.readNext(), DEC);
+    (void) Serial.println(".");
     flags1.clear(flags1.readNext());
   }
   // End.
-  (void) Serial.println(String("End."));
-  (void) Serial.println(String(""));
+  (void) Serial.println("End.");
+  (void) Serial.println("");
   delay(1000);
 }
