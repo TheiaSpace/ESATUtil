@@ -61,7 +61,9 @@ void setup()
 
 void loop()
 {
+  (void) Serial.println(String("###################################"));
   (void) Serial.println(String("KISS frame streams example program."));
+  (void) Serial.println(String("###################################"));
   // Show the contents of the input buffer.
   (void) Serial.print(String("Hexadecimal dump of the input: "));
   (void) Serial.println(input);
@@ -101,5 +103,6 @@ void loop()
   }
   // End.
   (void) Serial.println(String("End."));
+  (void) Serial.println(String(""));
   delay(1000);
 }
