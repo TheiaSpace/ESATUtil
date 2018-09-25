@@ -60,7 +60,9 @@ void setup()
 
 void loop()
 {
+  (void) Serial.println(String("############################################"));
   (void) Serial.println(String("I2C slave write telecommand example program."));
+  (void) Serial.println(String("############################################"));
   // Get the request.
   const int request = ESAT_I2CSlave.requestedPacket();
   switch (request)
@@ -93,5 +95,6 @@ void loop()
       break;
   }
   (void) Serial.println(String("End."));
+  (void) Serial.println(String(""));
   delay(1000);
 }
