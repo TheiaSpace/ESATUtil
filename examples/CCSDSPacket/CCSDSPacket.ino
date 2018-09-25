@@ -55,7 +55,9 @@ void setup()
 
 void loop()
 {
+  (void) Serial.println(String("####################################"));
   (void) Serial.println(String("CCSDS Space Packets example program."));
+  (void) Serial.println(String("####################################"));
   // Clear the packet.
   (void) Serial.println(String("Clearing (flushing) the packet..."));
   packet.flush();
@@ -119,5 +121,6 @@ void loop()
   (void) Serial.println(rawPacketBytes);
   // End.
   (void) Serial.println(String("End."));
+  (void) Serial.println(String(""));
   delay(1000);
 }
