@@ -60,13 +60,13 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println(String("######################################################"));
-  (void) Serial.println(String("I2C slave write next-packet telemetry example program."));
-  (void) Serial.println(String("######################################################"));
+  (void) Serial.println("######################################################");
+  (void) Serial.println("I2C slave write next-packet telemetry example program.");
+  (void) Serial.println("######################################################");
   // Reset the telemetry queue if commanded to do so.
   if (ESAT_I2CSlave.telemetryQueueResetReceived())
   {
-    (void) Serial.println(String("Resetting the telemetry queue..."));
+    (void) Serial.println("Resetting the telemetry queue...");
     identifier = 0;
   }
   // Get the request.
@@ -75,15 +75,15 @@ void loop()
   {
     // No packet was requested.
     case ESAT_I2CSlave.NO_PACKET_REQUESTED:
-      (void) Serial.println(String("No packet was requested."));
+      (void) Serial.println("No packet was requested.");
       break;
     // Named-packet telemetry request.
     case ESAT_I2CSlave.NEXT_TELEMETRY_PACKET_REQUESTED:
-      (void) Serial.print(String("Next-telemetry packet requested."));
+      (void) Serial.print("Next-telemetry packet requested.");
       if (identifier < maximumIdentifier)
       {
         // Build and send the packet.
-        (void) Serial.println(String("Building the packet..."));
+        (void) Serial.println("Building the packet...");
         packet.flush();
         packet.writeTelemetryHeaders(applicationProcessIdentifier,
                                      packetSequenceCount,
@@ -92,9 +92,9 @@ void loop()
                                      minorVersionNumber,
                                      patchVersionNumber,
                                      identifier);
-        (void) Serial.print(String("Packet contents: "));
+        (void) Serial.print("Packet contents: ");
         (void) Serial.println(packet);
-        (void) Serial.println(String("Writing the packet..."));
+        (void) Serial.println("Writing the packet...");
         ESAT_I2CSlave.writePacket(packet);
         // Increment the identifier number of the next packet.
         identifier = identifier + 1;
@@ -102,19 +102,19 @@ void loop()
       else
       {
         // No more packets available.
-        (void) Serial.println(String("No more packets available."));
-        (void) Serial.println(String("Rejecting the request..."));
+        (void) Serial.println("No more packets available.");
+        (void) Serial.println("Rejecting the request...");
         ESAT_I2CSlave.rejectPacket();
       }
     break;
     // Default case: just reject the request.
     default:
-      (void) Serial.println(String("Unsupported request; rejecting..."));
+      (void) Serial.println("Unsupported request; rejecting...");
       ESAT_I2CSlave.rejectPacket();
       break;
   }
   // End.
-  (void) Serial.println(String("End."));
-  (void) Serial.println(String(""));
+  (void) Serial.println("End.");
+  (void) Serial.println("");
   delay(1000);
 }
