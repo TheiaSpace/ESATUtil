@@ -79,7 +79,7 @@ void loop()
       break;
     // Named-packet telemetry request.
     case ESAT_I2CSlave.NEXT_TELEMETRY_PACKET_REQUESTED:
-      (void) Serial.print("Next-telemetry packet requested.");
+      (void) Serial.println("Next-telemetry packet requested.");
       if (identifier < maximumIdentifier)
       {
         // Build and send the packet.
