@@ -32,7 +32,9 @@ void setup()
 
 void loop()
 {
+  (void) Serial.println(String("#########################################"));
   (void) Serial.println(String("Semantic version numbers example program."));
+  (void) Serial.println(String("#########################################"));
   // Printing a version number.
   const ESAT_SemanticVersionNumber version(2, 1, 0);
   (void) Serial.print(String("Version number: "));
@@ -70,5 +72,6 @@ void loop()
   }
   // End.
   (void) Serial.println(String("End."));
+  (void) Serial.println(String(""));
   delay(1000);
 }
