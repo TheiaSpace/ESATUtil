@@ -43,7 +43,9 @@ void setup()
 
 void loop()
 {
+  (void) Serial.println(String("############################################"));
   (void) Serial.println(String("I2C master read telecommand example program."));
+  (void) Serial.println(String("############################################"));
   // Read the packet.
   (void) Serial.println(String("Reading a telecommand packet..."));
   const boolean gotPacket =
@@ -59,5 +61,6 @@ void loop()
   }
   // End.
   (void) Serial.println(String("End."));
+  (void) Serial.println(String(""));
   delay(1000);
 }
