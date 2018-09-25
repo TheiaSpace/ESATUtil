@@ -60,7 +60,9 @@ void setup()
 
 void loop()
 {
+  (void) Serial.println(String("######################################################"));
   (void) Serial.println(String("I2C slave write next-packet telemetry example program."));
+  (void) Serial.println(String("######################################################"));
   // Reset the telemetry queue if commanded to do so.
   if (ESAT_I2CSlave.telemetryQueueResetReceived())
   {
@@ -113,5 +115,6 @@ void loop()
   }
   // End.
   (void) Serial.println(String("End."));
+  (void) Serial.println(String(""));
   delay(1000);
 }
