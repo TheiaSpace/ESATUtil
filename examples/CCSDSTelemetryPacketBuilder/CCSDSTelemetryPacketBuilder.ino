@@ -36,7 +36,7 @@ class AlwaysAvailablePacketClass: public ESAT_CCSDSPacketContents
     // Return true on success; otherwise return false.
     boolean fillUserData(ESAT_CCSDSPacket& packet)
     {
-      (void) packet.print(String("Hello, World!"));
+      (void) packet.print("Hello, World!");
       return true;
     }
 
@@ -158,33 +158,33 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println(String("#########################################"));
-  (void) Serial.println(String("Telemetry packet builder example program."));
-  (void) Serial.println(String("#########################################"));
+  (void) Serial.println("#########################################");
+  (void) Serial.println("Telemetry packet builder example program.");
+  (void) Serial.println("#########################################");
   // Get the list of available packets.
-  (void) Serial.print(String("Identifier numbers of the available packets: "));
+  (void) Serial.print("Identifier numbers of the available packets: ");
   ESAT_FlagContainer pendingPackets = builder.available();
   (void) Serial.println(pendingPackets);
   while (pendingPackets.available() > 0)
   {
-    (void) Serial.print(String("Building packet "));
+    (void) Serial.print("Building packet ");
     const byte identifier = byte(pendingPackets.readNext());
-    (void) Serial.print(String(identifier, DEC));
-    (void) Serial.println(String("..."));
+    (void) Serial.print(identifier, DEC);
+    (void) Serial.println("...");
     pendingPackets.clear(identifier);
     const boolean gotPacket = builder.build(packet, identifier);
     if (gotPacket)
     {
-      (void) Serial.print(String("Packet contents: "));
+      (void) Serial.print("Packet contents: ");
       (void) Serial.println(packet);
     }
     else
     {
-      (void) Serial.println(String("Couldn't build the packet!"));
+      (void) Serial.println("Couldn't build the packet!");
     }
   }
   // End.
-  (void) Serial.println(String("End."));
-  (void) Serial.println(String(""));
+  (void) Serial.println("End.");
+  (void) Serial.println("");
   delay(1000);
 }
