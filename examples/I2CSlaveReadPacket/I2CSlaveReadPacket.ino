@@ -50,7 +50,9 @@ void setup()
 
 void loop()
 {
+  (void) Serial.println(String("###############################"));
   (void) Serial.println(String("I2C slave read example program."));
+  (void) Serial.println(String("###############################"));
   // Read a packet.
   (void) Serial.println(String("Reading a packet..."));
   const boolean gotPacket = ESAT_I2CSlave.readPacket(packet);
@@ -65,5 +67,6 @@ void loop()
   }
   // End.
   (void) Serial.println(String("End."));
+  (void) Serial.println(String(""));
   delay(1000);
 }
