@@ -44,5 +44,7 @@ void loop()
   (void) Serial.println(startTime);
   (void) Serial.print(String("Current time: "));
   (void) Serial.println(clock.read());
+  // End.
+  (void) Serial.println(String("End"));
   delay(1000);
 }
