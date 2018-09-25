@@ -56,4 +56,7 @@ void loop()
   // Print the CRC8 remainder.
   (void) Serial.print(String("CRC8 (hexadecimal): "));
   (void) Serial.println(String(remainder, HEX));
+  // End.
+  (void) Serial.println(String("End."));
+  delay(1000);
 }
