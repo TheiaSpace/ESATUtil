@@ -45,28 +45,28 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println(String("################################################"));
-  (void) Serial.println(String("I2C master read named telemetry example program."));
-  (void) Serial.println(String("################################################"));
+  (void) Serial.println("################################################");
+  (void) Serial.println("I2C master read named telemetry example program.");
+  (void) Serial.println("################################################");
   // Read the packet.
-  (void) Serial.print(String("Reading packet number "));
+  (void) Serial.print("Reading packet number ");
   const byte identifier = random(0, 256);
-  (void) Serial.print(String(identifier, DEC));
-  (void) Serial.println(String("..."));
+  (void) Serial.print(identifier, DEC);
+  (void) Serial.println("...");
   const boolean gotPacket = ESAT_I2CMaster.readNamedTelemetry(packet,
                                                               identifier,
                                                               slaveAddress);
   if (gotPacket)
   {
-    (void) Serial.print(String("Packet contents: "));
+    (void) Serial.print("Packet contents: ");
     (void) Serial.println(packet);
   }
   else
   {
-    (void) Serial.println(String("Couldn't read the packet!"));
+    (void) Serial.println("Couldn't read the packet!");
   }
   // End.
-  (void) Serial.println(String("End."));
-  (void) Serial.println(String(""));
+  (void) Serial.println("End.");
+  (void) Serial.println("");
   delay(1000);
 }
