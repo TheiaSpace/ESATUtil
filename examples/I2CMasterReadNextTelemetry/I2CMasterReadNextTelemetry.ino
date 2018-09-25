@@ -43,7 +43,9 @@ void setup()
 
 void loop()
 {
+  (void) Serial.println(String("###############################################"));
   (void) Serial.println(String("I2C master read next telemetry example program."));
+  (void) Serial.println(String("###############################################"));
   // Reset the telemetry queue.
   (void) Serial.println(String("Resetting the telemetry queue..."));
   const boolean goodQueue = ESAT_I2CMaster.resetTelemetryQueue(slaveAddress);
@@ -72,5 +74,6 @@ void loop()
   }
   // End.
   (void) Serial.println(String("End."));
+  (void) Serial.println(String(""));
   delay(1000);
 }
