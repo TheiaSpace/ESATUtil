@@ -40,6 +40,7 @@ void setup()
 void loop()
 {
   (void) Serial.println(String("Software clock example program."));
+  // Print the time.
   (void) Serial.print(String("Start time: "));
   (void) Serial.println(startTime);
   (void) Serial.print(String("Current time: "));
