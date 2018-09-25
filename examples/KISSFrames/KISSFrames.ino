@@ -61,36 +61,36 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println(String("###################################"));
-  (void) Serial.println(String("KISS frame streams example program."));
-  (void) Serial.println(String("###################################"));
+  (void) Serial.println("###################################");
+  (void) Serial.println("KISS frame streams example program.");
+  (void) Serial.println("###################################");
   // Show the contents of the input buffer.
-  (void) Serial.print(String("Hexadecimal dump of the input: "));
+  (void) Serial.print("Hexadecimal dump of the input: ");
   (void) Serial.println(input);
   // Write the contents of the input buffer to the KISS frame writer.
   // The KISS frame writer writes to ESAT_Buffer frame.
-  (void) Serial.println(String("Starting a KISS frame..."));
+  (void) Serial.println("Starting a KISS frame...");
   (void) kissWriter.beginFrame();
-  (void) Serial.println(String("Writing the input to the KISS frame..."));
+  (void) Serial.println("Writing the input to the KISS frame...");
   input.rewind();
   while (input.available() > 0)
   {
     (void) kissWriter.write(input.read());
   }
-  (void) Serial.println(String("Ending the KISS frame..."));
+  (void) Serial.println("Ending the KISS frame...");
   (void) kissWriter.endFrame();
   // Print the KISS frame.
-  (void) Serial.print(String("Hexadecimal dump of the KISS frame: "));
+  (void) Serial.print("Hexadecimal dump of the KISS frame: ");
   (void) Serial.println(frame);
   // Read the contents of the KISS frame reader.
   // The KISS frame reader reads from ESAT_Buffer frame,
   // so rewind frame to the KISS frame reader read from it.
   frame.rewind();
-  (void) Serial.print(String("Receiving a frame..."));
+  (void) Serial.print("Receiving a frame...");
   const boolean gotFrame = kissReader.receiveFrame();
   if (gotFrame)
   {
-    (void) Serial.println(String("Hexadecimal dump of the decoded frame contents:"));
+    (void) Serial.println("Hexadecimal dump of the decoded frame contents:");
     while (kissReader.available() > 0)
     {
       (void) decoded.write(kissReader.read());
@@ -99,10 +99,10 @@ void loop()
   }
   else
   {
-    (void) Serial.println(String("Couldn't receive a frame."));
+    (void) Serial.println("Couldn't receive a frame.");
   }
   // End.
-  (void) Serial.println(String("End."));
-  (void) Serial.println(String(""));
+  (void) Serial.println("End.");
+  (void) Serial.println("");
   delay(1000);
 }
