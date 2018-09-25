@@ -39,7 +39,9 @@ void setup()
 
 void loop()
 {
+  (void) Serial.println(String("######################"));
   (void) Serial.println(String("Timer example program."));
+  (void) Serial.println(String("######################"));
   // Wait until the start of the next cycle.
   (void) Serial.println(String("Waiting until the next cycle..."));
   ESAT_Timer.waitUntilNextCycle();
@@ -71,4 +73,5 @@ void loop()
   (void) Serial.println(String(" milliseconds."));
   // End.
   (void) Serial.println(String("End."));
+  (void) Serial.println(String(""));
 }
