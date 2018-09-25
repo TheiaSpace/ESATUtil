@@ -43,11 +43,11 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println(String("###############################################"));
-  (void) Serial.println(String("I2C master read next telemetry example program."));
-  (void) Serial.println(String("###############################################"));
+  (void) Serial.println("###############################################");
+  (void) Serial.println("I2C master read next telemetry example program.");
+  (void) Serial.println("###############################################");
   // Reset the telemetry queue.
-  (void) Serial.println(String("Resetting the telemetry queue..."));
+  (void) Serial.println("Resetting the telemetry queue...");
   const boolean goodQueue = ESAT_I2CMaster.resetTelemetryQueue(slaveAddress);
   if (goodQueue)
   {
@@ -55,25 +55,25 @@ void loop()
     boolean gotPacket = false;
     do
     {
-      (void) Serial.println(String("Reading the next telemetry packet..."));
+      (void) Serial.println("Reading the next telemetry packet...");
       gotPacket = ESAT_I2CMaster.readNextTelemetry(packet, slaveAddress);
       if (gotPacket)
       {
-        (void) Serial.print(String("Packet contents: "));
+        (void) Serial.print("Packet contents: ");
         (void) Serial.println(packet);
       }
       else
       {
-        (void) Serial.println(String("Couldn't read the packet!"));
+        (void) Serial.println("Couldn't read the packet!");
       }
     } while (gotPacket);
   }
   else
   {
-    (void) Serial.println(String("Couldn't reset the telemetry queue!"));
+    (void) Serial.println("Couldn't reset the telemetry queue!");
   }
   // End.
-  (void) Serial.println(String("End."));
-  (void) Serial.println(String(""));
+  (void) Serial.println("End.");
+  (void) Serial.println("");
   delay(1000);
 }
