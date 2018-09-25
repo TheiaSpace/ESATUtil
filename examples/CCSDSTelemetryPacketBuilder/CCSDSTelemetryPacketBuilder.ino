@@ -158,7 +158,9 @@ void setup()
 
 void loop()
 {
+  (void) Serial.println(String("#########################################"));
   (void) Serial.println(String("Telemetry packet builder example program."));
+  (void) Serial.println(String("#########################################"));
   // Get the list of available packets.
   (void) Serial.print(String("Identifier numbers of the available packets: "));
   ESAT_FlagContainer pendingPackets = builder.available();
@@ -183,5 +185,6 @@ void loop()
   }
   // End.
   (void) Serial.println(String("End."));
+  (void) Serial.println(String(""));
   delay(1000);
 }
