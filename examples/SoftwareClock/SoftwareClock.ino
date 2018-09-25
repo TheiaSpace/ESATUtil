@@ -39,7 +39,9 @@ void setup()
 
 void loop()
 {
+  (void) Serial.println(String("###############################"));
   (void) Serial.println(String("Software clock example program."));
+  (void) Serial.println(String("###############################"));
   // Print the time.
   (void) Serial.print(String("Start time: "));
   (void) Serial.println(startTime);
@@ -47,5 +49,6 @@ void loop()
   (void) Serial.println(clock.read());
   // End.
   (void) Serial.println(String("End"));
+  (void) Serial.println(String(""));
   delay(1000);
 }
