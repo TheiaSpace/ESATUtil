@@ -32,7 +32,9 @@ void setup()
 
 void loop()
 {
+  (void) Serial.println(String("##########################"));
   (void) Serial.println(String("Timestamp example program."));
+  (void) Serial.println(String("##########################"));
   // First timestamp: launch time of the Apollo 1 mission.
   ESAT_Timestamp firstTimestamp(1969, 7, 16, 13, 32, 0);
   // Second timestamp: just one minute later.
@@ -66,5 +68,6 @@ void loop()
   }
   // End.
   (void) Serial.println(String("End."));
+  (void) Serial.println(String(""));
   delay(1000);
 }
