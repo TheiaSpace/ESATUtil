@@ -38,16 +38,16 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println(String("########################################################"));
-  (void) Serial.println(String("I2C master read protocol version number example program."));
-  (void) Serial.println(String("########################################################"));
+  (void) Serial.println("########################################################");
+  (void) Serial.println("I2C master read protocol version number example program.");
+  (void) Serial.println("########################################################");
   // Get the protocol version from the slave.
-  (void) Serial.print(String("Slave protocol version: "));
+  (void) Serial.print("Slave protocol version: ");
   const ESAT_SemanticVersionNumber protocolVersionNumber =
     ESAT_I2CMaster.readProtocolVersionNumber(slaveAddress);
   (void) Serial.println(protocolVersionNumber);
   // End.
-  (void) Serial.println(String("End."));
-  (void) Serial.println(String(""));
+  (void) Serial.println("End.");
+  (void) Serial.println("");
   delay(1000);
 }
