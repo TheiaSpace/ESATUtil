@@ -45,7 +45,9 @@ void setup()
 
 void loop()
 {
+  (void) Serial.println(String("################################################"));
   (void) Serial.println(String("I2C master read named telemetry example program."));
+  (void) Serial.println(String("################################################"));
   // Read the packet.
   (void) Serial.print(String("Reading packet number "));
   const byte identifier = random(0, 256);
@@ -65,5 +67,6 @@ void loop()
   }
   // End.
   (void) Serial.println(String("End."));
+  (void) Serial.println(String(""));
   delay(1000);
 }
