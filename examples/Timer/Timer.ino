@@ -69,4 +69,6 @@ void loop()
   (void) Serial.print(String("Elapsed cycle time: "));
   (void) Serial.print(String(ESAT_Timer.elapsedMilliseconds(), DEC));
   (void) Serial.println(String(" milliseconds."));
+  // End.
+  (void) Serial.println(String("End."));
 }
