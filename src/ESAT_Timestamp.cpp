@@ -318,6 +318,8 @@ boolean ESAT_Timestamp::operator!=(const ESAT_Timestamp timestamp) const
       return false;
       break;
   }
+  // This point shouldn't be reached.
+  return false;
 }
 
 boolean ESAT_Timestamp::operator<(const ESAT_Timestamp timestamp) const
@@ -338,6 +340,8 @@ boolean ESAT_Timestamp::operator<(const ESAT_Timestamp timestamp) const
       return false;
       break;
   }
+  // This point shouldn't be reached.
+  return false;
 }
 
 boolean ESAT_Timestamp::operator<=(const ESAT_Timestamp timestamp) const
@@ -358,6 +362,8 @@ boolean ESAT_Timestamp::operator<=(const ESAT_Timestamp timestamp) const
       return false;
       break;
   }
+  // This point shouldn't be reached.
+  return false;
 }
 
 boolean ESAT_Timestamp::operator>(const ESAT_Timestamp timestamp) const
@@ -378,6 +384,8 @@ boolean ESAT_Timestamp::operator>(const ESAT_Timestamp timestamp) const
       return false;
       break;
   }
+  // This point shouldn't be reached.
+  return false;
 }
 
 boolean ESAT_Timestamp::operator>=(const ESAT_Timestamp timestamp) const
@@ -398,4 +406,6 @@ boolean ESAT_Timestamp::operator>=(const ESAT_Timestamp timestamp) const
       return false;
       break;
   }
+  // This point shouldn't be reached.
+  return false;
 }
