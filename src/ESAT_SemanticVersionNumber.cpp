@@ -91,7 +91,7 @@ boolean ESAT_SemanticVersionNumber::writeTo(Stream& stream) const
   }
 }
 
-boolean ESAT_SemanticVersionNumber::operator==(ESAT_SemanticVersionNumber version) const
+boolean ESAT_SemanticVersionNumber::operator==(const ESAT_SemanticVersionNumber version) const
 {
   if (majorVersionNumber != version.majorVersionNumber)
   {
