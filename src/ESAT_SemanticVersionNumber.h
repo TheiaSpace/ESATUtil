@@ -73,6 +73,26 @@ class ESAT_SemanticVersionNumber: public Printable
     // Return true if the two operands have the same version numbers;
     // otherwise return false.
     boolean operator==(ESAT_SemanticVersionNumber version) const;
+
+    // Return true if the two operands have different version numbers;
+    // otherwise return false.
+    boolean operator!=(ESAT_SemanticVersionNumber version) const;
+
+    // Return true if the first operand is lower than the second operand;
+    // otherwise return false.
+    boolean operator<(ESAT_SemanticVersionNumber version) const;
+
+    // Return true if the first operand is lower than or equal to the
+    // second operand; otherwise return false.
+    boolean operator<=(ESAT_SemanticVersionNumber version) const;
+
+    // Return true if the first operand is greater than the second
+    // operand; otherwise return false.
+    boolean operator>(ESAT_SemanticVersionNumber version) const;
+
+    // Return true if the first operand is greater than or equal to
+    // the second operand; otherwise return false.
+    boolean operator>=(ESAT_SemanticVersionNumber version) const;
 };
 
 #endif /* ESAT_SemanticVersionNumber_h */

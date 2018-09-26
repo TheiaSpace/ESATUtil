@@ -94,3 +94,86 @@ boolean ESAT_SemanticVersionNumber::operator==(ESAT_SemanticVersionNumber versio
   }
   return true;
 }
+
+boolean ESAT_SemanticVersionNumber::operator!=(const ESAT_SemanticVersionNumber version) const
+{
+  if (*this == version)
+  {
+    return false;
+  }
+  else
+  {
+    return true;
+  }
+}
+
+boolean ESAT_SemanticVersionNumber::operator<(const ESAT_SemanticVersionNumber version) const
+{
+  // Compare the major version numbers first.
+  if (majorVersionNumber < version.minorVersionNumber)
+  {
+    return true;
+  }
+  if (majorVersionNumber > version.majorVersionNumber)
+  {
+    return false;
+  }
+  // The major version numbers match if we got here,
+  // so it's time to compare the minor version number.
+  if (minorVersionNumber < version.minorVersionNumber)
+  {
+    return true;
+  }
+  if (minorVersionNumber > version.minorVersionNumber)
+  {
+    return false;
+  }
+  // The major version numbers match and the minor version numbers
+  // match if we got here, so it's time to compare the patch version
+  // number.
+  if (patchVersionNumber < version.patchVersionNumber)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+boolean ESAT_SemanticVersionNumber::operator<=(const ESAT_SemanticVersionNumber version) const
+{
+  if (*this == version)
+  {
+    return true;
+  }
+  if (*this < version)
+  {
+    return true;
+  }
+  return false;
+}
+
+boolean ESAT_SemanticVersionNumber::operator>(const ESAT_SemanticVersionNumber version) const
+{
+  if (*this <= version)
+  {
+    return false;
+  }
+  else
+  {
+    return true;
+  }
+}
+
+boolean ESAT_SemanticVersionNumber::operator>=(const ESAT_SemanticVersionNumber version) const
+{
+  if (*this < version)
+  {
+    return false;
+  }
+  else
+  {
+    return true;
+  }
+}
