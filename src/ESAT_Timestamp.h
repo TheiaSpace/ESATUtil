@@ -96,6 +96,10 @@ class ESAT_Timestamp: public Printable
     // otherwise return false.
     boolean operator==(ESAT_Timestamp timestamp) const;
 
+    // Return true if the argument timestamp doesn't coincide with
+    // this timestamp; otherwise return false.
+    boolean operator!=(ESAT_Timestamp timestamp) const;
+
     // Return true if the argument timestamp happens after this
     // timestamp; otherwise return false.
     boolean operator<(ESAT_Timestamp timestamp) const;

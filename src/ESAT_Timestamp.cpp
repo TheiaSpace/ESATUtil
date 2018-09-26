@@ -300,6 +300,26 @@ boolean ESAT_Timestamp::operator==(const ESAT_Timestamp timestamp) const
   }
 }
 
+boolean ESAT_Timestamp::operator!=(const ESAT_Timestamp timestamp) const
+{
+  const ComparisonResult result = compareTo(timestamp);
+  switch (result)
+  {
+    case THIS_IS_LOWER:
+      return true;
+      break;
+    case THIS_IS_EQUAL:
+      return false;
+      break;
+    case THIS_IS_HIGHER:
+      return true;
+      break;
+    default:
+      return false;
+      break;
+  }
+}
+
 boolean ESAT_Timestamp::operator<(const ESAT_Timestamp timestamp) const
 {
   const ComparisonResult result = compareTo(timestamp);
