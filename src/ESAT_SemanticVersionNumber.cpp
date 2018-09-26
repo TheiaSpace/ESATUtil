@@ -33,6 +33,19 @@ ESAT_SemanticVersionNumber::ESAT_SemanticVersionNumber(const byte major,
   patchVersionNumber = patch;
 }
 
+boolean ESAT_SemanticVersionNumber::isBackwardsCompatibleWith(const ESAT_SemanticVersionNumber version) const
+{
+  if (majorVersionNumber != version.majorVersionNumber)
+  {
+    return false;
+  }
+  if (*this < version)
+  {
+    return false;
+  }
+  return true;
+}
+
 size_t ESAT_SemanticVersionNumber::printTo(Print& output) const
 {
   size_t bytesWritten = 0;
