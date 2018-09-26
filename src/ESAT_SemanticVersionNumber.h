@@ -52,6 +52,17 @@ class ESAT_SemanticVersionNumber: public Printable
     // Build a semantic version number with the given numbers.
     ESAT_SemanticVersionNumber(byte major, byte minor, byte patch);
 
+    // Return true if this version number is backwards-compatible with
+    // the given version number.  This happens when all the following
+    // conditions are met:
+    // - This major version number is equal to the given major version
+    //   number (a different major version number means incompatibility).
+    // - This version number is greater than or equal to the given version
+    //   number (you can only be backwards-compatible with something older
+    //   than you).
+    // Otherwise return false.
+    boolean isBackwardsCompatibleWith(ESAT_SemanticVersionNumber version) const;
+
     // Print the version number in human readable
     // (majorVersionNumber.minorVersionNumber.patchVersionNumber)
     // form.
@@ -73,6 +84,26 @@ class ESAT_SemanticVersionNumber: public Printable
     // Return true if the two operands have the same version numbers;
     // otherwise return false.
     boolean operator==(ESAT_SemanticVersionNumber version) const;
+
+    // Return true if the two operands have different version numbers;
+    // otherwise return false.
+    boolean operator!=(ESAT_SemanticVersionNumber version) const;
+
+    // Return true if the first operand is lower than the second operand;
+    // otherwise return false.
+    boolean operator<(ESAT_SemanticVersionNumber version) const;
+
+    // Return true if the first operand is lower than or equal to the
+    // second operand; otherwise return false.
+    boolean operator<=(ESAT_SemanticVersionNumber version) const;
+
+    // Return true if the first operand is greater than the second
+    // operand; otherwise return false.
+    boolean operator>(ESAT_SemanticVersionNumber version) const;
+
+    // Return true if the first operand is greater than or equal to
+    // the second operand; otherwise return false.
+    boolean operator>=(ESAT_SemanticVersionNumber version) const;
 };
 
 #endif /* ESAT_SemanticVersionNumber_h */
