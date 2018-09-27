@@ -80,7 +80,7 @@ boolean ESAT_CCSDSTelecommandPacketHandler::handle(ESAT_CCSDSPacket packet)
        consumer != nullptr;
        consumer = consumer->nextPacketConsumer)
   {
-    if (consumer->write(packet))
+    if (consumer->consume(packet))
     {
       return true;
     }

@@ -26,7 +26,7 @@ class OneTelecommandConsumerClass: public ESAT_CCSDSPacketConsumer
   public:
     // Handle a telecommand packet.
     // Return true on success; otherwise return false.
-    boolean write(ESAT_CCSDSPacket packet)
+    boolean consume(ESAT_CCSDSPacket packet)
     {
       const ESAT_CCSDSSecondaryHeader secondaryHeader =
         packet.readSecondaryHeader();
@@ -50,7 +50,7 @@ class EvenTelecommandConsumerClass: public ESAT_CCSDSPacketConsumer
   public:
     // Handle a telecommand packet.
     // Return true on success; otherwise return false.
-    boolean write(ESAT_CCSDSPacket packet)
+    boolean consume(ESAT_CCSDSPacket packet)
     {
       const ESAT_CCSDSSecondaryHeader secondaryHeader =
         packet.readSecondaryHeader();
