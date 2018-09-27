@@ -50,9 +50,9 @@ size_t ESAT_SemanticVersionNumber::printTo(Print& output) const
 {
   size_t bytesWritten = 0;
   bytesWritten = bytesWritten + output.print(String(majorVersionNumber, DEC));
-  bytesWritten = bytesWritten + output.print(String("."));
+  bytesWritten = bytesWritten + output.print(F("."));
   bytesWritten = bytesWritten + output.print(String(minorVersionNumber, DEC));
-  bytesWritten = bytesWritten + output.print(String("."));
+  bytesWritten = bytesWritten + output.print(F("."));
   bytesWritten = bytesWritten + output.print(String(patchVersionNumber, DEC));
   return bytesWritten;
 }
