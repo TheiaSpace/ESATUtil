@@ -30,10 +30,6 @@
 class ESAT_CCSDSTelecommandPacketHandler
 {
   public:
-    // Instantiate an empty telecommand packet handler.
-    // An empty telecommand packet handler won't handle packets.
-    ESAT_CCSDSTelecommandPacketHandler();
-
     // Set up the telecommand packet handler for the given application
     // process identifier and semantic version numbers.
     // The telecommand handler will only handle a packet if the
