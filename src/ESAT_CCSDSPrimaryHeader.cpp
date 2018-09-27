@@ -32,7 +32,7 @@ size_t ESAT_CCSDSPrimaryHeader::printTo(Print& output) const
     + output.print(F("    \"packetVersionNumber\": "));
   bytesWritten =
     bytesWritten
-    + output.print(String(packetVersionNumber, DEC));
+    + output.print(packetVersionNumber, DEC);
   bytesWritten =
     bytesWritten
     + output.println(F(","));
@@ -54,7 +54,7 @@ size_t ESAT_CCSDSPrimaryHeader::printTo(Print& output) const
     default:
       bytesWritten =
         bytesWritten
-        + output.print(String(packetType, DEC));
+        + output.print(packetType, DEC);
       break;
   }
   bytesWritten =
@@ -78,7 +78,7 @@ size_t ESAT_CCSDSPrimaryHeader::printTo(Print& output) const
     default:
       bytesWritten =
         bytesWritten
-        + output.print(String(secondaryHeaderFlag, DEC));
+        + output.print(secondaryHeaderFlag, DEC);
       break;
   }
   bytesWritten =
@@ -89,7 +89,7 @@ size_t ESAT_CCSDSPrimaryHeader::printTo(Print& output) const
     + output.print(F("    \"applicationProcessIdentifier\": "));
   bytesWritten =
     bytesWritten
-    + output.print(String(applicationProcessIdentifier, DEC));
+    + output.print(applicationProcessIdentifier, DEC);
   bytesWritten =
     bytesWritten + output.println(F(","));
   bytesWritten =
@@ -119,7 +119,7 @@ size_t ESAT_CCSDSPrimaryHeader::printTo(Print& output) const
     default:
       bytesWritten =
         bytesWritten
-        + output.print(String(sequenceFlags, DEC));
+        + output.print(sequenceFlags, DEC);
       break;
   }
   bytesWritten =
@@ -130,7 +130,7 @@ size_t ESAT_CCSDSPrimaryHeader::printTo(Print& output) const
     + output.print(F("    \"packetSequenceCount\": "));
   bytesWritten =
     bytesWritten
-    + output.print(String(packetSequenceCount, DEC));
+    + output.print(packetSequenceCount, DEC);
   bytesWritten =
     bytesWritten
     + output.println(F(","));
@@ -139,7 +139,7 @@ size_t ESAT_CCSDSPrimaryHeader::printTo(Print& output) const
     + output.print(F("    \"packetDataLength\": "));
   bytesWritten =
     bytesWritten
-    + output.print(String(packetDataLength, DEC));
+    + output.print(packetDataLength, DEC);
   bytesWritten =
     bytesWritten
     + output.println(F(""));
