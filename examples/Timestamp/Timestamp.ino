@@ -32,42 +32,42 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println("##########################");
-  (void) Serial.println("Timestamp example program.");
-  (void) Serial.println("##########################");
+  (void) Serial.println(F("##########################"));
+  (void) Serial.println(F("Timestamp example program."));
+  (void) Serial.println(F("##########################"));
   // First timestamp: launch time of the Apollo 1 mission.
   ESAT_Timestamp firstTimestamp(1969, 7, 16, 13, 32, 0);
   // Second timestamp: just one minute later.
   ESAT_Timestamp secondTimestamp(1969, 7, 16, 13, 33, 0);
   // Print the timestamps.
-  (void) Serial.print("First timestamp: ");
+  (void) Serial.print(F("First timestamp: "));
   (void) Serial.println(firstTimestamp);
-  (void) Serial.print("Second timestamp: ");
+  (void) Serial.print(F("Second timestamp: "));
   (void) Serial.println(secondTimestamp);
   // Timestamp comparison.
   if (firstTimestamp < secondTimestamp)
   {
-    (void) Serial.println("First timestamp < second timestamp.");
+    (void) Serial.println(F("First timestamp < second timestamp."));
   }
   else
   {
-    (void) Serial.println("First timestamp >= second timestamp.");
+    (void) Serial.println(F("First timestamp >= second timestamp."));
   }
   // Timestamp modification.
-  (void) Serial.println("Adding 100 seconds to the first timestamp.");
+  (void) Serial.println(F("Adding 100 seconds to the first timestamp."));
   firstTimestamp.addSeconds(100);
-  (void) Serial.print("New value of the first timestamp: ");
+  (void) Serial.print(F("New value of the first timestamp: "));
   (void) Serial.println(firstTimestamp);
   if (firstTimestamp > secondTimestamp)
   {
-    (void) Serial.println("First timestamp > second timestamp.");
+    (void) Serial.println(F("First timestamp > second timestamp."));
   }
   else
   {
-    (void) Serial.println("First timestamp <= second timestamp.");
+    (void) Serial.println(F("First timestamp <= second timestamp."));
   }
   // End.
-  (void) Serial.println("End.");
-  (void) Serial.println("");
+  (void) Serial.println(F("End."));
+  (void) Serial.println();
   delay(1000);
 }

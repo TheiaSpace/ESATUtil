@@ -26,126 +26,126 @@ size_t ESAT_CCSDSPrimaryHeader::printTo(Print& output) const
   size_t bytesWritten = 0;
   bytesWritten =
     bytesWritten
-    + output.println(String("  {"));
+    + output.println(F("  {"));
   bytesWritten =
     bytesWritten
-    + output.print(String("    \"packetVersionNumber\": "));
+    + output.print(F("    \"packetVersionNumber\": "));
   bytesWritten =
     bytesWritten
-    + output.print(String(packetVersionNumber, DEC));
+    + output.print(packetVersionNumber, DEC);
   bytesWritten =
     bytesWritten
-    + output.println(String(","));
+    + output.println(F(","));
   bytesWritten =
     bytesWritten
-    + output.print(String("    \"packetType\": "));
+    + output.print(F("    \"packetType\": "));
   switch (packetType)
   {
     case TELEMETRY:
       bytesWritten =
         bytesWritten
-        + output.print(String("\"TELEMETRY\""));
+        + output.print(F("\"TELEMETRY\""));
       break;
     case TELECOMMAND:
       bytesWritten =
         bytesWritten
-        + output.print(String("\"TELECOMMAND\""));
+        + output.print(F("\"TELECOMMAND\""));
       break;
     default:
       bytesWritten =
         bytesWritten
-        + output.print(String(packetType, DEC));
+        + output.print(packetType, DEC);
       break;
   }
   bytesWritten =
     bytesWritten
-    + output.println(String(","));
+    + output.println(F(","));
   bytesWritten =
     bytesWritten
-    + output.print(String("    \"secondaryHeaderFlag\": "));
+    + output.print(F("    \"secondaryHeaderFlag\": "));
   switch (secondaryHeaderFlag)
   {
     case SECONDARY_HEADER_IS_NOT_PRESENT:
       bytesWritten =
         bytesWritten
-        + output.print(String("\"SECONDARY_HEADER_IS_NOT_PRESENT\""));
+        + output.print(F("\"SECONDARY_HEADER_IS_NOT_PRESENT\""));
       break;
     case SECONDARY_HEADER_IS_PRESENT:
       bytesWritten =
         bytesWritten
-        + output.print(String("\"SECONDARY_HEADER_IS_PRESENT\""));
+        + output.print(F("\"SECONDARY_HEADER_IS_PRESENT\""));
       break;
     default:
       bytesWritten =
         bytesWritten
-        + output.print(String(secondaryHeaderFlag, DEC));
+        + output.print(secondaryHeaderFlag, DEC);
       break;
   }
   bytesWritten =
     bytesWritten
-    + output.println(String(","));
+    + output.println(F(","));
   bytesWritten =
     bytesWritten
-    + output.print(String("    \"applicationProcessIdentifier\": "));
+    + output.print(F("    \"applicationProcessIdentifier\": "));
   bytesWritten =
     bytesWritten
-    + output.print(String(applicationProcessIdentifier, DEC));
+    + output.print(applicationProcessIdentifier, DEC);
   bytesWritten =
-    bytesWritten + output.println(String(","));
+    bytesWritten + output.println(F(","));
   bytesWritten =
-    bytesWritten + output.print(String("    \"sequenceFlags\": "));
+    bytesWritten + output.print(F("    \"sequenceFlags\": "));
   switch (sequenceFlags)
   {
     case CONTINUATION_SEGMENT_OF_USER_DATA:
       bytesWritten =
         bytesWritten
-        + output.print(String("\"CONTINUATION_SEGMENT_OF_USER_DATA\""));
+        + output.print(F("\"CONTINUATION_SEGMENT_OF_USER_DATA\""));
       break;
     case FIRST_SEGMENT_OF_USER_DATA:
       bytesWritten =
         bytesWritten
-        + output.print(String("\"FIRST_SEGMENT_OF_USER_DATA\""));
+        + output.print(F("\"FIRST_SEGMENT_OF_USER_DATA\""));
       break;
     case LAST_SEGMENT_OF_USER_DATA:
       bytesWritten =
         bytesWritten
-        + output.print(String("\"LAST_SEGMENT_OF_USER_DATA\""));
+        + output.print(F("\"LAST_SEGMENT_OF_USER_DATA\""));
       break;
     case UNSEGMENTED_USER_DATA:
       bytesWritten =
         bytesWritten
-        + output.print(String("\"UNSEGMENTED_USER_DATA\""));
+        + output.print(F("\"UNSEGMENTED_USER_DATA\""));
       break;
     default:
       bytesWritten =
         bytesWritten
-        + output.print(String(sequenceFlags, DEC));
+        + output.print(sequenceFlags, DEC);
       break;
   }
   bytesWritten =
     bytesWritten
-    + output.println(String(","));
+    + output.println(F(","));
   bytesWritten =
     bytesWritten
-    + output.print(String("    \"packetSequenceCount\": "));
+    + output.print(F("    \"packetSequenceCount\": "));
   bytesWritten =
     bytesWritten
-    + output.print(String(packetSequenceCount, DEC));
+    + output.print(packetSequenceCount, DEC);
   bytesWritten =
     bytesWritten
-    + output.println(String(","));
+    + output.println(F(","));
   bytesWritten =
     bytesWritten
-    + output.print(String("    \"packetDataLength\": "));
+    + output.print(F("    \"packetDataLength\": "));
   bytesWritten =
     bytesWritten
-    + output.print(String(packetDataLength, DEC));
+    + output.print(packetDataLength, DEC);
   bytesWritten =
     bytesWritten
-    + output.println(String(""));
+    + output.println(F(""));
   bytesWritten =
     bytesWritten
-    + output.print(String("  }"));
+    + output.print(F("  }"));
   return bytesWritten;
 }
 

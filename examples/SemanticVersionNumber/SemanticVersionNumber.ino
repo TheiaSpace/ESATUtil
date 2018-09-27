@@ -34,77 +34,77 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println("#########################################");
-  (void) Serial.println("Semantic version numbers example program.");
-  (void) Serial.println("#########################################");
+  (void) Serial.println(F("#########################################"));
+  (void) Serial.println(F("Semantic version numbers example program."));
+  (void) Serial.println(F("#########################################"));
   // Printing a version number.
   const ESAT_SemanticVersionNumber firstVersion(random(1, 3),
                                                 random(0, 2),
                                                 random(0, 2));
-  (void) Serial.print("First version number: ");
+  (void) Serial.print(F("First version number: "));
   (void) Serial.println(firstVersion);
-  (void) Serial.print("First major version number: ");
+  (void) Serial.print(F("First major version number: "));
   (void) Serial.println(firstVersion.majorVersionNumber, DEC);
-  (void) Serial.print("First minor version number: ");
+  (void) Serial.print(F("First minor version number: "));
   (void) Serial.println(firstVersion.minorVersionNumber, DEC);
-  (void) Serial.print("First patch version number: ");
+  (void) Serial.print(F("First patch version number: "));
   (void) Serial.println(firstVersion.patchVersionNumber, DEC);
   const ESAT_SemanticVersionNumber secondVersion(random(1, 3),
                                                  random(0, 2),
                                                  random(0, 2));
-  (void) Serial.print("Second version number: ");
+  (void) Serial.print(F("Second version number: "));
   (void) Serial.println(secondVersion);
-  (void) Serial.print("Second major version number: ");
+  (void) Serial.print(F("Second major version number: "));
   (void) Serial.println(secondVersion.majorVersionNumber, DEC);
-  (void) Serial.print("Second minor version number: ");
+  (void) Serial.print(F("Second minor version number: "));
   (void) Serial.println(secondVersion.minorVersionNumber, DEC);
-  (void) Serial.print("Second patch version number: ");
+  (void) Serial.print(F("Second patch version number: "));
   (void) Serial.println(secondVersion.patchVersionNumber, DEC);
   // Comparisons.
   if (firstVersion == secondVersion)
   {
     (void) Serial.print(firstVersion);
-    (void) Serial.print(" == ");
+    (void) Serial.print(F(" == "));
     (void) Serial.println(secondVersion);
   }
   if (firstVersion != secondVersion)
   {
     (void) Serial.print(firstVersion);
-    (void) Serial.print(" != ");
+    (void) Serial.print(F(" != "));
     (void) Serial.println(secondVersion);
   }
   if (firstVersion < secondVersion)
   {
     (void) Serial.print(firstVersion);
-    (void) Serial.print(" < ");
+    (void) Serial.print(F(" < "));
     (void) Serial.println(secondVersion);
   }
   if (firstVersion <= secondVersion)
   {
     (void) Serial.print(firstVersion);
-    (void) Serial.print(" <= ");
+    (void) Serial.print(F(" <= "));
     (void) Serial.println(secondVersion);
   }
   if (firstVersion > secondVersion)
   {
     (void) Serial.print(firstVersion);
-    (void) Serial.print(" > ");
+    (void) Serial.print(F(" > "));
     (void) Serial.println(secondVersion);
   }
   if (firstVersion >= secondVersion)
   {
     (void) Serial.print(firstVersion);
-    (void) Serial.print(" >= ");
+    (void) Serial.print(F(" >= "));
     (void) Serial.println(secondVersion);
   }
   if (firstVersion.isBackwardsCompatibleWith(secondVersion))
   {
     (void) Serial.print(firstVersion);
-    (void) Serial.print(" is backwards compatible with ");
+    (void) Serial.print(F(" is backwards compatible with "));
     (void) Serial.println(secondVersion);
   }
   // End.
-  (void) Serial.println("End.");
-  (void) Serial.println("");
+  (void) Serial.println(F("End."));
+  (void) Serial.println();
   delay(1000);
 }

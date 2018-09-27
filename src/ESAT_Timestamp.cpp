@@ -258,23 +258,23 @@ size_t ESAT_Timestamp::printTo(Print& output) const
   bytesWritten =
     bytesWritten + output.print(ESAT_Util.pad(String(year, DEC), '0', 4));
   bytesWritten =
-    bytesWritten + output.print(String("-"));
+    bytesWritten + output.print(F("-"));
   bytesWritten =
     bytesWritten + output.print(ESAT_Util.pad(String(month, DEC), '0', 2));
   bytesWritten =
-    bytesWritten + output.print(String("-"));
+    bytesWritten + output.print(F("-"));
   bytesWritten =
     bytesWritten + output.print(ESAT_Util.pad(String(day, DEC), '0', 2));
   bytesWritten =
-    bytesWritten + output.print(String("T"));
+    bytesWritten + output.print(F("T"));
   bytesWritten =
     bytesWritten + output.print(ESAT_Util.pad(String(hours, DEC), '0', 2));
   bytesWritten =
-    bytesWritten + output.print(String(":"));
+    bytesWritten + output.print(F(":"));
   bytesWritten =
     bytesWritten + output.print(ESAT_Util.pad(String(minutes, DEC), '0', 2));
   bytesWritten =
-    bytesWritten + output.print(String(":"));
+    bytesWritten + output.print(F(":"));
   bytesWritten =
     bytesWritten + output.print(ESAT_Util.pad(String(seconds, DEC), '0', 2));
   return bytesWritten;

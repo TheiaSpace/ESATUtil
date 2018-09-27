@@ -32,9 +32,9 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println("######################");
-  (void) Serial.println("Flags example program.");
-  (void) Serial.println("######################");
+  (void) Serial.println(F("######################"));
+  (void) Serial.println(F("Flags example program."));
+  (void) Serial.println(F("######################"));
   // Fill flags1 with powers of two.
   ESAT_FlagContainer flags1;
   flags1.set(1);
@@ -45,7 +45,7 @@ void loop()
   flags1.set(32);
   flags1.set(64);
   flags1.set(128);
-  (void) Serial.print("Active flags in flags1: ");
+  (void) Serial.print(F("Active flags in flags1: "));
   (void) Serial.println(flags1);
   // Fill flags2 with Fibonacci numbers.
   ESAT_FlagContainer flags2;
@@ -63,35 +63,35 @@ void loop()
   flags2.set(144);
   flags2.set(233);
   // Bitwise operations.
-  (void) Serial.print("Active flags in flags2: ");
+  (void) Serial.print(F("Active flags in flags2: "));
   (void) Serial.println(flags2);
-  (void) Serial.print("Active flags in flags1 & flags2: ");
+  (void) Serial.print(F("Active flags in flags1 & flags2: "));
   (void) Serial.println(flags1 & flags2);
-  (void) Serial.print("Active flags in flags1 | flags2: ");
+  (void) Serial.print(F("Active flags in flags1 | flags2: "));
   (void) Serial.println(flags1 | flags2);
-  (void) Serial.print("Active flags in flags1 ^ flags2: ");
+  (void) Serial.print(F("Active flags in flags1 ^ flags2: "));
   (void) Serial.println(flags1 ^ flags2);
-  (void) Serial.print("Active flags in ~flags1: ");
+  (void) Serial.print(F("Active flags in ~flags1: "));
   (void) Serial.println(~flags1);
   // Iterate over flags1.
-  (void) Serial.println("Iterating over flags1...");
+  (void) Serial.println(F("Iterating over flags1..."));
   while (flags1.available() > 0)
   {
     // Print the number of available flags.
-    (void) Serial.print("Available flags in flags1: ");
+    (void) Serial.print(F("Available flags in flags1: "));
     (void) Serial.print(flags1.available(), DEC);
-    (void) Serial.println(".");
+    (void) Serial.println(F("."));
     // Print the next true flag.
-    (void) Serial.print("Next true flag in flags1: ");
+    (void) Serial.print(F("Next true flag in flags1: "));
     (void) Serial.println(flags1.readNext(), DEC);
     // Clear the next true flag.
-    (void) Serial.print("Clearing flag number ");
+    (void) Serial.print(F("Clearing flag number "));
     (void) Serial.print(flags1.readNext(), DEC);
-    (void) Serial.println(".");
+    (void) Serial.println(F("."));
     flags1.clear(flags1.readNext());
   }
   // End.
-  (void) Serial.println("End.");
-  (void) Serial.println("");
+  (void) Serial.println(F("End."));
+  (void) Serial.println();
   delay(1000);
 }

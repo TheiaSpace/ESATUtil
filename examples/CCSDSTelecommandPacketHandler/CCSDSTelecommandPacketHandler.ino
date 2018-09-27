@@ -32,7 +32,7 @@ class OneTelecommandConsumerClass: public ESAT_CCSDSPacketConsumer
         packet.readSecondaryHeader();
       if (secondaryHeader.packetIdentifier == 1)
       {
-        (void) Serial.println("OneTelecommandConsumer handles identifier 1 and is working.");
+        (void) Serial.println(F("OneTelecommandConsumer handles identifier 1 and is working."));
         return true;
       }
       else
@@ -56,7 +56,7 @@ class EvenTelecommandConsumerClass: public ESAT_CCSDSPacketConsumer
         packet.readSecondaryHeader();
       if ((secondaryHeader.packetIdentifier % 2) == 0)
       {
-        (void) Serial.println("EvenTelecommandConsumer handles even identifier and is working.");
+        (void) Serial.println(F("EvenTelecommandConsumer handles even identifier and is working."));
         return true;
       }
       else
@@ -106,13 +106,13 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println("###########################################");
-  (void) Serial.println("Telecommand packet handler example program.");
-  (void) Serial.println("###########################################");
+  (void) Serial.println(F("###########################################"));
+  (void) Serial.println(F("Telecommand packet handler example program."));
+  (void) Serial.println(F("###########################################"));
   // Build the telecommand packet.
-  (void) Serial.print("Building telecommand packet with identifier number ");
+  (void) Serial.print(F("Building telecommand packet with identifier number "));
   (void) Serial.print(packetIdentifier, DEC);
-  (void) Serial.println("...");
+  (void) Serial.println(F("..."));
   packet.flush();
   packet.writeTelecommandHeaders(applicationProcessIdentifier,
                                  packetSequenceCount,
@@ -122,15 +122,15 @@ void loop()
                                  patchVersionNumber,
                                  packetIdentifier);
   // Handle the telecommand packet.
-  (void) Serial.println("Handling the telecommand packet...");
+  (void) Serial.println(F("Handling the telecommand packet..."));
   const boolean handled = handler.handle(packet);
   if (handled)
   {
-    (void) Serial.println("Telecommand packet handled successfully.");
+    (void) Serial.println(F("Telecommand packet handled successfully."));
   }
   else
   {
-    (void) Serial.println("Couldn't handle the telecommand packet!");
+    (void) Serial.println(F("Couldn't handle the telecommand packet!"));
   }
   if (packetIdentifier < maximumPacketIdentifier)
   {
@@ -141,7 +141,7 @@ void loop()
     packetIdentifier = 0;
   }
   // End.
-  (void) Serial.println("End.");
-  (void) Serial.println("");
+  (void) Serial.println(F("End."));
+  (void) Serial.println();
   delay(1000);
 }
