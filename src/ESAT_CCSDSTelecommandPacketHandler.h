@@ -51,6 +51,8 @@ class ESAT_CCSDSTelecommandPacketHandler
     // Handle a telecommand packet.
     // This will work through the list of packet consumers until one
     // succeeds at handling the telecommand.
+    // The packet will be passed to the consumers with the read/write
+    // pointer at the start of the packet data field.
     // The telecommand handler will fail to handle a packet if any
     // of the following conditions isn't met:
     // - The packet is a telecommand packet.
