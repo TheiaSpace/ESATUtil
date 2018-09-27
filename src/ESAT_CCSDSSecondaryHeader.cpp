@@ -19,6 +19,7 @@
  */
 
 #include "ESAT_CCSDSSecondaryHeader.h"
+#include "ESAT_Util.h"
 
 size_t ESAT_CCSDSSecondaryHeader::printTo(Print& output) const
 {
@@ -35,7 +36,9 @@ size_t ESAT_CCSDSSecondaryHeader::printTo(Print& output) const
       break;
     default:
       bytesWritten =
-        bytesWritten + output.print(preamble, HEX);;
+        bytesWritten + output.print(F("0x"));
+      bytesWritten =
+        bytesWritten + output.print(ESAT_Util.byteToHexadecimal(preamble));
       break;
   }
   bytesWritten =
@@ -61,9 +64,9 @@ size_t ESAT_CCSDSSecondaryHeader::printTo(Print& output) const
   bytesWritten =
     bytesWritten + output.println(F("\","));
   bytesWritten =
-    bytesWritten + output.print(F("  \"packetIdentifier\": "));
+    bytesWritten + output.print(F("  \"packetIdentifier\": 0x"));
   bytesWritten =
-    bytesWritten + output.print(packetIdentifier, HEX);
+    bytesWritten + output.print(ESAT_Util.byteToHexadecimal(packetIdentifier));
   bytesWritten =
     bytesWritten + output.println(F(""));
   bytesWritten =
