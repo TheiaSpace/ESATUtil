@@ -35,7 +35,7 @@ size_t ESAT_CCSDSSecondaryHeader::printTo(Print& output) const
       break;
     default:
       bytesWritten =
-        bytesWritten + output.print(String(preamble, HEX));;
+        bytesWritten + output.print(preamble, HEX);;
       break;
   }
   bytesWritten =
@@ -49,21 +49,21 @@ size_t ESAT_CCSDSSecondaryHeader::printTo(Print& output) const
   bytesWritten =
     bytesWritten + output.print(F("  \"versionNumber\": \""));
   bytesWritten =
-    bytesWritten + output.print(String(majorVersionNumber, DEC));
+    bytesWritten + output.print(majorVersionNumber, DEC);
   bytesWritten =
     bytesWritten + output.print(F("."));
   bytesWritten =
-    bytesWritten + output.print(String(minorVersionNumber, DEC));
+    bytesWritten + output.print(minorVersionNumber, DEC);
   bytesWritten =
     bytesWritten + output.print(F("."));
   bytesWritten =
-    bytesWritten + output.print(String(patchVersionNumber, DEC));
+    bytesWritten + output.print(patchVersionNumber, DEC);
   bytesWritten =
     bytesWritten + output.println(F("\","));
   bytesWritten =
     bytesWritten + output.print(F("  \"packetIdentifier\": "));
   bytesWritten =
-    bytesWritten + output.print(String(packetIdentifier, HEX));
+    bytesWritten + output.print(packetIdentifier, HEX);
   bytesWritten =
     bytesWritten + output.println(F(""));
   bytesWritten =
