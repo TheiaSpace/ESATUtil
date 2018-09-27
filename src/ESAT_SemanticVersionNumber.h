@@ -83,26 +83,50 @@ class ESAT_SemanticVersionNumber: public Printable
 
     // Return true if the two operands have the same version numbers;
     // otherwise return false.
+    // Precedence is calculated by comparing major version numbers
+    // first, minor version numbers second, and patch version numbers
+    // last. The first discrepancy determines which operand is lower
+    // and which is higher.
     boolean operator==(ESAT_SemanticVersionNumber version) const;
 
     // Return true if the two operands have different version numbers;
     // otherwise return false.
+    // Precedence is calculated by comparing major version numbers
+    // first, minor version numbers second, and patch version numbers
+    // last. The first discrepancy determines which operand is lower
+    // and which is higher.
     boolean operator!=(ESAT_SemanticVersionNumber version) const;
 
     // Return true if the first operand is lower than the second operand;
     // otherwise return false.
+    // Precedence is calculated by comparing major version numbers
+    // first, minor version numbers second, and patch version numbers
+    // last. The first discrepancy determines which operand is lower
+    // and which is higher.
     boolean operator<(ESAT_SemanticVersionNumber version) const;
 
     // Return true if the first operand is lower than or equal to the
     // second operand; otherwise return false.
+    // Precedence is calculated by comparing major version numbers
+    // first, minor version numbers second, and patch version numbers
+    // last. The first discrepancy determines which operand is lower
+    // and which is higher.
     boolean operator<=(ESAT_SemanticVersionNumber version) const;
 
     // Return true if the first operand is greater than the second
     // operand; otherwise return false.
+    // Precedence is calculated by comparing major version numbers
+    // first, minor version numbers second, and patch version numbers
+    // last. The first discrepancy determines which operand is lower
+    // and which is higher.
     boolean operator>(ESAT_SemanticVersionNumber version) const;
 
     // Return true if the first operand is greater than or equal to
     // the second operand; otherwise return false.
+    // Precedence is calculated by comparing major version numbers
+    // first, minor version numbers second, and patch version numbers
+    // last. The first discrepancy determines which operand is lower
+    // and which is higher.
     boolean operator>=(ESAT_SemanticVersionNumber version) const;
 };
 
