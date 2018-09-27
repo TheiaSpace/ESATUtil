@@ -49,7 +49,7 @@ class ESAT_CCSDSPacketConsumer
     // Return true on success; otherwise return false.
     // Packet consumers used by ESAT_CCSDSTelecommandHandler return true
     // on telecommands they handle and false on the rest of telecommands.
-    virtual boolean write(ESAT_CCSDSPacket packet) = 0;
+    virtual boolean consume(ESAT_CCSDSPacket packet) = 0;
 };
 
 #endif /* ESAT_CCSDSPacketConsumer_h */
