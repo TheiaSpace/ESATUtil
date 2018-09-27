@@ -38,13 +38,8 @@ class ESAT_CCSDSTelecommandPacketHandler
     // - The packet has a secondary header.
     // - The packet's application process identifier is the same
     //   as the telecommand handler's application process identifier.
-    // - The packet's major version number is the same as the
-    //   telecommand handler's major version number.
-    // - The packet's minor version number is equal to or greater than
-    //   the telecommand handler's minor version number.
-    // - If the minor version numbers match, the packet's patch
-    //   version number is equal to or greater than the telecommand
-    //   handler's patch version number.
+    // - The packet's semantic version number is backwards-compatible
+    //   with the telecommand handler's semantic version number.
     ESAT_CCSDSTelecommandPacketHandler(word applicationProcessIdentifier,
                                        byte majorVersionNumber,
                                        byte minorVersionNumber,
@@ -62,13 +57,8 @@ class ESAT_CCSDSTelecommandPacketHandler
     // - The packet has a secondary header.
     // - The packet's application process identifier is the same
     //   as the telecommand handler's application process identifier.
-    // - The packet's major version number is the same as the
-    //   telecommand handler's major version number.
-    // - The packet's minor version number is equal to or greater than
-    //   the telecommand handler's minor version number.
-    // - If the minor version numbers match, the packet's patch
-    //   version number is equal to or greater than the telecommand
-    //   handler's patch version number.
+    // - The packet's semantic version number is backwards-compatible
+    //   with the telecommand handler's semantic version number.
     // Return true on success; otherwise return false.
     boolean handle(ESAT_CCSDSPacket packet);
 
