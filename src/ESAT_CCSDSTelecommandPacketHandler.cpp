@@ -20,15 +20,9 @@
 
 #include "ESAT_CCSDSTelecommandPacketHandler.h"
 
-ESAT_CCSDSTelecommandPacketHandler::ESAT_CCSDSTelecommandPacketHandler(const word theApplicationProcessIdentifier,
-                                                                       const byte majorVersionNumber,
-                                                                       const byte minorVersionNumber,
-                                                                       const byte patchVersionNumber)
+ESAT_CCSDSTelecommandPacketHandler::ESAT_CCSDSTelecommandPacketHandler(const word theApplicationProcessIdentifier)
 {
   applicationProcessIdentifier = theApplicationProcessIdentifier;
-  versionNumber = ESAT_SemanticVersionNumber(majorVersionNumber,
-                                             minorVersionNumber,
-                                             patchVersionNumber);
 }
 
 void ESAT_CCSDSTelecommandPacketHandler::add(ESAT_CCSDSPacketConsumer& consumer)
@@ -60,13 +54,7 @@ boolean ESAT_CCSDSTelecommandPacketHandler::compatiblePacket(ESAT_CCSDSPacket pa
   {
     return false;
   }
-  const ESAT_CCSDSSecondaryHeader secondaryHeader =
-    packet.readSecondaryHeader();
-  const ESAT_SemanticVersionNumber packetVersionNumber =
-    ESAT_SemanticVersionNumber(secondaryHeader.majorVersionNumber,
-                               secondaryHeader.minorVersionNumber,
-                               secondaryHeader.patchVersionNumber);
-  return packetVersionNumber.isBackwardsCompatibleWith(versionNumber);
+  return true;
 }
 
 boolean ESAT_CCSDSTelecommandPacketHandler::handle(ESAT_CCSDSPacket packet)

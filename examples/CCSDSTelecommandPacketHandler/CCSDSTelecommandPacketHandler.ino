@@ -86,10 +86,7 @@ const word maximumPacketIdentifier = 5;
 const ESAT_Timestamp timestamp(1998, 11, 20, 6, 40, 0);
 
 // Use this to handle telecommand packets.
-ESAT_CCSDSTelecommandPacketHandler handler(applicationProcessIdentifier,
-                                           majorVersionNumber,
-                                           minorVersionNumber,
-                                           patchVersionNumber);
+ESAT_CCSDSTelecommandPacketHandler handler(applicationProcessIdentifier);
 
 void setup()
 {
