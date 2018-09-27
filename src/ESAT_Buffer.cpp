@@ -108,7 +108,7 @@ size_t ESAT_Buffer::printTo(Print& output) const
   }
   // Normal operation: print the contents of the buffer.
   size_t bytesWritten =
-    output.print(String(buffer[0], HEX));
+    output.print(buffer[0], HEX);
   for (unsigned long i = 1; i < bytesInBuffer; i++)
   {
     bytesWritten =
@@ -116,7 +116,7 @@ size_t ESAT_Buffer::printTo(Print& output) const
       + output.print(F(", "));
     bytesWritten =
       bytesWritten
-      + output.print(String(buffer[i], HEX));
+      + output.print(buffer[i], HEX);
   }
   return bytesWritten;
 }
