@@ -20,10 +20,6 @@
 
 #include "ESAT_CCSDSTelecommandPacketHandler.h"
 
-ESAT_CCSDSTelecommandPacketHandler::ESAT_CCSDSTelecommandPacketHandler()
-{
-}
-
 ESAT_CCSDSTelecommandPacketHandler::ESAT_CCSDSTelecommandPacketHandler(const word theApplicationProcessIdentifier,
                                                                        const byte majorVersionNumber,
                                                                        const byte minorVersionNumber,
