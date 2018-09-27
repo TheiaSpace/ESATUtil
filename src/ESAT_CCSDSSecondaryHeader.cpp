@@ -24,14 +24,14 @@ size_t ESAT_CCSDSSecondaryHeader::printTo(Print& output) const
 {
   size_t bytesWritten = 0;
   bytesWritten =
-    bytesWritten + output.println(String("{"));
+    bytesWritten + output.println(F("{"));
   bytesWritten =
-    bytesWritten + output.print(String("  \"preamble\": "));
+    bytesWritten + output.print(F("  \"preamble\": "));
   switch (preamble)
   {
     case CALENDAR_SEGMENTED_TIME_CODE_MONTH_DAY_VARIANT_1_SECOND_RESOLUTION:
       bytesWritten =
-        bytesWritten + output.print(String("\"CALENDAR_SEGMENTED_TIME_CODE_MONTH_DAY_VARIANT_1_SECOND_RESOLUTION\""));
+        bytesWritten + output.print(F("\"CALENDAR_SEGMENTED_TIME_CODE_MONTH_DAY_VARIANT_1_SECOND_RESOLUTION\""));
       break;
     default:
       bytesWritten =
@@ -39,34 +39,34 @@ size_t ESAT_CCSDSSecondaryHeader::printTo(Print& output) const
       break;
   }
   bytesWritten =
-    bytesWritten + output.println(String(","));
+    bytesWritten + output.println(F(","));
   bytesWritten =
-    bytesWritten + output.print(String("  \"timestamp\": "));
+    bytesWritten + output.print(F("  \"timestamp\": "));
   bytesWritten =
     bytesWritten + output.print(timestamp);
   bytesWritten =
-    bytesWritten + output.println(String(","));
+    bytesWritten + output.println(F(","));
   bytesWritten =
-    bytesWritten + output.print(String("  \"versionNumber\": \""));
+    bytesWritten + output.print(F("  \"versionNumber\": \""));
   bytesWritten =
     bytesWritten + output.print(String(majorVersionNumber, DEC));
   bytesWritten =
-    bytesWritten + output.print(String("."));
+    bytesWritten + output.print(F("."));
   bytesWritten =
     bytesWritten + output.print(String(minorVersionNumber, DEC));
   bytesWritten =
-    bytesWritten + output.print(String("."));
+    bytesWritten + output.print(F("."));
   bytesWritten =
     bytesWritten + output.print(String(patchVersionNumber, DEC));
   bytesWritten =
-    bytesWritten + output.println(String("\","));
+    bytesWritten + output.println(F("\","));
   bytesWritten =
-    bytesWritten + output.print(String("  \"packetIdentifier\": "));
+    bytesWritten + output.print(F("  \"packetIdentifier\": "));
   bytesWritten =
     bytesWritten + output.print(String(packetIdentifier, HEX));
   bytesWritten =
-    bytesWritten + output.println(String(""));
+    bytesWritten + output.println(F(""));
   bytesWritten =
-    bytesWritten + output.print(String("}"));
+    bytesWritten + output.print(F("}"));
   return bytesWritten;
 }
