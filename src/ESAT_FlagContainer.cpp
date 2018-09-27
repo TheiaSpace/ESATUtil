@@ -74,7 +74,7 @@ size_t ESAT_FlagContainer::printTo(Print& output) const
     {
       if (firstActiveFlagAlreadyPrinted)
       {
-        bytesWritten = bytesWritten + output.print(String(", "));
+        bytesWritten = bytesWritten + output.print(F(", "));
       }
       firstActiveFlagAlreadyPrinted = true;
       bytesWritten = bytesWritten + output.print(String(flag, DEC));
