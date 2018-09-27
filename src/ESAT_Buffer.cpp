@@ -19,6 +19,7 @@
  */
 
 #include "ESAT_Buffer.h"
+#include "ESAT_Util.h"
 
 ESAT_Buffer::ESAT_Buffer()
 {
@@ -108,15 +109,18 @@ size_t ESAT_Buffer::printTo(Print& output) const
   }
   // Normal operation: print the contents of the buffer.
   size_t bytesWritten =
-    output.print(buffer[0], HEX);
+    output.print(F("0x"));
+  bytesWritten =
+    bytesWritten
+    + output.print(ESAT_Util.byteToHexadecimal(buffer[0]));
   for (unsigned long i = 1; i < bytesInBuffer; i++)
   {
     bytesWritten =
       bytesWritten
-      + output.print(F(", "));
+      + output.print(F(", 0x"));
     bytesWritten =
       bytesWritten
-      + output.print(buffer[i], HEX);
+      + output.print(ESAT_Util.byteToHexadecimal(buffer[i]));
   }
   return bytesWritten;
 }
