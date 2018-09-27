@@ -92,34 +92,34 @@ size_t ESAT_CCSDSPacket::printTo(Print& output) const
   size_t bytesWritten = 0;
   bytesWritten =
     bytesWritten
-    + output.println(String("{"));
+    + output.println(F("{"));
   bytesWritten =
     bytesWritten
-    + output.println(String("  \"primaryHeader\":"));
+    + output.println(F("  \"primaryHeader\":"));
   bytesWritten =
     bytesWritten
     + output.print(primaryHeader);
   bytesWritten =
     bytesWritten
-    + output.println(String(","));
+    + output.println(F(","));
   bytesWritten =
     bytesWritten
-    + output.println(String("  \"packetData\": ["));
+    + output.println(F("  \"packetData\": ["));
   bytesWritten =
     bytesWritten
-    + output.print(String("    "));
+    + output.print(F("    "));
   bytesWritten =
     bytesWritten
     + output.print(packetData);
   bytesWritten =
     bytesWritten
-    + output.println(String(""));
+    + output.println(F(""));
   bytesWritten =
     bytesWritten
-    + output.println(String("  ],"));
+    + output.println(F("  ],"));
   bytesWritten =
     bytesWritten
-    + output.print(String("}"));
+    + output.print(F("}"));
   return bytesWritten;
 }
 
