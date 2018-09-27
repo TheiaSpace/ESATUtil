@@ -113,7 +113,7 @@ size_t ESAT_Buffer::printTo(Print& output) const
   {
     bytesWritten =
       bytesWritten
-      + output.print(String(", "));
+      + output.print(F(", "));
     bytesWritten =
       bytesWritten
       + output.print(String(buffer[i], HEX));
