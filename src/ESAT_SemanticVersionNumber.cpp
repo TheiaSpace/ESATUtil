@@ -49,11 +49,11 @@ boolean ESAT_SemanticVersionNumber::isBackwardsCompatibleWith(const ESAT_Semanti
 size_t ESAT_SemanticVersionNumber::printTo(Print& output) const
 {
   size_t bytesWritten = 0;
-  bytesWritten = bytesWritten + output.print(String(majorVersionNumber, DEC));
+  bytesWritten = bytesWritten + output.print(majorVersionNumber, DEC);
   bytesWritten = bytesWritten + output.print(F("."));
-  bytesWritten = bytesWritten + output.print(String(minorVersionNumber, DEC));
+  bytesWritten = bytesWritten + output.print(minorVersionNumber, DEC);
   bytesWritten = bytesWritten + output.print(F("."));
-  bytesWritten = bytesWritten + output.print(String(patchVersionNumber, DEC));
+  bytesWritten = bytesWritten + output.print(patchVersionNumber, DEC);
   return bytesWritten;
 }
 
