@@ -58,7 +58,7 @@ size_t ESAT_CRC8::printTo(Print& output) const
     if (bitRead(polynomial, bit))
     {
       bytesWritten = bytesWritten + output.print(F(" + x^"));
-      bytesWritten = bytesWritten + output.print(String(bit, DEC));
+      bytesWritten = bytesWritten + output.print(bit, DEC);
     }
   }
   return bytesWritten;
