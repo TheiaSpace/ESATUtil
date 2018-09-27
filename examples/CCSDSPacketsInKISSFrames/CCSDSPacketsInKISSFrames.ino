@@ -69,11 +69,11 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println("###################################################");
-  (void) Serial.println("CCSDS Space Packets in KISS frames example program.");
-  (void) Serial.println("###################################################");
+  (void) Serial.println(F("###################################################"));
+  (void) Serial.println(F("CCSDS Space Packets in KISS frames example program."));
+  (void) Serial.println(F("###################################################"));
   // Build the input packet.
-  (void) Serial.println("Building the input packet...");
+  (void) Serial.println(F("Building the input packet..."));
   inputPacket.flush();
   inputPacket.writeTelecommandHeaders(applicationProcessIdentifier,
                                       packetSequenceCount,
@@ -82,21 +82,21 @@ void loop()
                                       minorVersionNumber,
                                       patchVersionNumber,
                                       packetIdentifier);
-  (void) Serial.print("Input packet: ");
+  (void) Serial.print(F("Input packet: "));
   (void) Serial.println(inputPacket);
   // Write the packet into a frame.
-  (void) Serial.println("Writing the input packet to a frame...");
+  (void) Serial.println(F("Writing the input packet to a frame..."));
   (void) frameWriter.unbufferedWrite(inputPacket);
-  (void) Serial.print("Hexadecimal dump of the frame: ");
+  (void) Serial.print(F("Hexadecimal dump of the frame: "));
   (void) Serial.println(frame);
   // Read the packet from a frame.
-  (void) Serial.println("Reading a packet from the frame...");
+  (void) Serial.println(F("Reading a packet from the frame..."));
   frame.rewind();
   (void) frameReader.read(outputPacket);
-  (void) Serial.print("Output packet: ");
+  (void) Serial.print(F("Output packet: "));
   (void) Serial.println(outputPacket);
   // End.
-  (void) Serial.println("End.");
-  (void) Serial.println("");
+  (void) Serial.println(F("End."));
+  (void) Serial.println();
   delay(1000);
 }

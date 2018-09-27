@@ -39,16 +39,16 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println("###############################");
-  (void) Serial.println("Software clock example program.");
-  (void) Serial.println("###############################");
+  (void) Serial.println(F("###############################"));
+  (void) Serial.println(F("Software clock example program."));
+  (void) Serial.println(F("###############################"));
   // Print the time.
-  (void) Serial.print("Start time: ");
+  (void) Serial.print(F("Start time: "));
   (void) Serial.println(startTime);
-  (void) Serial.print("Current time: ");
+  (void) Serial.print(F("Current time: "));
   (void) Serial.println(clock.read());
   // End.
-  (void) Serial.println("End");
-  (void) Serial.println("");
+  (void) Serial.println(F("End"));
+  (void) Serial.println();
   delay(1000);
 }

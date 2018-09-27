@@ -43,24 +43,24 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println("############################################");
-  (void) Serial.println("I2C master read telecommand example program.");
-  (void) Serial.println("############################################");
+  (void) Serial.println(F("############################################"));
+  (void) Serial.println(F("I2C master read telecommand example program."));
+  (void) Serial.println(F("############################################"));
   // Read the packet.
-  (void) Serial.println("Reading a telecommand packet...");
+  (void) Serial.println(F("Reading a telecommand packet..."));
   const boolean gotPacket =
     ESAT_I2CMaster.readTelecommand(packet, slaveAddress);
   if (gotPacket)
   {
-    (void) Serial.print("Packet contents: ");
+    (void) Serial.print(F("Packet contents: "));
     (void) Serial.println(packet);
   }
   else
   {
-    (void) Serial.println("Couldn't read the packet!");
+    (void) Serial.println(F("Couldn't read the packet!"));
   }
   // End.
-  (void) Serial.println("End.");
-  (void) Serial.println("");
+  (void) Serial.println(F("End."));
+  (void) Serial.println();
   delay(1000);
 }

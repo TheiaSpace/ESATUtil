@@ -36,30 +36,30 @@ void setup()
 void loop()
 {
   // Print some introductory text.
-  (void) Serial.println("#####################");
-  (void) Serial.println("CRC8 example program.");
-  (void) Serial.println("#####################");
-  (void) Serial.print("Polynomial: ");
+  (void) Serial.println(F("#####################"));
+  (void) Serial.println(F("CRC8 example program."));
+  (void) Serial.println(F("#####################"));
+  (void) Serial.print(F("Polynomial: "));
   (void) Serial.println(crc);
   // Ask the user for input text.
   String inputText;
   while (inputText.length() == 0)
   {
-    (void) Serial.println("Type some text, please:");
+    (void) Serial.println(F("Type some text, please:"));
     inputText = Serial.readString();
   }
   // Print the input text.
-  (void) Serial.print("Input text: \"");
+  (void) Serial.print(F("Input text: \""));
   (void) Serial.print(inputText);
-  (void) Serial.println("\"");
+  (void) Serial.println(F("\""));
   // Compute the CRC8 remainder.
   (void) crc.print(inputText);
   const byte remainder = byte(crc.read());
   // Print the CRC8 remainder.
-  (void) Serial.print("CRC8 (hexadecimal): ");
+  (void) Serial.print(F("CRC8 (hexadecimal): "));
   (void) Serial.println(remainder, HEX);
   // End.
-  (void) Serial.println("End.");
-  (void) Serial.println("");
+  (void) Serial.println(F("End."));
+  (void) Serial.println();
   delay(1000);
 }

@@ -50,23 +50,23 @@ void setup()
 
 void loop()
 {
-  (void) Serial.println("###############################");
-  (void) Serial.println("I2C slave read example program.");
-  (void) Serial.println("###############################");
+  (void) Serial.println(F("###############################"));
+  (void) Serial.println(F("I2C slave read example program."));
+  (void) Serial.println(F("###############################"));
   // Read a packet.
-  (void) Serial.println("Reading a packet...");
+  (void) Serial.println(F("Reading a packet..."));
   const boolean gotPacket = ESAT_I2CSlave.readPacket(packet);
   if (gotPacket)
   {
-    (void) Serial.print("Packet contents: ");
+    (void) Serial.print(F("Packet contents: "));
     (void) Serial.println(packet);
   }
   else
   {
-    (void) Serial.println("Couldn't read a packet!");
+    (void) Serial.println(F("Couldn't read a packet!"));
   }
   // End.
-  (void) Serial.println("End.");
-  (void) Serial.println("");
+  (void) Serial.println(F("End."));
+  (void) Serial.println();
   delay(1000);
 }
