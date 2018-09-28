@@ -103,6 +103,12 @@ void loop()
     (void) Serial.print(F(" is backward compatible with "));
     (void) Serial.println(secondVersion);
   }
+  if (firstVersion.isForwardCompatibleWith(secondVersion))
+  {
+    (void) Serial.print(firstVersion);
+    (void) Serial.print(F(" is forward compatible with "));
+    (void) Serial.println(secondVersion);
+  }
   // End.
   (void) Serial.println(F("End."));
   (void) Serial.println();
