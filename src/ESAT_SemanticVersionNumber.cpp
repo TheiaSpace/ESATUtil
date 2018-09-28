@@ -55,6 +55,11 @@ boolean ESAT_SemanticVersionNumber::isBackwardCompatibleWith(const byte major,
                                                              patch));
 }
 
+boolean ESAT_SemanticVersionNumber::isForwardCompatibleWith(const ESAT_SemanticVersionNumber version) const
+{
+  return version.isBackwardCompatibleWith(*this);
+}
+
 size_t ESAT_SemanticVersionNumber::printTo(Print& output) const
 {
   size_t bytesWritten = 0;
