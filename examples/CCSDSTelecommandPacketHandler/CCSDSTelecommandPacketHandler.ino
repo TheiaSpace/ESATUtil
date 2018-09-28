@@ -86,7 +86,7 @@ class VersionTelecommandConsumerClass: public ESAT_CCSDSPacketConsumer
                                    secondaryHeader.patchVersionNumber);
       const ESAT_SemanticVersionNumber expectedVersionNumber =
         ESAT_SemanticVersionNumber(3, 0, 0);
-      if (packetVersionNumber.isBackwardsCompatibleWith(expectedVersionNumber))
+      if (packetVersionNumber.isBackwardCompatibleWith(expectedVersionNumber))
       {
         (void) Serial.println(F("VersionTelecommandConsumer handles interface version 3.0.0 and is working."));
         return true;
