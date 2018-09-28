@@ -33,17 +33,17 @@ class ESAT_SemanticVersionNumber: public Printable
 
     // Major version number.
     // An increment in the major version number denotes a
-    // backwards-incompatible change.
+    // backward-incompatible change.
     byte majorVersionNumber;
 
     // Minor version number.
     // An increment in the minor version number denotes a
-    // backwards-compatible change that includes new features.
+    // backward-compatible change that includes new features.
     byte minorVersionNumber;
 
     // Patch version number.
     // An increment in the patch version number denotes a
-    // backwards-compatible change that fixes an error.
+    // backward-compatible change that fixes an error.
     byte patchVersionNumber;
 
     // Build a semantic version number with all numbers set to 0.
@@ -52,16 +52,16 @@ class ESAT_SemanticVersionNumber: public Printable
     // Build a semantic version number with the given numbers.
     ESAT_SemanticVersionNumber(byte major, byte minor, byte patch);
 
-    // Return true if this version number is backwards-compatible with
+    // Return true if this version number is backward-compatible with
     // the given version number.  This happens when all the following
     // conditions are met:
     // - This major version number is equal to the given major version
     //   number (a different major version number means incompatibility).
     // - This version number is greater than or equal to the given version
-    //   number (you can only be backwards-compatible with something older
+    //   number (you can only be backward-compatible with something older
     //   than you).
     // Otherwise return false.
-    boolean isBackwardsCompatibleWith(ESAT_SemanticVersionNumber version) const;
+    boolean isBackwardCompatibleWith(ESAT_SemanticVersionNumber version) const;
 
     // Print the version number in human readable
     // (majorVersionNumber.minorVersionNumber.patchVersionNumber)
