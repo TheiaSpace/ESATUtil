@@ -97,10 +97,10 @@ void loop()
     (void) Serial.print(F(" >= "));
     (void) Serial.println(secondVersion);
   }
-  if (firstVersion.isBackwardsCompatibleWith(secondVersion))
+  if (firstVersion.isBackwardCompatibleWith(secondVersion))
   {
     (void) Serial.print(firstVersion);
-    (void) Serial.print(F(" is backwards compatible with "));
+    (void) Serial.print(F(" is backward compatible with "));
     (void) Serial.println(secondVersion);
   }
   // End.
