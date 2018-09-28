@@ -46,6 +46,29 @@ boolean ESAT_SemanticVersionNumber::isBackwardCompatibleWith(const ESAT_Semantic
   return true;
 }
 
+boolean ESAT_SemanticVersionNumber::isBackwardCompatibleWith(const byte major,
+                                                             const byte minor,
+                                                             const byte patch) const
+{
+  return isBackwardCompatibleWith(ESAT_SemanticVersionNumber(major,
+                                                             minor,
+                                                             patch));
+}
+
+boolean ESAT_SemanticVersionNumber::isForwardCompatibleWith(const ESAT_SemanticVersionNumber version) const
+{
+  return version.isBackwardCompatibleWith(*this);
+}
+
+boolean ESAT_SemanticVersionNumber::isForwardCompatibleWith(const byte major,
+                                                            const byte minor,
+                                                            const byte patch) const
+{
+  return isForwardCompatibleWith(ESAT_SemanticVersionNumber(major,
+                                                            minor,
+                                                            patch));
+}
+
 size_t ESAT_SemanticVersionNumber::printTo(Print& output) const
 {
   size_t bytesWritten = 0;
