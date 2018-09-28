@@ -63,6 +63,11 @@ class ESAT_SemanticVersionNumber: public Printable
     // Otherwise return false.
     boolean isBackwardCompatibleWith(ESAT_SemanticVersionNumber version) const;
 
+    // Same as
+    // isBackwardCompatibleWith(ESAT_SemanticVersionNumber(major,
+    // minor, patch)).
+    boolean isBackwardCompatibleWith(byte major, byte minor, byte patch) const;
+
     // Print the version number in human readable
     // (majorVersionNumber.minorVersionNumber.patchVersionNumber)
     // form.
