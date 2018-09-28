@@ -16,6 +16,7 @@
  */
 
 #include <ESAT_CCSDSTelecommandPacketHandler.h>
+#include <ESAT_SemanticVersionNumber.h>
 
 // ESAT_CCSDSTelecommandPacketHandler example program.
 // A way of handling telecommand packets.
@@ -68,6 +69,36 @@ class EvenTelecommandConsumerClass: public ESAT_CCSDSPacketConsumer
 
 EvenTelecommandConsumerClass EvenTelecommandConsumer;
 
+// This handles telecommand packets directed towards a specific
+// interface version number.
+class VersionTelecommandConsumerClass: public ESAT_CCSDSPacketConsumer
+{
+  public:
+    // Handle a telecommand packet.
+    // Return true on success; otherwise return false.
+    boolean consume(ESAT_CCSDSPacket packet)
+    {
+      const ESAT_CCSDSSecondaryHeader secondaryHeader =
+        packet.readSecondaryHeader();
+      const ESAT_SemanticVersionNumber packetVersionNumber =
+        ESAT_SemanticVersionNumber(secondaryHeader.majorVersionNumber,
+                                   secondaryHeader.minorVersionNumber,
+                                   secondaryHeader.patchVersionNumber);
+      const ESAT_SemanticVersionNumber expectedVersionNumber =
+        ESAT_SemanticVersionNumber(3, 0, 0);
+      if (packetVersionNumber.isBackwardsCompatibleWith(expectedVersionNumber))
+      {
+        (void) Serial.println(F("VersionTelecommandConsumer handles interface version 3.0.0 and is working."));
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+};
+
+VersionTelecommandConsumerClass VersionTelecommandConsumer;
 
 // Work with this packet.
 const byte capacity = ESAT_CCSDSSecondaryHeader::LENGTH;
@@ -86,10 +117,7 @@ const word maximumPacketIdentifier = 5;
 const ESAT_Timestamp timestamp(1998, 11, 20, 6, 40, 0);
 
 // Use this to handle telecommand packets.
-ESAT_CCSDSTelecommandPacketHandler handler(applicationProcessIdentifier,
-                                           majorVersionNumber,
-                                           minorVersionNumber,
-                                           patchVersionNumber);
+ESAT_CCSDSTelecommandPacketHandler handler(applicationProcessIdentifier);
 
 void setup()
 {
@@ -102,6 +130,7 @@ void setup()
   // Add the consumers to the telecommand handler.
   handler.add(OneTelecommandConsumer);
   handler.add(EvenTelecommandConsumer);
+  handler.add(VersionTelecommandConsumer);
 }
 
 void loop()

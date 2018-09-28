@@ -38,29 +38,23 @@ class ESAT_CCSDSTelecommandPacketHandler
     // - The packet has a secondary header.
     // - The packet's application process identifier is the same
     //   as the telecommand handler's application process identifier.
-    // - The packet's semantic version number is backwards-compatible
-    //   with the telecommand handler's semantic version number.
-    ESAT_CCSDSTelecommandPacketHandler(word applicationProcessIdentifier,
-                                       byte majorVersionNumber,
-                                       byte minorVersionNumber,
-                                       byte patchVersionNumber);
+    ESAT_CCSDSTelecommandPacketHandler(word applicationProcessIdentifier);
 
     // Add a new entry to the list of packet consumers.
     void add(ESAT_CCSDSPacketConsumer& consumer);
 
     // Handle a telecommand packet.
     // This will work through the list of packet consumers until one
-    // succeeds at handling the telecommand.
-    // The packet will be passed to the consumers with the read/write
-    // pointer at the start of the packet data field.
+    // matches the packet identifier and is compatible with the
+    // version number.
+    // The packet will be passed to the compatible consumer with the
+    // read/write pointer at the start of the user data field.
     // The telecommand handler will fail to handle a packet if any
     // of the following conditions isn't met:
     // - The packet is a telecommand packet.
     // - The packet has a secondary header.
     // - The packet's application process identifier is the same
     //   as the telecommand handler's application process identifier.
-    // - The packet's semantic version number is backwards-compatible
-    //   with the telecommand handler's semantic version number.
     // Return true on success; otherwise return false.
     boolean handle(ESAT_CCSDSPacket packet);
 
@@ -87,8 +81,6 @@ class ESAT_CCSDSTelecommandPacketHandler
     // - The packet has a secondary header.
     // - The packet's application process identifier is the same
     //   as the telecommand handler's application process identifier.
-    // - The packet's version number is backwards-compatible with the
-    // - telecommand handler's version number.
     boolean compatiblePacket(ESAT_CCSDSPacket packet) const;
 };
 
