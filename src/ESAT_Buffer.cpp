@@ -51,7 +51,7 @@ int ESAT_Buffer::available()
 {
   // Truncate the result of availableBytes() to fit a 16-bit signed
   // integer.
-  return min(availableBytes(), 0x7FFF);
+  return min(availableBytes(), (unsigned long) 0x7FFF);
 }
 
 unsigned long ESAT_Buffer::availableBytes() const
