@@ -42,7 +42,7 @@ int ESAT_CCSDSPacket::available()
 {
   // Truncate the result of availableBytesToRead() to fit a 16-bit
   // signed integer.
-  return min(availableBytesToRead(), 0x7FFF);
+  return min(availableBytesToRead(), (unsigned long) 0x7FFF);
 }
 
 unsigned long ESAT_CCSDSPacket::availableBytesToRead() const
