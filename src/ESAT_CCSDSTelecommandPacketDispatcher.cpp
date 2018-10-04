@@ -23,6 +23,7 @@
 ESAT_CCSDSTelecommandPacketDispatcher::ESAT_CCSDSTelecommandPacketDispatcher(const word theApplicationProcessIdentifier)
 {
   applicationProcessIdentifier = theApplicationProcessIdentifier;
+  head = nullptr;
 }
 
 void ESAT_CCSDSTelecommandPacketDispatcher::add(ESAT_CCSDSTelecommandPacketHandler& handler)
