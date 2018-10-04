@@ -23,65 +23,46 @@
 
 #include <Arduino.h>
 #include "ESAT_CCSDSPacket.h"
-#include "ESAT_CCSDSPacketConsumer.h"
 #include "ESAT_SemanticVersionNumber.h"
 
-// Telecommand packet handler for ESAT's CCSDS space packets.
+// Packet handler interface.
+// Use together with ESAT_CCSDSTelecommandPacketDispatcher to handle
+// telecommand packets.
 class ESAT_CCSDSTelecommandPacketHandler
 {
   public:
-    // Set up the telecommand packet handler for the given application
-    // process identifier and semantic version numbers.
-    // The telecommand handler will only handle a packet if the
-    // following conditions are met:
-    // - The packet is a telecommand packet.
-    // - The packet has a secondary header.
-    // - The packet's application process identifier is the same
-    //   as the telecommand handler's application process identifier.
-    ESAT_CCSDSTelecommandPacketHandler(word applicationProcessIdentifier);
+    // Next packet handler object in the list of packet handler objects.
+    // ESAT_CCSDSTelecommandPacketDispatcher uses this to keep a
+    // linked list of registered packet handlers: it can traverse the
+    // list by going from one packet handler object to the next packet
+    // handler object until reaching the end of the list at nullptr.
+    // Only ESAT_CCSDSTelecommandPacketDispatcher should care about
+    // this.  Each packet handler object should be added just one time
+    // to just one ESAT_CCSDSTelecommandPacketDispatcher object.
+    ESAT_CCSDSTelecommandPacketHandler* nextTelecommandPacketHandler;
 
-    // Add a new entry to the list of packet consumers.
-    void add(ESAT_CCSDSPacketConsumer& consumer);
+    // Trivial destructor.
+    // We need to define it because the C++ programming language
+    // works this way.
+    virtual ~ESAT_CCSDSTelecommandPacketHandler() {};
 
-    // Handle a telecommand packet.
-    // This will work through the list of packet consumers until one
-    // matches the packet identifier and is compatible with the
-    // version number.
-    // The packet will be passed to the compatible consumer with the
-    // read/write pointer at the start of the user data field.
-    // The telecommand handler will fail to handle a packet if any
-    // of the following conditions isn't met:
-    // - The packet is a telecommand packet.
-    // - The packet has a secondary header.
-    // - The packet's application process identifier is the same
-    //   as the telecommand handler's application process identifier.
+    // Consume/process a packet.
+    // The read/write pointer of the packet is at the start of the
+    // user data field.
     // Return true on success; otherwise return false.
-    boolean handle(ESAT_CCSDSPacket packet);
+    virtual boolean handleUserData(ESAT_CCSDSPacket packet) = 0;
 
-  private:
-    // Application process identifier.
-    // Each logical subsystem should have its own unique application
-    // process identifier (e.g., the attitude determination and
-    // control subsystem has its own application process identifier).
-    word applicationProcessIdentifier;
+    // Return the packet identifier of this packet handler.
+    // ESAT_CCSDSTelecommandPacketDispatcher objects pass telecommand
+    // packets to a handler object only when the packet identifiers
+    // match.
+    virtual byte packetIdentifier() = 0;
 
-    // Version number in major.minor.patch format
-    // as defined in the Semantic Versioning 2.0.0 standard.
-    // Each application process has a version number.
-    ESAT_SemanticVersionNumber versionNumber;
-
-    // Head of the list of packet consumer objects.
-    ESAT_CCSDSPacketConsumer* packetConsumer;
-
-    // Return true if the packet is compatible; otherwise return
-    // false.
-    // A packet is compatible with this telecommand handler when
-    // all the following conditions are met:
-    // - The packet is a telecommand packet.
-    // - The packet has a secondary header.
-    // - The packet's application process identifier is the same
-    //   as the telecommand handler's application process identifier.
-    boolean compatiblePacket(ESAT_CCSDSPacket packet) const;
+    // Return the version number of this packet handler.
+    // ESAT_CCSDSTelecommandPacketDispatcher objects pass telecommand
+    // packets to a handler object only when the packet version number
+    // is backward-compatible with the handler version number.
+    virtual ESAT_SemanticVersionNumber versionNumber() = 0;
 };
 
 #endif /* ESAT_CCSDSTelecommandPacketHandler_h */

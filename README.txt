@@ -37,11 +37,6 @@ Stream interface to byte buffers with bounds checking.
 Standard CCSDS space packets.
 
 
-# ESAT_CCSDSPacketConsumer
-
-CCSDS space packet consumer interface.
-
-
 # ESAT_CCSDSPacketContents
 
 ESAT-flavoured CCSDS space packet contents interface.
@@ -67,9 +62,16 @@ The primary header of CCSDS space packets.
 The secondary header of CCSDS space packets used by ESAT subsystems.
 
 
+# ESAT_CCSDSTelecommandPacketDispatcher
+
+Dispatch ESAT-flavoured telecommand CCSDS space packets.
+Uses ESAT_CCSDSTelecommandPacketHandler objects to handle telecommands.
+
+
 # ESAT_CCSDSTelecommandPacketHandler
 
-Handle ESAT-flavoured telecommand CCSDS space packets.
+ESAT-flavoured CCSDS space packet handler interface.
+Used by ESAT_CCSDSTelecommandPacketDispatcher.
 
 
 # ESAT_CCSDSTelemetryPacketBuilder
