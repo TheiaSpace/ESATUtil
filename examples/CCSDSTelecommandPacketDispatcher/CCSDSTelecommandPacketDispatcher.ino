@@ -22,7 +22,7 @@
 // A way of handling telecommand packets.
 
 // This handles telecommand packet number 1.
-class OneTelecommandConsumerClass: public ESAT_CCSDSPacketConsumer
+class OneTelecommandHandlerClass: public ESAT_CCSDSPacketHandler
 {
   public:
     // Handle a telecommand packet.
@@ -33,7 +33,7 @@ class OneTelecommandConsumerClass: public ESAT_CCSDSPacketConsumer
         packet.readSecondaryHeader();
       if (secondaryHeader.packetIdentifier == 1)
       {
-        (void) Serial.println(F("OneTelecommandConsumer handles identifier 1 and is working."));
+        (void) Serial.println(F("OneTelecommandHandler handles identifier 1 and is working."));
         return true;
       }
       else
@@ -43,10 +43,10 @@ class OneTelecommandConsumerClass: public ESAT_CCSDSPacketConsumer
     }
 };
 
-OneTelecommandConsumerClass OneTelecommandConsumer;
+OneTelecommandHandlerClass OneTelecommandHandler;
 
 // This handles telecommand packets with an even number.
-class EvenTelecommandConsumerClass: public ESAT_CCSDSPacketConsumer
+class EvenTelecommandHandlerClass: public ESAT_CCSDSPacketHandler
 {
   public:
     // Handle a telecommand packet.
@@ -57,7 +57,7 @@ class EvenTelecommandConsumerClass: public ESAT_CCSDSPacketConsumer
         packet.readSecondaryHeader();
       if ((secondaryHeader.packetIdentifier % 2) == 0)
       {
-        (void) Serial.println(F("EvenTelecommandConsumer handles even identifier and is working."));
+        (void) Serial.println(F("EvenTelecommandHandler handles even identifier and is working."));
         return true;
       }
       else
@@ -67,11 +67,11 @@ class EvenTelecommandConsumerClass: public ESAT_CCSDSPacketConsumer
     }
 };
 
-EvenTelecommandConsumerClass EvenTelecommandConsumer;
+EvenTelecommandHandlerClass EvenTelecommandHandler;
 
 // This handles telecommand packets directed towards a specific
 // interface version number.
-class VersionTelecommandConsumerClass: public ESAT_CCSDSPacketConsumer
+class VersionTelecommandHandlerClass: public ESAT_CCSDSPacketHandler
 {
   public:
     // Handle a telecommand packet.
@@ -88,7 +88,7 @@ class VersionTelecommandConsumerClass: public ESAT_CCSDSPacketConsumer
         ESAT_SemanticVersionNumber(3, 0, 0);
       if (packetVersionNumber.isBackwardCompatibleWith(expectedVersionNumber))
       {
-        (void) Serial.println(F("VersionTelecommandConsumer handles interface version 3.0.0 and is working."));
+        (void) Serial.println(F("VersionTelecommandHandler handles interface version 3.0.0 and is working."));
         return true;
       }
       else
@@ -98,7 +98,7 @@ class VersionTelecommandConsumerClass: public ESAT_CCSDSPacketConsumer
     }
 };
 
-VersionTelecommandConsumerClass VersionTelecommandConsumer;
+VersionTelecommandHandlerClass VersionTelecommandHandler;
 
 // Work with this packet.
 const byte capacity = ESAT_CCSDSSecondaryHeader::LENGTH;
@@ -127,10 +127,10 @@ void setup()
   while (!Serial)
   {
   }
-  // Add the consumers to the telecommand dispatcher.
-  dispatcher.add(OneTelecommandConsumer);
-  dispatcher.add(EvenTelecommandConsumer);
-  dispatcher.add(VersionTelecommandConsumer);
+  // Add the handlers to the telecommand dispatcher.
+  dispatcher.add(OneTelecommandHandler);
+  dispatcher.add(EvenTelecommandHandler);
+  dispatcher.add(VersionTelecommandHandler);
 }
 
 void loop()

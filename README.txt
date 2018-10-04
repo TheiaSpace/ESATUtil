@@ -37,14 +37,14 @@ Stream interface to byte buffers with bounds checking.
 Standard CCSDS space packets.
 
 
-# ESAT_CCSDSPacketConsumer
-
-CCSDS space packet consumer interface.
-
-
 # ESAT_CCSDSPacketContents
 
 ESAT-flavoured CCSDS space packet contents interface.
+
+
+# ESAT_CCSDSPacketHandler
+
+ESAT-flavoured CCSDS space packet handler interface.
 
 
 # ESAT_CCSDSPacketFromKISSFrameReader

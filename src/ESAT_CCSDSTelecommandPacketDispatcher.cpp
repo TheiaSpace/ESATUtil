@@ -25,10 +25,10 @@ ESAT_CCSDSTelecommandPacketDispatcher::ESAT_CCSDSTelecommandPacketDispatcher(con
   applicationProcessIdentifier = theApplicationProcessIdentifier;
 }
 
-void ESAT_CCSDSTelecommandPacketDispatcher::add(ESAT_CCSDSPacketConsumer& consumer)
+void ESAT_CCSDSTelecommandPacketDispatcher::add(ESAT_CCSDSPacketHandler& handler)
 {
-  consumer.nextPacketConsumer = packetConsumer;
-  packetConsumer = &consumer;
+  handler.nextPacketHandler = packetHandler;
+  packetHandler = &handler;
 }
 
 boolean ESAT_CCSDSTelecommandPacketDispatcher::compatiblePacket(ESAT_CCSDSPacket packet) const
@@ -64,11 +64,11 @@ boolean ESAT_CCSDSTelecommandPacketDispatcher::handle(ESAT_CCSDSPacket packet)
   {
     return false;
   }
-  for (ESAT_CCSDSPacketConsumer* consumer = packetConsumer;
-       consumer != nullptr;
-       consumer = consumer->nextPacketConsumer)
+  for (ESAT_CCSDSPacketHandler* handler = packetHandler;
+       handler != nullptr;
+       handler = handler->nextPacketHandler)
   {
-    if (consumer->consume(packet))
+    if (handler->consume(packet))
     {
       return true;
     }

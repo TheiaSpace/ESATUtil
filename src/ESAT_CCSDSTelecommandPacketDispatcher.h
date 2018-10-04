@@ -23,7 +23,7 @@
 
 #include <Arduino.h>
 #include "ESAT_CCSDSPacket.h"
-#include "ESAT_CCSDSPacketConsumer.h"
+#include "ESAT_CCSDSPacketHandler.h"
 #include "ESAT_SemanticVersionNumber.h"
 
 // Telecommand packet dispatcher for ESAT's CCSDS space packets.
@@ -40,14 +40,14 @@ class ESAT_CCSDSTelecommandPacketDispatcher
     //   as the telecommand dispatcher's application process identifier.
     ESAT_CCSDSTelecommandPacketDispatcher(word applicationProcessIdentifier);
 
-    // Add a new entry to the list of packet consumers.
-    void add(ESAT_CCSDSPacketConsumer& consumer);
+    // Add a new entry to the list of packet handlers.
+    void add(ESAT_CCSDSPacketHandler& handler);
 
     // Handle a telecommand packet.
-    // This will work through the list of packet consumers until one
+    // This will work through the list of packet handlers until one
     // matches the packet identifier and is compatible with the
     // version number.
-    // The packet will be passed to the compatible consumer with the
+    // The packet will be passed to the compatible handler with the
     // read/write pointer at the start of the user data field.
     // The telecommand dispatcher will fail to handle a packet if any
     // of the following conditions isn't met:
@@ -70,8 +70,8 @@ class ESAT_CCSDSTelecommandPacketDispatcher
     // Each application process has a version number.
     ESAT_SemanticVersionNumber versionNumber;
 
-    // Head of the list of packet consumer objects.
-    ESAT_CCSDSPacketConsumer* packetConsumer;
+    // Head of the list of packet handler objects.
+    ESAT_CCSDSPacketHandler* packetHandler;
 
     // Return true if the packet is compatible; otherwise return
     // false.

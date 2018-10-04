@@ -18,38 +18,38 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESAT_CCSDSPacketConsumer_h
-#define ESAT_CCSDSPacketConsumer_h
+#ifndef ESAT_CCSDSPacketHandler_h
+#define ESAT_CCSDSPacketHandler_h
 
 #include <Arduino.h>
 #include "ESAT_CCSDSPacket.h"
 
-// Packet consumer interface.
+// Packet handler interface.
 // Use together with ESAT_CCSDSTelecommandHandler to handle
 // telecommand packets.
-class ESAT_CCSDSPacketConsumer
+class ESAT_CCSDSPacketHandler
 {
   public:
-    // Next packet consumer object in the list of packet consumer objects.
+    // Next packet handler object in the list of packet handler objects.
     // ESAT_CCSDSTelecommandHandler uses this to keep a linked list of
-    // registered packet consumers: it can traverse the list by going
-    // from one packet consumer object to the next packet consumer
+    // registered packet handlers: it can traverse the list by going
+    // from one packet handler object to the next packet handler
     // object until reaching the end of the list at nullptr.
-    // Only ESAT_CCSDSTelecommandHandler should care about this.
-    // Each packet consumer object should be added just one time to
-    // just one ESAT_CCSDSTelecommandHandler object.
-    ESAT_CCSDSPacketConsumer* nextPacketConsumer;
+    // Only ESAT_CCSDSTelecommandPacketDispatcher should care about this.
+    // Each packet handler object should be added just one time to
+    // just one ESAT_CCSDSTelecommandPacketDispatcher object.
+    ESAT_CCSDSPacketHandler* nextPacketHandler;
 
     // Trivial destructor.
     // We need to define it because the C++ programming language
     // works this way.
-    virtual ~ESAT_CCSDSPacketConsumer() {};
+    virtual ~ESAT_CCSDSPacketHandler() {};
 
     // Consume/process a packet.
     // Return true on success; otherwise return false.
-    // Packet consumers used by ESAT_CCSDSTelecommandHandler return true
+    // Packet handlers used by ESAT_CCSDSTelecommandHandler return true
     // on telecommands they handle and false on the rest of telecommands.
     virtual boolean consume(ESAT_CCSDSPacket packet) = 0;
 };
 
-#endif /* ESAT_CCSDSPacketConsumer_h */
+#endif /* ESAT_CCSDSPacketHandler_h */
