@@ -21,7 +21,7 @@
 // ESAT_CCSDSTelecommandPacketDispatcher example program.
 // A way of handling telecommand packets.
 
-// This handles telecommand packet number 1.
+// This handles telecommand packet number 1 with version number 2.0.0.
 class OneTelecommandHandlerClass: public ESAT_CCSDSPacketHandler
 {
   public:
@@ -29,76 +29,75 @@ class OneTelecommandHandlerClass: public ESAT_CCSDSPacketHandler
     // Return true on success; otherwise return false.
     boolean consume(ESAT_CCSDSPacket packet)
     {
-      const ESAT_CCSDSSecondaryHeader secondaryHeader =
-        packet.readSecondaryHeader();
-      if (secondaryHeader.packetIdentifier == 1)
-      {
-        (void) Serial.println(F("OneTelecommandHandler handles identifier 1 and is working."));
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+      (void) packet;
+      (void) Serial.println(F("OneTelecommandHandler handles identifier 1 and is working."));
+      return true;
+    }
+
+    byte packetIdentifier()
+    {
+      return 1;
+    }
+
+    ESAT_SemanticVersionNumber versionNumber()
+    {
+      return ESAT_SemanticVersionNumber(2, 0, 0);
     }
 };
 
 OneTelecommandHandlerClass OneTelecommandHandler;
 
-// This handles telecommand packets with an even number.
-class EvenTelecommandHandlerClass: public ESAT_CCSDSPacketHandler
+// This handles telecommand packet number 2 with version number 2.0.0.
+class TwoTelecommandHandlerClass: public ESAT_CCSDSPacketHandler
 {
   public:
     // Handle a telecommand packet.
     // Return true on success; otherwise return false.
     boolean consume(ESAT_CCSDSPacket packet)
     {
-      const ESAT_CCSDSSecondaryHeader secondaryHeader =
-        packet.readSecondaryHeader();
-      if ((secondaryHeader.packetIdentifier % 2) == 0)
-      {
-        (void) Serial.println(F("EvenTelecommandHandler handles even identifier and is working."));
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+      (void) packet;
+      (void) Serial.println(F("TwoTelecommandHandler handles identifier 2 and is working."));
+      return true;
+    }
+
+    byte packetIdentifier()
+    {
+      return 2;
+    }
+
+    ESAT_SemanticVersionNumber versionNumber()
+    {
+      return ESAT_SemanticVersionNumber(2, 0, 0);
     }
 };
 
-EvenTelecommandHandlerClass EvenTelecommandHandler;
+TwoTelecommandHandlerClass TwoTelecommandHandler;
 
-// This handles telecommand packets directed towards a specific
-// interface version number.
-class VersionTelecommandHandlerClass: public ESAT_CCSDSPacketHandler
+// This handles telecommand packet number 1 with version number 3.0.0.
+class IncompatibleTelecommandHandlerClass: public ESAT_CCSDSPacketHandler
 {
   public:
     // Handle a telecommand packet.
     // Return true on success; otherwise return false.
     boolean consume(ESAT_CCSDSPacket packet)
     {
-      const ESAT_CCSDSSecondaryHeader secondaryHeader =
-        packet.readSecondaryHeader();
-      const ESAT_SemanticVersionNumber packetVersionNumber =
-        ESAT_SemanticVersionNumber(secondaryHeader.majorVersionNumber,
-                                   secondaryHeader.minorVersionNumber,
-                                   secondaryHeader.patchVersionNumber);
-      const ESAT_SemanticVersionNumber expectedVersionNumber =
-        ESAT_SemanticVersionNumber(3, 0, 0);
-      if (packetVersionNumber.isBackwardCompatibleWith(expectedVersionNumber))
-      {
-        (void) Serial.println(F("VersionTelecommandHandler handles interface version 3.0.0 and is working."));
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+      (void) packet;
+      (void) Serial.println(F("IncompatibleTelecommandHandler handles interface version 3.0.0 and is working."));
+      return true;
+    }
+
+    byte packetIdentifier()
+    {
+      return 1;
+    }
+
+    ESAT_SemanticVersionNumber versionNumber()
+    {
+      return ESAT_SemanticVersionNumber(3, 0, 0);
     }
 };
 
-VersionTelecommandHandlerClass VersionTelecommandHandler;
+IncompatibleTelecommandHandlerClass IncompatibleTelecommandHandler;
 
 // Work with this packet.
 const byte capacity = ESAT_CCSDSSecondaryHeader::LENGTH;
@@ -129,8 +128,8 @@ void setup()
   }
   // Add the handlers to the telecommand dispatcher.
   dispatcher.add(OneTelecommandHandler);
-  dispatcher.add(EvenTelecommandHandler);
-  dispatcher.add(VersionTelecommandHandler);
+  dispatcher.add(TwoTelecommandHandler);
+  dispatcher.add(IncompatibleTelecommandHandler);
 }
 
 void loop()

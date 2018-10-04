@@ -23,6 +23,7 @@
 
 #include <Arduino.h>
 #include "ESAT_CCSDSPacket.h"
+#include "ESAT_SemanticVersionNumber.h"
 
 // Packet handler interface.
 // Use together with ESAT_CCSDSTelecommandHandler to handle
@@ -50,6 +51,18 @@ class ESAT_CCSDSPacketHandler
     // Packet handlers used by ESAT_CCSDSTelecommandHandler return true
     // on telecommands they handle and false on the rest of telecommands.
     virtual boolean consume(ESAT_CCSDSPacket packet) = 0;
+
+    // Return the packet identifier of this packet handler.
+    // ESAT_CCSDSTelecommandPacketDispatcher objects pass telecommand
+    // packets to a handler object only when the packet identifiers
+    // match.
+    virtual byte packetIdentifier() = 0;
+
+    // Return the version number of this packet handler.
+    // ESAT_CCSDSTelecommandPacketDispatcher objects pass telecommand
+    // packets to a handler object only when the packet version number
+    // is backward-compatible with the handler version number.
+    virtual ESAT_SemanticVersionNumber versionNumber() = 0;
 };
 
 #endif /* ESAT_CCSDSPacketHandler_h */

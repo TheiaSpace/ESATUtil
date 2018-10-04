@@ -31,7 +31,7 @@ class ESAT_CCSDSTelecommandPacketDispatcher
 {
   public:
     // Set up the telecommand packet dispatcher for the given application
-    // process identifier and semantic version numbers.
+    // process identifier.
     // The telecommand dispatcher will only handle a packet if the
     // following conditions are met:
     // - The packet is a telecommand packet.
@@ -82,6 +82,11 @@ class ESAT_CCSDSTelecommandPacketDispatcher
     // - The packet's application process identifier is the same
     //   as the telecommand dispatcher's application process identifier.
     boolean compatiblePacket(ESAT_CCSDSPacket packet) const;
+
+    // Return true if the handler is compatible with the packet with
+    // given secondary header; otherwise return false.
+    boolean handlerIsCompatibleWithPacket(ESAT_CCSDSPacketHandler& handler,
+                                          ESAT_CCSDSSecondaryHeader secondaryHeader);
 };
 
 #endif /* ESAT_CCSDSTelecommandPacketDispatcher_h */

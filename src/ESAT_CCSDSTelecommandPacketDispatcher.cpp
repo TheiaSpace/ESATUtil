@@ -64,14 +64,33 @@ boolean ESAT_CCSDSTelecommandPacketDispatcher::handle(ESAT_CCSDSPacket packet)
   {
     return false;
   }
+  ESAT_CCSDSSecondaryHeader secondaryHeader = packet.readSecondaryHeader();
   for (ESAT_CCSDSPacketHandler* handler = packetHandler;
        handler != nullptr;
        handler = handler->nextPacketHandler)
   {
-    if (handler->consume(packet))
+    if (handlerIsCompatibleWithPacket(*handler, secondaryHeader))
     {
-      return true;
+      return handler->consume(packet);
     }
   }
   return false;
+}
+
+boolean ESAT_CCSDSTelecommandPacketDispatcher::handlerIsCompatibleWithPacket(ESAT_CCSDSPacketHandler& handler,
+                                                                             ESAT_CCSDSSecondaryHeader secondaryHeader)
+{
+  const ESAT_SemanticVersionNumber handlerVersionNumber =
+    handler.versionNumber();
+  if (handlerVersionNumber.isForwardCompatibleWith(secondaryHeader.majorVersionNumber,
+                                                   secondaryHeader.minorVersionNumber,
+                                                   secondaryHeader.patchVersionNumber)
+      && (handler.packetIdentifier() == secondaryHeader.packetIdentifier))
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
