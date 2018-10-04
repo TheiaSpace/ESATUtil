@@ -57,7 +57,7 @@ boolean ESAT_CCSDSTelecommandPacketDispatcher::compatiblePacket(ESAT_CCSDSPacket
   return true;
 }
 
-boolean ESAT_CCSDSTelecommandPacketDispatcher::handle(ESAT_CCSDSPacket packet)
+boolean ESAT_CCSDSTelecommandPacketDispatcher::dispatch(ESAT_CCSDSPacket packet)
 {
   packet.rewind();
   if (!compatiblePacket(packet))

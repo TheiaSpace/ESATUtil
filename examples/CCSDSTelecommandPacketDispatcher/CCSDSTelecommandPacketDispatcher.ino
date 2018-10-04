@@ -150,8 +150,8 @@ void loop()
                                  patchVersionNumber,
                                  packetIdentifier);
   // Handle the telecommand packet.
-  (void) Serial.println(F("Handling the telecommand packet..."));
-  const boolean handled = dispatcher.handle(packet);
+  (void) Serial.println(F("Dispatching the telecommand packet..."));
+  const boolean handled = dispatcher.dispatch(packet);
   if (handled)
   {
     (void) Serial.println(F("Telecommand packet handled successfully."));

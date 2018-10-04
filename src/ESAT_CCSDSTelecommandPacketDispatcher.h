@@ -43,20 +43,22 @@ class ESAT_CCSDSTelecommandPacketDispatcher
     // Add a new entry to the list of packet handlers.
     void add(ESAT_CCSDSPacketHandler& handler);
 
-    // Handle a telecommand packet.
+    // Dispatch a telecommand packet.
     // This will work through the list of packet handlers until one
     // matches the packet identifier and is compatible with the
     // version number.
     // The packet will be passed to the compatible handler with the
     // read/write pointer at the start of the user data field.
-    // The telecommand dispatcher will fail to handle a packet if any
+    // The telecommand dispatcher will fail to dispatch a packet if any
     // of the following conditions isn't met:
     // - The packet is a telecommand packet.
     // - The packet has a secondary header.
     // - The packet's application process identifier is the same
     //   as the telecommand dispatcher's application process identifier.
+    // - The packet is compatible with a handler.
+    // - The handler handles the packet successfully.
     // Return true on success; otherwise return false.
-    boolean handle(ESAT_CCSDSPacket packet);
+    boolean dispatch(ESAT_CCSDSPacket packet);
 
   private:
     // Application process identifier.
