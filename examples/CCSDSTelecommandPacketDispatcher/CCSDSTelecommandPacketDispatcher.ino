@@ -27,7 +27,7 @@ class OneTelecommandHandlerClass: public ESAT_CCSDSPacketHandler
   public:
     // Handle a telecommand packet.
     // Return true on success; otherwise return false.
-    boolean consume(ESAT_CCSDSPacket packet)
+    boolean handleUserData(ESAT_CCSDSPacket packet)
     {
       (void) packet;
       (void) Serial.println(F("OneTelecommandHandler handles identifier 1 and is working."));
@@ -53,7 +53,7 @@ class TwoTelecommandHandlerClass: public ESAT_CCSDSPacketHandler
   public:
     // Handle a telecommand packet.
     // Return true on success; otherwise return false.
-    boolean consume(ESAT_CCSDSPacket packet)
+    boolean handleUserData(ESAT_CCSDSPacket packet)
     {
       (void) packet;
       (void) Serial.println(F("TwoTelecommandHandler handles identifier 2 and is working."));
@@ -79,7 +79,7 @@ class IncompatibleTelecommandHandlerClass: public ESAT_CCSDSPacketHandler
   public:
     // Handle a telecommand packet.
     // Return true on success; otherwise return false.
-    boolean consume(ESAT_CCSDSPacket packet)
+    boolean handleUserData(ESAT_CCSDSPacket packet)
     {
       (void) packet;
       (void) Serial.println(F("IncompatibleTelecommandHandler handles interface version 3.0.0 and is working."));

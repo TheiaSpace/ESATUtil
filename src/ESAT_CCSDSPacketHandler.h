@@ -47,10 +47,10 @@ class ESAT_CCSDSPacketHandler
     virtual ~ESAT_CCSDSPacketHandler() {};
 
     // Consume/process a packet.
+    // The read/write pointer of the packet is at the start of the
+    // user data field.
     // Return true on success; otherwise return false.
-    // Packet handlers used by ESAT_CCSDSTelecommandHandler return true
-    // on telecommands they handle and false on the rest of telecommands.
-    virtual boolean consume(ESAT_CCSDSPacket packet) = 0;
+    virtual boolean handleUserData(ESAT_CCSDSPacket packet) = 0;
 
     // Return the packet identifier of this packet handler.
     // ESAT_CCSDSTelecommandPacketDispatcher objects pass telecommand

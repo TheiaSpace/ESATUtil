@@ -71,7 +71,7 @@ boolean ESAT_CCSDSTelecommandPacketDispatcher::handle(ESAT_CCSDSPacket packet)
   {
     if (handlerIsCompatibleWithPacket(*handler, secondaryHeader))
     {
-      return handler->consume(packet);
+      return handler->handleUserData(packet);
     }
   }
   return false;
