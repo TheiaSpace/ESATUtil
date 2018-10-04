@@ -22,7 +22,7 @@
 // A way of handling telecommand packets.
 
 // This handles telecommand packet number 1 with version number 2.0.0.
-class OneTelecommandHandlerClass: public ESAT_CCSDSPacketHandler
+class OneTelecommandHandlerClass: public ESAT_CCSDSTelecommandPacketHandler
 {
   public:
     // Handle a telecommand packet.
@@ -48,7 +48,7 @@ class OneTelecommandHandlerClass: public ESAT_CCSDSPacketHandler
 OneTelecommandHandlerClass OneTelecommandHandler;
 
 // This handles telecommand packet number 2 with version number 2.0.0.
-class TwoTelecommandHandlerClass: public ESAT_CCSDSPacketHandler
+class TwoTelecommandHandlerClass: public ESAT_CCSDSTelecommandPacketHandler
 {
   public:
     // Handle a telecommand packet.
@@ -74,7 +74,7 @@ class TwoTelecommandHandlerClass: public ESAT_CCSDSPacketHandler
 TwoTelecommandHandlerClass TwoTelecommandHandler;
 
 // This handles telecommand packet number 1 with version number 3.0.0.
-class IncompatibleTelecommandHandlerClass: public ESAT_CCSDSPacketHandler
+class IncompatibleTelecommandHandlerClass: public ESAT_CCSDSTelecommandPacketHandler
 {
   public:
     // Handle a telecommand packet.

@@ -23,7 +23,7 @@
 
 #include <Arduino.h>
 #include "ESAT_CCSDSPacket.h"
-#include "ESAT_CCSDSPacketHandler.h"
+#include "ESAT_CCSDSTelecommandPacketHandler.h"
 #include "ESAT_SemanticVersionNumber.h"
 
 // Telecommand packet dispatcher for ESAT's CCSDS space packets.
@@ -41,7 +41,7 @@ class ESAT_CCSDSTelecommandPacketDispatcher
     ESAT_CCSDSTelecommandPacketDispatcher(word applicationProcessIdentifier);
 
     // Add a new entry to the list of packet handlers.
-    void add(ESAT_CCSDSPacketHandler& handler);
+    void add(ESAT_CCSDSTelecommandPacketHandler& handler);
 
     // Dispatch a telecommand packet.
     // This will work through the list of packet handlers until one
@@ -73,7 +73,7 @@ class ESAT_CCSDSTelecommandPacketDispatcher
     ESAT_SemanticVersionNumber versionNumber;
 
     // Head of the list of packet handler objects.
-    ESAT_CCSDSPacketHandler* packetHandler;
+    ESAT_CCSDSTelecommandPacketHandler* head;
 
     // Return true if the packet is compatible; otherwise return
     // false.
@@ -87,7 +87,7 @@ class ESAT_CCSDSTelecommandPacketDispatcher
 
     // Return true if the handler is compatible with the packet with
     // given secondary header; otherwise return false.
-    boolean handlerIsCompatibleWithPacket(ESAT_CCSDSPacketHandler& handler,
+    boolean handlerIsCompatibleWithPacket(ESAT_CCSDSTelecommandPacketHandler& handler,
                                           ESAT_CCSDSSecondaryHeader secondaryHeader);
 };
 

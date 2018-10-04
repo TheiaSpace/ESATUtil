@@ -18,33 +18,33 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESAT_CCSDSPacketHandler_h
-#define ESAT_CCSDSPacketHandler_h
+#ifndef ESAT_CCSDSTelecommandPacketHandler_h
+#define ESAT_CCSDSTelecommandPacketHandler_h
 
 #include <Arduino.h>
 #include "ESAT_CCSDSPacket.h"
 #include "ESAT_SemanticVersionNumber.h"
 
 // Packet handler interface.
-// Use together with ESAT_CCSDSTelecommandHandler to handle
+// Use together with ESAT_CCSDSTelecommandPacketDispatcher to handle
 // telecommand packets.
-class ESAT_CCSDSPacketHandler
+class ESAT_CCSDSTelecommandPacketHandler
 {
   public:
     // Next packet handler object in the list of packet handler objects.
-    // ESAT_CCSDSTelecommandHandler uses this to keep a linked list of
-    // registered packet handlers: it can traverse the list by going
-    // from one packet handler object to the next packet handler
-    // object until reaching the end of the list at nullptr.
-    // Only ESAT_CCSDSTelecommandPacketDispatcher should care about this.
-    // Each packet handler object should be added just one time to
-    // just one ESAT_CCSDSTelecommandPacketDispatcher object.
-    ESAT_CCSDSPacketHandler* nextPacketHandler;
+    // ESAT_CCSDSTelecommandPacketDispatcher uses this to keep a
+    // linked list of registered packet handlers: it can traverse the
+    // list by going from one packet handler object to the next packet
+    // handler object until reaching the end of the list at nullptr.
+    // Only ESAT_CCSDSTelecommandPacketDispatcher should care about
+    // this.  Each packet handler object should be added just one time
+    // to just one ESAT_CCSDSTelecommandPacketDispatcher object.
+    ESAT_CCSDSTelecommandPacketHandler* nextTelecommandPacketHandler;
 
     // Trivial destructor.
     // We need to define it because the C++ programming language
     // works this way.
-    virtual ~ESAT_CCSDSPacketHandler() {};
+    virtual ~ESAT_CCSDSTelecommandPacketHandler() {};
 
     // Consume/process a packet.
     // The read/write pointer of the packet is at the start of the
@@ -65,4 +65,4 @@ class ESAT_CCSDSPacketHandler
     virtual ESAT_SemanticVersionNumber versionNumber() = 0;
 };
 
-#endif /* ESAT_CCSDSPacketHandler_h */
+#endif /* ESAT_CCSDSTelecommandPacketHandler_h */
