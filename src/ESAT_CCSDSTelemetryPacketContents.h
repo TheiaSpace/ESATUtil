@@ -18,8 +18,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ESAT_CCSDSPacketContents_h
-#define ESAT_CCSDSPacketContents_h
+#ifndef ESAT_CCSDSTelemetryPacketContents_h
+#define ESAT_CCSDSTelemetryPacketContents_h
 
 #include <Arduino.h>
 #include "ESAT_CCSDSPacket.h"
@@ -27,7 +27,7 @@
 // Packet contents interface.
 // Use together with ESAT_CCSDSTelemetryPacketBuilder to build
 // telemetry packets.
-class ESAT_CCSDSPacketContents
+class ESAT_CCSDSTelemetryPacketContents
 {
   public:
     // Next packet contents object in the list of packet contents objects.
@@ -38,12 +38,12 @@ class ESAT_CCSDSPacketContents
     // Only ESAT_CCSDSTelemetryPacketBuilder should care about this.
     // Each packet contents object should be added just one time to
     // just one ESAT_CCSDSTelemetryPacketBuilder object.
-    ESAT_CCSDSPacketContents* nextPacketContents;
+    ESAT_CCSDSTelemetryPacketContents* nextTelemetryPacketContents;
 
     // Trivial destructor.
     // We need to define it because the C++ programming language
     // works this way.
-    virtual ~ESAT_CCSDSPacketContents() {};
+    virtual ~ESAT_CCSDSTelemetryPacketContents() {};
 
     // Return true if a new packet is available:
     // periodic packets are available once every period, and event
@@ -60,4 +60,4 @@ class ESAT_CCSDSPacketContents
     virtual boolean fillUserData(ESAT_CCSDSPacket& packet) = 0;
 };
 
-#endif /* ESAT_CCSDSPacketContents_h */
+#endif /* ESAT_CCSDSTelemetryPacketContents_h */

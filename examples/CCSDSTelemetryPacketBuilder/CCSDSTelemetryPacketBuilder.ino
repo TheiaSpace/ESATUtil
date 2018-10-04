@@ -22,7 +22,7 @@
 // Another way of building multiple telemetry packets.
 
 // This packet is always available.
-class AlwaysAvailablePacketClass: public ESAT_CCSDSPacketContents
+class AlwaysAvailablePacketClass: public ESAT_CCSDSTelemetryPacketContents
 {
   public:
     // Return true if a new packet is available; otherwise return
@@ -50,7 +50,7 @@ class AlwaysAvailablePacketClass: public ESAT_CCSDSPacketContents
 AlwaysAvailablePacketClass AlwaysAvailablePacket;
 
 // This packet is available once every second.
-class PeriodicPacketClass: public ESAT_CCSDSPacketContents
+class PeriodicPacketClass: public ESAT_CCSDSTelemetryPacketContents
 {
   public:
     // Return true if a new packet is available; otherwise return
@@ -90,7 +90,7 @@ PeriodicPacketClass PeriodicPacket;
 
 // This packet is always available, but fails when filling the packet
 // contents.
-class FailingPacketClass: public ESAT_CCSDSPacketContents
+class FailingPacketClass: public ESAT_CCSDSTelemetryPacketContents
 {
     // Return true if a new packet is available; otherwise return
     // false.
