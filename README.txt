@@ -67,9 +67,9 @@ The primary header of CCSDS space packets.
 The secondary header of CCSDS space packets used by ESAT subsystems.
 
 
-# ESAT_CCSDSTelecommandPacketHandler
+# ESAT_CCSDSTelecommandPacketDispatcher
 
-Handle ESAT-flavoured telecommand CCSDS space packets.
+Dispatch ESAT-flavoured telecommand CCSDS space packets.
 
 
 # ESAT_CCSDSTelemetryPacketBuilder

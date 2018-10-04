@@ -18,20 +18,20 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "ESAT_CCSDSTelecommandPacketHandler.h"
+#include "ESAT_CCSDSTelecommandPacketDispatcher.h"
 
-ESAT_CCSDSTelecommandPacketHandler::ESAT_CCSDSTelecommandPacketHandler(const word theApplicationProcessIdentifier)
+ESAT_CCSDSTelecommandPacketDispatcher::ESAT_CCSDSTelecommandPacketDispatcher(const word theApplicationProcessIdentifier)
 {
   applicationProcessIdentifier = theApplicationProcessIdentifier;
 }
 
-void ESAT_CCSDSTelecommandPacketHandler::add(ESAT_CCSDSPacketConsumer& consumer)
+void ESAT_CCSDSTelecommandPacketDispatcher::add(ESAT_CCSDSPacketConsumer& consumer)
 {
   consumer.nextPacketConsumer = packetConsumer;
   packetConsumer = &consumer;
 }
 
-boolean ESAT_CCSDSTelecommandPacketHandler::compatiblePacket(ESAT_CCSDSPacket packet) const
+boolean ESAT_CCSDSTelecommandPacketDispatcher::compatiblePacket(ESAT_CCSDSPacket packet) const
 {
   const ESAT_CCSDSPrimaryHeader primaryHeader
     = packet.readPrimaryHeader();
@@ -57,7 +57,7 @@ boolean ESAT_CCSDSTelecommandPacketHandler::compatiblePacket(ESAT_CCSDSPacket pa
   return true;
 }
 
-boolean ESAT_CCSDSTelecommandPacketHandler::handle(ESAT_CCSDSPacket packet)
+boolean ESAT_CCSDSTelecommandPacketDispatcher::handle(ESAT_CCSDSPacket packet)
 {
   packet.rewind();
   if (!compatiblePacket(packet))

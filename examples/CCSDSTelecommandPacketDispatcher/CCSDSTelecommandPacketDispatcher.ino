@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <ESAT_CCSDSTelecommandPacketHandler.h>
+#include <ESAT_CCSDSTelecommandPacketDispatcher.h>
 #include <ESAT_SemanticVersionNumber.h>
 
-// ESAT_CCSDSTelecommandPacketHandler example program.
+// ESAT_CCSDSTelecommandPacketDispatcher example program.
 // A way of handling telecommand packets.
 
 // This handles telecommand packet number 1.
@@ -117,7 +117,7 @@ const word maximumPacketIdentifier = 5;
 const ESAT_Timestamp timestamp(1998, 11, 20, 6, 40, 0);
 
 // Use this to handle telecommand packets.
-ESAT_CCSDSTelecommandPacketHandler handler(applicationProcessIdentifier);
+ESAT_CCSDSTelecommandPacketDispatcher dispatcher(applicationProcessIdentifier);
 
 void setup()
 {
@@ -127,17 +127,17 @@ void setup()
   while (!Serial)
   {
   }
-  // Add the consumers to the telecommand handler.
-  handler.add(OneTelecommandConsumer);
-  handler.add(EvenTelecommandConsumer);
-  handler.add(VersionTelecommandConsumer);
+  // Add the consumers to the telecommand dispatcher.
+  dispatcher.add(OneTelecommandConsumer);
+  dispatcher.add(EvenTelecommandConsumer);
+  dispatcher.add(VersionTelecommandConsumer);
 }
 
 void loop()
 {
-  (void) Serial.println(F("###########################################"));
-  (void) Serial.println(F("Telecommand packet handler example program."));
-  (void) Serial.println(F("###########################################"));
+  (void) Serial.println(F("##############################################"));
+  (void) Serial.println(F("Telecommand packet dispatcher example program."));
+  (void) Serial.println(F("##############################################"));
   // Build the telecommand packet.
   (void) Serial.print(F("Building telecommand packet with identifier number "));
   (void) Serial.print(packetIdentifier, DEC);
@@ -152,7 +152,7 @@ void loop()
                                  packetIdentifier);
   // Handle the telecommand packet.
   (void) Serial.println(F("Handling the telecommand packet..."));
-  const boolean handled = handler.handle(packet);
+  const boolean handled = dispatcher.handle(packet);
   if (handled)
   {
     (void) Serial.println(F("Telecommand packet handled successfully."));
