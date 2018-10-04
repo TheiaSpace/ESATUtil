@@ -37,11 +37,6 @@ Stream interface to byte buffers with bounds checking.
 Standard CCSDS space packets.
 
 
-# ESAT_CCSDSPacketContents
-
-ESAT-flavoured CCSDS space packet contents interface.
-
-
 # ESAT_CCSDSPacketFromKISSFrameReader
 
 Read CCSDS space packets from KISS frames coming from a stream.
@@ -77,6 +72,14 @@ Used by ESAT_CCSDSTelecommandPacketDispatcher.
 # ESAT_CCSDSTelemetryPacketBuilder
 
 Build ESAT-flavoured telemetry CCSDS space packets.
+Uses ESAT_CCSDSTelemetryPacketContents objects to fill the contents of
+telemetry packets.
+
+
+# ESAT_CCSDSTelemetryPacketContents
+
+ESAT-flavoured CCSDS space packet contents interface.
+Used by ESAT_CCSDSTelemetryPacketBuilder.
 
 
 # ESAT_Clock

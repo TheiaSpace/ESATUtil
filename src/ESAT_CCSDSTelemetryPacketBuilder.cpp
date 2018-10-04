@@ -23,7 +23,7 @@
 ESAT_CCSDSTelemetryPacketBuilder::ESAT_CCSDSTelemetryPacketBuilder()
 {
   clock = nullptr;
-  packetContents = nullptr;
+  head = nullptr;
 }
 
 ESAT_CCSDSTelemetryPacketBuilder::ESAT_CCSDSTelemetryPacketBuilder(const word theApplicationProcessIdentifier,
@@ -38,22 +38,22 @@ ESAT_CCSDSTelemetryPacketBuilder::ESAT_CCSDSTelemetryPacketBuilder(const word th
   patchVersionNumber = thePatchVersionNumber;
   clock = &theClock;
   packetSequenceCount = 0;
-  packetContents = nullptr;
+  head = nullptr;
 }
 
-void ESAT_CCSDSTelemetryPacketBuilder::add(ESAT_CCSDSPacketContents& newPacketContents)
+void ESAT_CCSDSTelemetryPacketBuilder::add(ESAT_CCSDSTelemetryPacketContents& newPacketContents)
 {
-  newPacketContents.nextPacketContents = packetContents;
-  packetContents = &newPacketContents;
+  newPacketContents.nextTelemetryPacketContents = head;
+  head = &newPacketContents;
 }
 
 ESAT_FlagContainer ESAT_CCSDSTelemetryPacketBuilder::available()
 {
   ESAT_FlagContainer result;
   result.clearAll();
-  for (ESAT_CCSDSPacketContents* contents = packetContents;
+  for (ESAT_CCSDSTelemetryPacketContents* contents = head;
        contents != nullptr;
-       contents = contents->nextPacketContents)
+       contents = contents->nextTelemetryPacketContents)
   {
     if (contents->available())
     {
@@ -74,7 +74,7 @@ boolean ESAT_CCSDSTelemetryPacketBuilder::build(ESAT_CCSDSPacket& packet,
   {
     return false;
   }
-  ESAT_CCSDSPacketContents* const contents = find(identifier);
+  ESAT_CCSDSTelemetryPacketContents* const contents = find(identifier);
   if (contents == nullptr)
   {
     return false;
@@ -102,11 +102,11 @@ boolean ESAT_CCSDSTelemetryPacketBuilder::build(ESAT_CCSDSPacket& packet,
   }
 }
 
-ESAT_CCSDSPacketContents* ESAT_CCSDSTelemetryPacketBuilder::find(const byte identifier)
+ESAT_CCSDSTelemetryPacketContents* ESAT_CCSDSTelemetryPacketBuilder::find(const byte identifier)
 {
-  for (ESAT_CCSDSPacketContents* contents = packetContents;
+  for (ESAT_CCSDSTelemetryPacketContents* contents = head;
        contents != nullptr;
-       contents = contents->nextPacketContents)
+       contents = contents->nextTelemetryPacketContents)
   {
     if (contents->packetIdentifier() == identifier)
     {

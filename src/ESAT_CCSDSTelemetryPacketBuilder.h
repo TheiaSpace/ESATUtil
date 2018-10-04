@@ -23,7 +23,7 @@
 
 #include <Arduino.h>
 #include "ESAT_CCSDSPacket.h"
-#include "ESAT_CCSDSPacketContents.h"
+#include "ESAT_CCSDSTelemetryPacketContents.h"
 #include "ESAT_Clock.h"
 #include "ESAT_FlagContainer.h"
 
@@ -46,7 +46,7 @@ class ESAT_CCSDSTelemetryPacketBuilder
                                      ESAT_Clock& clock);
 
     // Add a new entry to the list of packet contents.
-    void add(ESAT_CCSDSPacketContents& contents);
+    void add(ESAT_CCSDSTelemetryPacketContents& contents);
 
     // Return a list of available packets as a flag container: flags
     // set to true correspond to available packets (available()
@@ -85,11 +85,11 @@ class ESAT_CCSDSTelemetryPacketBuilder
     ESAT_Clock* clock;
 
     // Head of the list of packet contents objects.
-    ESAT_CCSDSPacketContents* packetContents;
+    ESAT_CCSDSTelemetryPacketContents* head;
 
     // Return the packet contents object with the given identifier
     // or nullptr if none can be found.
-    ESAT_CCSDSPacketContents* find(byte identififer);
+    ESAT_CCSDSTelemetryPacketContents* find(byte identififer);
 };
 
 #endif /* ESAT_CCSDSTelemetryPacketBuilder_h */
