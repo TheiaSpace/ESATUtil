@@ -86,6 +86,9 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // of the primary header length and the packet data length.
     unsigned long length() const;
 
+    // Return the packet data length of the packet.
+    word packetDataLength() const;
+
     // Return the next 8-bit unsigned integer from the packet data
     // or, if the read/write pointer is at the end of the packet data,
     // return -1.
