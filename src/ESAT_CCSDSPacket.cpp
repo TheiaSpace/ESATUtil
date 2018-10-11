@@ -75,11 +75,40 @@ void ESAT_CCSDSPacket::flush()
   packetData.flush();
 }
 
+boolean ESAT_CCSDSPacket::isTelecommand() const
+{
+  if (primaryHeader.packetType == primaryHeader.TELECOMMAND)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+boolean ESAT_CCSDSPacket::isTelemetry() const
+{
+  if (primaryHeader.packetType == primaryHeader.TELEMETRY)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 unsigned long ESAT_CCSDSPacket::length() const
 {
   // The total packet length is the sum of the length of the primary
   // header and the length of the packet data.
   return primaryHeader.LENGTH + primaryHeader.packetDataLength;
+}
+
+word ESAT_CCSDSPacket::packetDataLength() const
+{
+  return packetData.length();
 }
 
 int ESAT_CCSDSPacket::peek()

@@ -74,9 +74,20 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // Set the packet data length to 0.
     void flush();
 
+    // Return true if this packet is a telecommand packet; otherwise
+    // return false.
+    boolean isTelecommand() const;
+
+    // Return true if this packet is a telemetry packet; otherwise
+    // return false.
+    boolean isTelemetry() const;
+
     // Return the total length of the packet, which is the sum
     // of the primary header length and the packet data length.
     unsigned long length() const;
+
+    // Return the packet data length of the packet.
+    word packetDataLength() const;
 
     // Return the next 8-bit unsigned integer from the packet data
     // or, if the read/write pointer is at the end of the packet data,
