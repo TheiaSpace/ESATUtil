@@ -47,20 +47,20 @@ class ESAT_CCSDSSecondaryHeader: public Printable
     static const byte LENGTH = 12;
 
     // Preamble field that identifies the time code type.
-    Preamble preamble;
+    Preamble preamble = CALENDAR_SEGMENTED_TIME_CODE_MONTH_DAY_VARIANT_1_SECOND_RESOLUTION;
 
     // Timestamp.
     ESAT_Timestamp timestamp;
 
     // Version number in major.minor.patch format
     // as defined in the Semantic Versioning 2.0.0 standard.
-    byte majorVersionNumber;
-    byte minorVersionNumber;
-    byte patchVersionNumber;
+    byte majorVersionNumber = 0;
+    byte minorVersionNumber = 0;
+    byte patchVersionNumber = 0;
 
     // For telemetry: telemetry packet type (housekeeping, event...).
     // For telecommands: command code (, start experiment...).
-    byte packetIdentifier;
+    byte packetIdentifier = 0;
 
     // Print the secondary header in human readable (JSON) form.
     // Return the number of characters written.

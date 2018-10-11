@@ -20,6 +20,11 @@
 
 #include "ESAT_FlagContainer.h"
 
+ESAT_FlagContainer::ESAT_FlagContainer()
+{
+  clearAll();
+}
+
 byte ESAT_FlagContainer::available() const
 {
   byte availableFlags = 0;

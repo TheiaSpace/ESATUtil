@@ -37,6 +37,9 @@ class ESAT_FlagContainer: public Printable
     // Return value of readNext() when all flags are false.
     static const int NO_ACTIVE_FLAGS = -1;
 
+    // Instantiate a flag container with all flags set as false.
+    ESAT_FlagContainer();
+
     // Return the number of set or active (true) flags.
     byte available() const;
 

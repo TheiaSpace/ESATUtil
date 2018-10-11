@@ -22,6 +22,9 @@
 
 ESAT_SemanticVersionNumber::ESAT_SemanticVersionNumber()
 {
+  majorVersionNumber = 0;
+  minorVersionNumber = 0;
+  patchVersionNumber = 0;
 }
 
 ESAT_SemanticVersionNumber::ESAT_SemanticVersionNumber(const byte major,

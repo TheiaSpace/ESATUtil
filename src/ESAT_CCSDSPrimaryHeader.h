@@ -70,21 +70,21 @@ class ESAT_CCSDSPrimaryHeader: public Printable
     // The packet version number is sent as a 3-bit unsigned integer,
     // most significant bit first, on the first 16-bit word of the
     // header.  It should be 0.
-    byte packetVersionNumber;
+    byte packetVersionNumber = 0;
 
     // Packet type.
     // The packet type is sent as 1 bit on the first 16-bit word of
     // the header:
     // 0 for TELEMETRY,
     // 1 for TELECOMMAND.
-    PacketType packetType;
+    PacketType packetType = TELEMETRY;
 
     // Secondary header flag.
     // The secondary header flag is sent as 1 bit on the first 16-bit
     // word of the header:
     // 0 for SECONDARY_HEADER_IS_NOT_PRESENT,
     // 1 for SECONDARY_HEADER_IS_PRESENT.
-    SecondaryHeaderFlag secondaryHeaderFlag;
+    SecondaryHeaderFlag secondaryHeaderFlag = SECONDARY_HEADER_IS_NOT_PRESENT;
 
     // Application process identifier.
     // Each logical subsystem should have its own unique application
@@ -93,7 +93,7 @@ class ESAT_CCSDSPrimaryHeader: public Printable
     // The application process identifier is sent as an 11-bit
     // unsigned integer, most significant bit first, on the first
     // 16-bit word of the header.
-    word applicationProcessIdentifier;
+    word applicationProcessIdentifier = 0;
 
     // Packet sequence flags.
     // The packet sequence flags are sent as a 2-bit unsigned
@@ -103,7 +103,7 @@ class ESAT_CCSDSPrimaryHeader: public Printable
     // 1 for FIRST_SEGMENT_OF_USER_DATA,
     // 2 for LAST_SEGMENT_OF_USER_DATA,
     // 3 for UNSEGMENTED_USER_DATA.
-    SequenceFlags sequenceFlags;
+    SequenceFlags sequenceFlags = CONTINUATION_SEGMENT_OF_USER_DATA;
 
     // Packet sequence count.
     // Each application process keeps its own packet sequence count,
@@ -111,7 +111,7 @@ class ESAT_CCSDSPrimaryHeader: public Printable
     // The packet sequence count is sent as a 14-bit unsigned
     // integer number, most significant bit first, on the second
     // 16-bit word of the header.
-    word packetSequenceCount;
+    word packetSequenceCount = 0;
 
     // Packet data length.  Valid values go from 1 to 65536.
     // The packet data length is sent as its actual value,
@@ -119,7 +119,7 @@ class ESAT_CCSDSPrimaryHeader: public Printable
     // word of the header.
     // The on-wire representation of the primary header when the packet
     // data length has an invalid value is undefined.
-    unsigned long packetDataLength;
+    unsigned long packetDataLength = 0;
 
     // Print the primary header in human readable (JSON) form.
     // Return the number of characters written.
