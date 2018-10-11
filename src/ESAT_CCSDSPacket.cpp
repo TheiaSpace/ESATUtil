@@ -106,7 +106,7 @@ unsigned long ESAT_CCSDSPacket::length() const
   return primaryHeader.LENGTH + primaryHeader.packetDataLength;
 }
 
-word ESAT_CCSDSPacket::packetDataLength() const
+unsigned long ESAT_CCSDSPacket::packetDataLength() const
 {
   return packetData.length();
 }
