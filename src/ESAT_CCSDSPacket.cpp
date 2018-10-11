@@ -75,6 +75,18 @@ void ESAT_CCSDSPacket::flush()
   packetData.flush();
 }
 
+boolean ESAT_CCSDSPacket::isTelecommand() const
+{
+  if (primaryHeader.packetType == primaryHeader.TELECOMMAND)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 unsigned long ESAT_CCSDSPacket::length() const
 {
   // The total packet length is the sum of the length of the primary
