@@ -78,6 +78,10 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // return false.
     boolean isTelecommand() const;
 
+    // Return true if this packet is a telemetry packet; otherwise
+    // return false.
+    boolean isTelemetry() const;
+
     // Return the total length of the packet, which is the sum
     // of the primary header length and the packet data length.
     unsigned long length() const;

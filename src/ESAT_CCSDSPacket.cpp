@@ -87,6 +87,18 @@ boolean ESAT_CCSDSPacket::isTelecommand() const
   }
 }
 
+boolean ESAT_CCSDSPacket::isTelemetry() const
+{
+  if (primaryHeader.packetType == primaryHeader.TELEMETRY)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 unsigned long ESAT_CCSDSPacket::length() const
 {
   // The total packet length is the sum of the length of the primary
