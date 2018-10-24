@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ *
  * This file is part of Theia Space's ESAT Util library.
  *
  * Theia Space's ESAT Util library is free software: you can
@@ -20,10 +22,10 @@
 #define ESAT_CCSDSPacket_h
 
 #include <Arduino.h>
-#include <ESAT_Buffer.h>
-#include <ESAT_CCSDSPrimaryHeader.h>
-#include <ESAT_CCSDSSecondaryHeader.h>
-#include <ESAT_Timestamp.h>
+#include "ESAT_Buffer.h"
+#include "ESAT_CCSDSPrimaryHeader.h"
+#include "ESAT_CCSDSSecondaryHeader.h"
+#include "ESAT_Timestamp.h"
 
 // ESAT's CCSDS space packets.
 // These are simple packets following CCSDS Recommendation 133.0-B-1:
@@ -38,15 +40,7 @@ class ESAT_CCSDSPacket: public Printable, public Stream
 {
   public:
     // Instantiate a CCSDS packet with no packet data field.
-    // Useful for just generating a primary header.
-    // The primary header starts with a raw value of all zeros.
-    // The read/write pointer starts at 0.
-    // The packet data buffer is null and must be assigned
-    // together with the packet data buffer length before
-    // using the packet data.
-    // The packet data buffer length is set to 0 and must be
-    // assigned together with the packet data buffer before using
-    // the packet data.
+    // The packet is invalid and it shouldn't be used in this state.
     ESAT_CCSDSPacket();
 
     // Instantiate a new packet backed with the packet data field
@@ -54,7 +48,7 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // The buffer must be at least 1 byte long.
     // The packet data buffer length will have the value of passed
     // buffer length, which must match the actual buffer length.
-    // The primary header starts with a raw value of all zeros.
+    // The primary header starts with all fields set to 0.
     // The read/write pointer starts at 0.
     ESAT_CCSDSPacket(byte buffer[], unsigned long bufferLength);
 
@@ -80,9 +74,20 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // Set the packet data length to 0.
     void flush();
 
+    // Return true if this packet is a telecommand packet; otherwise
+    // return false.
+    boolean isTelecommand() const;
+
+    // Return true if this packet is a telemetry packet; otherwise
+    // return false.
+    boolean isTelemetry() const;
+
     // Return the total length of the packet, which is the sum
     // of the primary header length and the packet data length.
     unsigned long length() const;
+
+    // Return the packet data length of the packet.
+    unsigned long packetDataLength() const;
 
     // Return the next 8-bit unsigned integer from the packet data
     // or, if the read/write pointer is at the end of the packet data,
@@ -155,7 +160,7 @@ class ESAT_CCSDSPacket: public Printable, public Stream
 
     // Fill the packet with incoming data from an input stream.
     // Return true on success; false otherwise.
-    // This leaves the read/write pointer untouched.
+    // The read/write pointer goes to the start of the packet data field.
     boolean readFrom(Stream& input);
 
     // Return the next 16-bit signed integer from the packet data.
@@ -223,6 +228,14 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // Move the read/write pointer to 0: back to the start of the
     // packet data field (packet payload).
     void rewind();
+
+    // Return true if the last read*() or peek() attempt was beyond
+    // the length of the packet data field; otherwise return false.
+    boolean triedToReadBeyondLength() const;
+
+    // Return true if the last write*() attempt was beyond the capacity
+    // of the packet data field; otherwise return false.
+    boolean triedToWriteBeyondCapacity() const;
 
     // Append an 8-bit unsigned integer to the packet data.
     // This advances the read/write pointer by 1, but limited to the
@@ -336,6 +349,46 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // The primary header is sent as 3 16-bit words.
     // This leaves the read/write pointer untouched.
     void writePrimaryHeader(ESAT_CCSDSPrimaryHeader primaryHeader);
+
+    // Rewind and then write the primary header and secondary header
+    // of a telecommand packet with secondary header present and
+    // unsegmented user data.
+    // Use the provided application process identifier, packet
+    // sequence count, timestamp, major version number, minor version
+    // number, patch version number and packet identifier for the
+    // headers.
+    // This advances the read/write pointer just past the secondary
+    // header, but limited to the packet data buffer length.
+    // The written value is undefined if there are fewer than 12 bytes before
+    // reaching the end of the packet data, but no data will be written beyond
+    // the packet data buffer.
+    void writeTelecommandHeaders(word applicationProcessIdentifier,
+                                 word packetSequenceCount,
+                                 ESAT_Timestamp timestamp,
+                                 byte majorVersionNumber,
+                                 byte minorVersionNumber,
+                                 byte patchVersionNumber,
+                                 byte packetIdentifier);
+
+    // Rewind and then write the primary header and secondary header
+    // of a telemetry packet with secondary header present and
+    // unsegmented user data.
+    // Use the provided application process identifier, packet
+    // sequence count, timestamp, major version number, minor version
+    // number, patch version number and packet identifier for the
+    // headers.
+    // This moves the read/write pointer to 12, just after the
+    // secondary header, but limited to the packet data buffer length.
+    // The written value is undefined if there are fewer than 12 bytes
+    // before reaching the end of the packet data, but no data will be
+    // written beyond the packet data buffer.
+    void writeTelemetryHeaders(word applicationProcessIdentifier,
+                               word packetSequenceCount,
+                               ESAT_Timestamp timestamp,
+                               byte majorVersionNumber,
+                               byte minorVersionNumber,
+                               byte patchVersionNumber,
+                               byte packetIdentifier);
 
     // Append a timestamp to the packet data.
     // The raw datum is stored in big-endian byte order, encoded as a

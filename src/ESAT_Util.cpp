@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ *
  * This file is part of Theia Space's ESAT Util library.
  *
  * Theia Space's ESAT Util library is free software: you can
@@ -22,7 +24,7 @@ signed char ESAT_UtilClass::byteToChar(const byte bits) const
 {
   if (bits > 127)
   {
-    return -((signed char) ((~bits) + 1));
+    return -((signed char) (((~bits) + 1U) & 0xFFFF));
   }
   else
   {
@@ -34,7 +36,7 @@ byte ESAT_UtilClass::charToByte(const signed char number) const
 {
   if (number < 0)
   {
-    return ~((byte) -(number + 1));
+    return (~((byte) -(number + 1U))) & 0xFF;
   }
   else
   {
@@ -45,7 +47,7 @@ byte ESAT_UtilClass::charToByte(const signed char number) const
 byte ESAT_UtilClass::decodeBinaryCodedDecimalByte(const byte number) const
 {
   const byte tens =
-    constrain(number / 0x10, 0, 9);
+    min(number / 0x10, 9);
   const byte ones =
     number - tens * 0x10;
   return 10 * tens + ones;
@@ -54,7 +56,7 @@ byte ESAT_UtilClass::decodeBinaryCodedDecimalByte(const byte number) const
 word ESAT_UtilClass::decodeBinaryCodedDecimalWord(const word number) const
 {
   const word thousands =
-    constrain(number / 0x1000, 0, 9);
+    min(number / 0x1000, 9);
   const word hundreds =
     (number - thousands * 0x1000) / 0x0100;
   const word tens =
@@ -136,7 +138,7 @@ byte ESAT_UtilClass::hexadecimalToByte(const String hexadecimalNumber) const
 word ESAT_UtilClass::hexadecimalToWord(const String hexadecimalNumber) const
 {
   word number = 0;
-  for (int index = 0; index < hexadecimalNumber.length(); index++)
+  for (word index = 0; index < hexadecimalNumber.length(); index++)
   {
     const char character = hexadecimalNumber.charAt(index);
     byte digit = 0;
@@ -205,11 +207,16 @@ word ESAT_UtilClass::hexadecimalToWord(const String hexadecimalNumber) const
   return number;
 }
 
+word ESAT_UtilClass::highWord(const unsigned long number) const
+{
+  return (word) (((number & 0xFFFFFFFF) >> 16) & 0xFFFF);
+}
+
 word ESAT_UtilClass::intToWord(const int number) const
 {
   if (number < 0)
   {
-    return ~((word) -(number + 1));
+    return (~((word) -(number + 1))) & 0xFFFF;
   }
   else
   {
@@ -221,12 +228,17 @@ unsigned long ESAT_UtilClass::longToUnsignedLong(const long number) const
 {
   if (number < 0)
   {
-    return ~((unsigned long) -(number + 1));
+    return (~((unsigned long) -(number + 1))) & 0xFFFFFFFF;
   }
   else
   {
     return number;
   }
+}
+
+word ESAT_UtilClass::lowWord(const unsigned long number) const
+{
+  return (word) (number & 0xFFFF);
 }
 
 String ESAT_UtilClass::pad(const String text,
@@ -245,6 +257,21 @@ String ESAT_UtilClass::pad(const String text,
 word ESAT_UtilClass::swapWordBytes(const word number) const
 {
   return word(lowByte(number), highByte(number));
+}
+
+unsigned long ESAT_UtilClass::unsignedLong(const byte highByte,
+                                           const byte mediumHighByte,
+                                           const byte mediumLowByte,
+                                           const byte lowByte) const
+{
+  const word highWord = word(highByte, mediumHighByte);
+  const word lowWord = word(mediumLowByte, lowByte);
+  return unsignedLong(highWord, lowWord);
+}
+
+unsigned long ESAT_UtilClass::unsignedLong(word highWord, word lowWord) const
+{
+  return (((unsigned long) highWord) << 16) | ((unsigned long) lowWord);
 }
 
 float ESAT_UtilClass::unsignedLongToFloat(const unsigned long bits) const
@@ -295,7 +322,7 @@ long ESAT_UtilClass::unsignedLongToLong(const unsigned long bits) const
 {
   if (bits > 2147483647UL)
   {
-    return -long((~bits) + 1UL);
+    return -long(((~bits) + 1UL) & 0xFFFFFFFF);
   }
   else
   {
@@ -314,7 +341,7 @@ int ESAT_UtilClass::wordToInt(const word bits) const
 {
   if (bits > 32767U)
   {
-    return -int((~bits) + 1U);
+    return -int(((~bits) + 1U) & 0xFFFF);
   }
   else
   {

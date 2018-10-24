@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ *
  * This file is part of Theia Space's ESAT Util library.
  *
  * Theia Space's ESAT Util library is free software: you can
@@ -19,24 +21,28 @@
 #include "ESAT_CCSDSPacket.h"
 #include "ESAT_Util.h"
 
-ESAT_CCSDSPacket::ESAT_CCSDSPacket():
-  primaryHeader(),
-  packetData()
+ESAT_CCSDSPacket::ESAT_CCSDSPacket()
 {
+  packetData = ESAT_Buffer(nullptr, 0);
+  // Set the timeout for waiting for stream data to zero, as it
+  // doesn't make sense to wait when reading from these packets.
   setTimeout(0);
 }
 
 ESAT_CCSDSPacket::ESAT_CCSDSPacket(byte* const buffer,
-                                   const unsigned long bufferLength):
-  primaryHeader(),
-  packetData(buffer, bufferLength)
+                                   const unsigned long bufferLength)
 {
+  packetData = ESAT_Buffer(buffer, bufferLength);
+  // Set the timeout for waiting for stream data to zero, as it
+  // doesn't make sense to wait when reading from these packets.
   setTimeout(0);
 }
 
 int ESAT_CCSDSPacket::available()
 {
-  return constrain(availableBytesToRead(), 0, 0x7FFF);
+  // Truncate the result of availableBytesToRead() to fit a 16-bit
+  // signed integer.
+  return min(availableBytesToRead(), (unsigned long) 0x7FFF);
 }
 
 unsigned long ESAT_CCSDSPacket::availableBytesToRead() const
@@ -51,10 +57,12 @@ unsigned long ESAT_CCSDSPacket::capacity() const
 
 boolean ESAT_CCSDSPacket::copyTo(ESAT_CCSDSPacket& target)
 {
+  // Just fail when our packet data cannot fit into the target.
   if (target.capacity() < packetData.length())
   {
     return false;
   }
+  // Normal operation: copy out packet into the target packet.
   target.writePrimaryHeader(primaryHeader);
   target.rewind();
   return packetData.writeTo(target);
@@ -62,13 +70,45 @@ boolean ESAT_CCSDSPacket::copyTo(ESAT_CCSDSPacket& target)
 
 void ESAT_CCSDSPacket::flush()
 {
+  // Empty both the primary header and the packet data.
   primaryHeader = ESAT_CCSDSPrimaryHeader();
   packetData.flush();
 }
 
+boolean ESAT_CCSDSPacket::isTelecommand() const
+{
+  if (primaryHeader.packetType == primaryHeader.TELECOMMAND)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+boolean ESAT_CCSDSPacket::isTelemetry() const
+{
+  if (primaryHeader.packetType == primaryHeader.TELEMETRY)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 unsigned long ESAT_CCSDSPacket::length() const
 {
+  // The total packet length is the sum of the length of the primary
+  // header and the length of the packet data.
   return primaryHeader.LENGTH + primaryHeader.packetDataLength;
+}
+
+unsigned long ESAT_CCSDSPacket::packetDataLength() const
+{
+  return packetData.length();
 }
 
 int ESAT_CCSDSPacket::peek()
@@ -81,34 +121,34 @@ size_t ESAT_CCSDSPacket::printTo(Print& output) const
   size_t bytesWritten = 0;
   bytesWritten =
     bytesWritten
-    + output.println(String("{"));
+    + output.println(F("{"));
   bytesWritten =
     bytesWritten
-    + output.println(String("  \"primaryHeader\":"));
+    + output.println(F("  \"primaryHeader\":"));
   bytesWritten =
     bytesWritten
     + output.print(primaryHeader);
   bytesWritten =
     bytesWritten
-    + output.println(String(","));
+    + output.println(F(","));
   bytesWritten =
     bytesWritten
-    + output.println(String("  \"packetData\": ["));
+    + output.println(F("  \"packetData\": ["));
   bytesWritten =
     bytesWritten
-    + output.print(String("    "));
+    + output.print(F("    "));
   bytesWritten =
     bytesWritten
     + output.print(packetData);
   bytesWritten =
     bytesWritten
-    + output.println(String(""));
+    + output.println(F(""));
   bytesWritten =
     bytesWritten
-    + output.println(String("  ],"));
+    + output.println(F("  ],"));
   bytesWritten =
     bytesWritten
-    + output.println(String("}"));
+    + output.print(F("}"));
   return bytesWritten;
 }
 
@@ -131,6 +171,7 @@ word ESAT_CCSDSPacket::readBinaryCodedDecimalWord()
 
 boolean ESAT_CCSDSPacket::readBoolean()
 {
+  // Non-zero bytes mean true and zero bytes mean false.
   const byte datum = readByte();
   if (datum > 0)
   {
@@ -144,6 +185,8 @@ boolean ESAT_CCSDSPacket::readBoolean()
 
 byte ESAT_CCSDSPacket::readByte()
 {
+  // Successfully-read bytes are returned as is.
+  // Failures are returned as zero.
   const int datum = read();
   if (datum >= 0)
   {
@@ -171,10 +214,12 @@ boolean ESAT_CCSDSPacket::readFrom(Stream& input)
 {
   const boolean correctPrimaryHeader =
     primaryHeader.readFrom(input);
+  // Fail if the primary header is incorrect.
   if (!correctPrimaryHeader)
   {
     return false;
   }
+  // Normal operation: read the packet data from the stream.
   return packetData.readFrom(input, primaryHeader.packetDataLength);
 }
 
@@ -221,11 +266,9 @@ ESAT_Timestamp ESAT_CCSDSPacket::readTimestamp()
 
 unsigned long ESAT_CCSDSPacket::readUnsignedLong()
 {
-  const unsigned long firstByte = readByte();
-  const unsigned long secondByte = readByte();
-  const unsigned long thirdByte = readByte();
-  const unsigned long fourthByte = readByte();
-  return (firstByte << 24) | (secondByte << 16) | (thirdByte << 8) | fourthByte;
+  const word highWord = readWord();
+  const word lowWord = readWord();
+  return ESAT_Util.unsignedLong(highWord, lowWord);
 }
 
 word ESAT_CCSDSPacket::readWord()
@@ -240,9 +283,20 @@ void ESAT_CCSDSPacket::rewind()
   packetData.rewind();
 }
 
+boolean ESAT_CCSDSPacket::triedToReadBeyondLength() const
+{
+  return packetData.triedToReadBeyondLength();
+}
+
+boolean ESAT_CCSDSPacket::triedToWriteBeyondCapacity() const
+{
+  return packetData.triedToWriteBeyondCapacity();
+}
+
 size_t ESAT_CCSDSPacket::write(const uint8_t datum)
 {
   const size_t bytesWritten = packetData.write(datum);
+  // Keep the packet data length field of the primary header updated.
   primaryHeader.packetDataLength = packetData.length();
   return bytesWritten;
 }
@@ -259,6 +313,7 @@ void ESAT_CCSDSPacket::writeBinaryCodedDecimalWord(const word datum)
 
 void ESAT_CCSDSPacket::writeBoolean(const boolean datum)
 {
+  // Encode true as one and false as zero.
   if (datum)
   {
     writeByte(1);
@@ -310,6 +365,62 @@ void ESAT_CCSDSPacket::writeSecondaryHeader(const ESAT_CCSDSSecondaryHeader datu
   writeByte(datum.packetIdentifier);
 }
 
+void ESAT_CCSDSPacket::writeTelecommandHeaders(const word applicationProcessIdentifier,
+                                               const word packetSequenceCount,
+                                               const ESAT_Timestamp timestamp,
+                                               const byte majorVersionNumber,
+                                               const byte minorVersionNumber,
+                                               const byte patchVersionNumber,
+                                               const byte packetIdentifier)
+{
+  rewind();
+  ESAT_CCSDSPrimaryHeader primaryHeader;
+  primaryHeader.packetVersionNumber = 0;
+  primaryHeader.packetType = ESAT_CCSDSPrimaryHeader::TELECOMMAND;
+  primaryHeader.secondaryHeaderFlag = primaryHeader.SECONDARY_HEADER_IS_PRESENT;
+  primaryHeader.applicationProcessIdentifier = applicationProcessIdentifier;
+  primaryHeader.sequenceFlags = primaryHeader.UNSEGMENTED_USER_DATA;
+  primaryHeader.packetSequenceCount = packetSequenceCount;
+  writePrimaryHeader(primaryHeader);
+  ESAT_CCSDSSecondaryHeader secondaryHeader;
+  secondaryHeader.preamble =
+    secondaryHeader.CALENDAR_SEGMENTED_TIME_CODE_MONTH_DAY_VARIANT_1_SECOND_RESOLUTION;
+  secondaryHeader.timestamp = timestamp;
+  secondaryHeader.majorVersionNumber = majorVersionNumber;
+  secondaryHeader.minorVersionNumber = minorVersionNumber;
+  secondaryHeader.patchVersionNumber = patchVersionNumber;
+  secondaryHeader.packetIdentifier = packetIdentifier;
+  writeSecondaryHeader(secondaryHeader);
+}
+
+void ESAT_CCSDSPacket::writeTelemetryHeaders(const word applicationProcessIdentifier,
+                                             const word packetSequenceCount,
+                                             const ESAT_Timestamp timestamp,
+                                             const byte majorVersionNumber,
+                                             const byte minorVersionNumber,
+                                             const byte patchVersionNumber,
+                                             const byte packetIdentifier)
+{
+  rewind();
+  ESAT_CCSDSPrimaryHeader primaryHeader;
+  primaryHeader.packetVersionNumber = 0;
+  primaryHeader.packetType = ESAT_CCSDSPrimaryHeader::TELEMETRY;
+  primaryHeader.secondaryHeaderFlag = primaryHeader.SECONDARY_HEADER_IS_PRESENT;
+  primaryHeader.applicationProcessIdentifier = applicationProcessIdentifier;
+  primaryHeader.sequenceFlags = primaryHeader.UNSEGMENTED_USER_DATA;
+  primaryHeader.packetSequenceCount = packetSequenceCount;
+  writePrimaryHeader(primaryHeader);
+  ESAT_CCSDSSecondaryHeader secondaryHeader;
+  secondaryHeader.preamble =
+    secondaryHeader.CALENDAR_SEGMENTED_TIME_CODE_MONTH_DAY_VARIANT_1_SECOND_RESOLUTION;
+  secondaryHeader.timestamp = timestamp;
+  secondaryHeader.majorVersionNumber = majorVersionNumber;
+  secondaryHeader.minorVersionNumber = minorVersionNumber;
+  secondaryHeader.patchVersionNumber = patchVersionNumber;
+  secondaryHeader.packetIdentifier = packetIdentifier;
+  writeSecondaryHeader(secondaryHeader);
+}
+
 void ESAT_CCSDSPacket::writeTimestamp(const ESAT_Timestamp datum)
 {
   writeBinaryCodedDecimalWord(datum.year);
@@ -323,19 +434,19 @@ void ESAT_CCSDSPacket::writeTimestamp(const ESAT_Timestamp datum)
 boolean ESAT_CCSDSPacket::writeTo(Stream& output) const
 {
   const boolean correctPrimaryHeader = primaryHeader.writeTo(output);
+  // Just fail if we couldn't write the primary header.
   if (!correctPrimaryHeader)
   {
     return false;
   }
+  // Normal operation: write the packet data to the output stream.
   return packetData.writeTo(output);
 }
 
 void ESAT_CCSDSPacket::writeUnsignedLong(const unsigned long datum)
 {
-  writeByte((datum >> 24) & B11111111);
-  writeByte((datum >> 16) & B11111111);
-  writeByte((datum >> 8) & B11111111);
-  writeByte(datum & B11111111);
+  writeWord(ESAT_Util.highWord(datum));
+  writeWord(ESAT_Util.lowWord(datum));
 }
 
 void ESAT_CCSDSPacket::writeWord(const word datum)

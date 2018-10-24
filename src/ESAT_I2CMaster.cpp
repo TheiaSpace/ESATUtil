@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ *
  * This file is part of Theia Space's ESAT Util library.
  *
  * Theia Space's ESAT Util library is free software: you can
@@ -18,36 +20,63 @@
 
 #include "ESAT_I2CMaster.h"
 
-boolean ESAT_I2CMasterClass::readTelecommandStatus(TwoWire& bus,
-                                                   const byte address,
-                                                   const byte millisecondsAfterWrites,
-                                                   const byte attempts,
-                                                   const word millisecondsBetweenAttempts)
+void ESAT_I2CMasterClass::begin(TwoWire& i2cInterface,
+                                const word numberOfAttempts,
+                                const word initialNumberOfMillisecondsBetweenAttempts,
+                                const float numberOfMillisecondsBetweenAttemptsGrowthFactor)
 {
-  for (int i = 0; i < attempts; i++)
+  bus = &i2cInterface;
+  millisecondsAfterWrites = 0;
+  attempts = numberOfAttempts;
+  initialDelay = initialNumberOfMillisecondsBetweenAttempts;
+  growthFactor = numberOfMillisecondsBetweenAttemptsGrowthFactor;
+}
+
+boolean ESAT_I2CMasterClass::canReadPacket(const byte address)
+{
+  if (!bus)
   {
-    bus.beginTransmission(address);
-    (void) bus.write(TELECOMMAND_STATUS);
-    const byte writeStatus = bus.endTransmission();
+    return false;
+  }
+  float retryDelay = initialDelay;
+  for (unsigned long i = 0; i < attempts; i++)
+  {
+    bus->beginTransmission(address);
+    (void) bus->write(READ_STATE);
+    const byte writeStatus = bus->endTransmission();
+    // Delay for compatiblity with deprecated method readTelemetry().
     delay(millisecondsAfterWrites);
     if (writeStatus != 0)
     {
       return false;
     }
     const byte bytesToRead = 1;
-    const byte bytesRead = bus.requestFrom(address, bytesToRead);
+    const byte bytesRead = bus->requestFrom(address, bytesToRead);
     if (bytesRead != bytesToRead)
     {
       return false;
     }
-    const byte telecommandStatus = bus.read();
-    switch (telecommandStatus)
+    const byte readState = bus->read();
+    switch (readState)
     {
-      case TELECOMMAND_NOT_PENDING:
+      case PACKET_NOT_REQUESTED:
+        return false;
+        break;
+      case PACKET_NOT_READY:
+        delay(retryDelay);
+        retryDelay = growthFactor * retryDelay;
+        break;
+      case PACKET_READY:
         return true;
         break;
-      case TELECOMMAND_PENDING:
-        delay(millisecondsBetweenAttempts);
+      case PACKET_REJECTED:
+        return false;
+        break;
+      case PACKET_INVALID:
+        return false;
+        break;
+      case PACKET_DATA_READ_IN_PROGRESS:
+        return false;
         break;
       default:
         return false;
@@ -57,63 +86,165 @@ boolean ESAT_I2CMasterClass::readTelecommandStatus(TwoWire& bus,
   return false;
 }
 
-boolean ESAT_I2CMasterClass::readTelemetry(TwoWire& bus,
-                                           const byte address,
-                                           const byte packetIdentifier,
-                                           ESAT_CCSDSPacket& packet,
-                                           const byte millisecondsAfterWrites,
-                                           const byte attempts,
-                                           const word millisecondsBetweenAttempts)
+boolean ESAT_I2CMasterClass::canWritePacket(const byte address)
 {
-  const boolean telemetryRequestCorrect =
-    writeTelemetryRequest(bus,
-                          address,
-                          packetIdentifier,
-                          millisecondsAfterWrites);
-  if (!telemetryRequestCorrect)
+  if (!bus)
   {
     return false;
   }
-  const boolean telemetryReady =
-    readTelemetryStatus(bus,
-                        address,
-                        millisecondsAfterWrites,
-                        attempts,
-                        millisecondsBetweenAttempts);
-  if (!telemetryReady)
+  float retryDelay = initialDelay;
+  for (unsigned long i = 0; i < attempts; i++)
+  {
+    bus->beginTransmission(address);
+    (void) bus->write(WRITE_STATE);
+    const byte writeStatus = bus->endTransmission();
+    // Delay for compatiblity with deprecated method writeTelecommand().
+    delay(millisecondsAfterWrites);
+    if (writeStatus != 0)
+    {
+      return false;
+    }
+    const byte bytesToRead = 1;
+    const byte bytesRead = bus->requestFrom(address, bytesToRead);
+    if (bytesRead != bytesToRead)
+    {
+      return false;
+    }
+    const byte writeState = bus->read();
+    switch (writeState)
+    {
+      case WRITE_BUFFER_EMPTY:
+        return true;
+        break;
+      case PACKET_DATA_WRITE_IN_PROGRESS:
+        return true;
+      case WRITE_BUFFER_FULL:
+        delay(retryDelay);
+        retryDelay = growthFactor * retryDelay;
+        break;
+      default:
+        return false;
+        break;
+    }
+  }
+  return false;
+}
+
+boolean ESAT_I2CMasterClass::packetMatchesRequest(ESAT_CCSDSPacket& packet,
+                                                  const int requestedPacket)
+{
+  const ESAT_CCSDSPrimaryHeader primaryHeader
+    = packet.readPrimaryHeader();
+  if (requestedPacket == NEXT_TELEMETRY_PACKET_REQUESTED)
+  {
+    if (primaryHeader.packetType != primaryHeader.TELEMETRY)
+    {
+      return false;
+    }
+  }
+  if (requestedPacket == NEXT_TELECOMMAND_PACKET_REQUESTED)
+  {
+    if (primaryHeader.packetType != primaryHeader.TELECOMMAND)
+    {
+      return false;
+    }
+  }
+  if (requestedPacket > 0) // Named-packet telemmetry request.
+  {
+    if (primaryHeader.secondaryHeaderFlag !=
+        primaryHeader.SECONDARY_HEADER_IS_PRESENT)
+    {
+      return false;
+    }
+    if (primaryHeader.packetDataLength < ESAT_CCSDSSecondaryHeader::LENGTH)
+    {
+      return false;
+    }
+    packet.rewind();
+    const ESAT_CCSDSSecondaryHeader secondaryHeader
+      = packet.readSecondaryHeader();
+    packet.rewind();
+    if (secondaryHeader.packetIdentifier != requestedPacket)
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+boolean ESAT_I2CMasterClass::readNamedTelemetry(ESAT_CCSDSPacket& packet,
+                                                const byte identifier,
+                                                const byte address)
+{
+  if (!bus)
+  {
+    return false;
+  }
+  return readPacket(packet,
+                    identifier,
+                    address);
+}
+
+boolean ESAT_I2CMasterClass::readNextTelemetry(ESAT_CCSDSPacket& packet,
+                                               const byte address)
+{
+  if (!bus)
+  {
+    return false;
+  }
+  return readPacket(packet,
+                    NEXT_TELEMETRY_PACKET_REQUESTED,
+                    address);
+}
+
+boolean ESAT_I2CMasterClass::readPacket(ESAT_CCSDSPacket& packet,
+                                        const int requestedPacket,
+                                        const byte address)
+{
+  if (!bus)
+  {
+    return false;
+  }
+  const boolean packetRequestCorrect =
+    requestPacket(requestedPacket, address);
+  if (!packetRequestCorrect)
+  {
+    return false;
+  }
+  const boolean canRead =
+    canReadPacket(address);
+  if (!canRead)
   {
     return false;
   }
   const boolean primaryHeaderCorrect =
-    readTelemetryPrimaryHeader(bus,
-                               address,
-                               packet,
-                               millisecondsAfterWrites);
+    readPrimaryHeader(packet, address);
   if (!primaryHeaderCorrect)
   {
     return false;
   }
   const boolean packetDataCorrect =
-    readTelemetryPacketData(bus,
-                            address,
-                            packet);
+    readPacketData(packet, address);
   if (!packetDataCorrect)
   {
     return false;
   }
-  const ESAT_CCSDSSecondaryHeader secondaryHeader =
-    packet.readSecondaryHeader();
-  if (secondaryHeader.packetIdentifier != packetIdentifier)
+  const boolean requestMatched =
+    packetMatchesRequest(packet, requestedPacket);
+  if (!requestMatched)
   {
     return false;
   }
   return true;
 }
 
-boolean ESAT_I2CMasterClass::readTelemetryPacketData(TwoWire& bus,
-                                                     const byte address,
-                                                     ESAT_CCSDSPacket& packet)
+boolean ESAT_I2CMasterClass::readPacketData(ESAT_CCSDSPacket& packet,
+                                            byte address)
 {
+  if (!bus)
+  {
+    return false;
+  }
   const ESAT_CCSDSPrimaryHeader primaryHeader = packet.readPrimaryHeader();
   packet.rewind();
   unsigned long totalBytesRead = 0;
@@ -124,46 +255,45 @@ boolean ESAT_I2CMasterClass::readTelemetryPacketData(TwoWire& bus,
     {
       bytesToRead = primaryHeader.packetDataLength - totalBytesRead;
     }
-    const byte bytesRead = bus.requestFrom(address, bytesToRead);
+    const byte bytesRead = bus->requestFrom(address, bytesToRead);
     if (bytesRead != bytesToRead)
     {
       return false;
     }
     for (byte i = 0; i < bytesRead; i++)
     {
-      packet.writeByte(bus.read());
+      packet.writeByte(bus->read());
     }
     totalBytesRead = totalBytesRead + bytesRead;
   }
   return true;
 }
 
-boolean ESAT_I2CMasterClass::readTelemetryPrimaryHeader(TwoWire& bus,
-                                                        const byte address,
-                                                        ESAT_CCSDSPacket& packet,
-                                                        const byte millisecondsAfterWrites)
+boolean ESAT_I2CMasterClass::readPrimaryHeader(ESAT_CCSDSPacket& packet,
+                                               const byte address)
 {
-  bus.beginTransmission(address);
-  (void) bus.write(TELEMETRY_VECTOR);
-  const byte writeStatus = bus.endTransmission();
+  if (!bus)
+  {
+    return false;
+  }
+  bus->beginTransmission(address);
+  (void) bus->write(READ_PACKET);
+  const byte writeStatus = bus->endTransmission();
   if (writeStatus != 0)
   {
     return false;
   }
+  // Delay for compatiblity with deprecated method readTelemetry().
   delay(millisecondsAfterWrites);
   ESAT_CCSDSPrimaryHeader primaryHeader;
   const byte headerBytesRead =
-    bus.requestFrom(address, primaryHeader.LENGTH);
+    bus->requestFrom(address, primaryHeader.LENGTH);
   if (headerBytesRead != primaryHeader.LENGTH)
   {
     return false;
   }
-  const boolean correctRead = primaryHeader.readFrom(bus);
+  const boolean correctRead = primaryHeader.readFrom(*bus);
   if (!correctRead)
-  {
-    return false;
-  }
-  if (primaryHeader.packetType != primaryHeader.TELEMETRY)
   {
     return false;
   }
@@ -175,106 +305,182 @@ boolean ESAT_I2CMasterClass::readTelemetryPrimaryHeader(TwoWire& bus,
   return true;
 }
 
-boolean ESAT_I2CMasterClass::readTelemetryStatus(TwoWire& bus,
-                                                 const byte address,
-                                                 const byte millisecondsAfterWrites,
-                                                 const byte attempts,
-                                                 const word millisecondsBetweenAttempts)
+ESAT_SemanticVersionNumber ESAT_I2CMasterClass::readProtocolVersionNumber(const byte address)
 {
-  for (int i = 0; i < attempts; i++)
+  ESAT_SemanticVersionNumber version(0, 0, 0);
+  if (!bus)
   {
-    bus.beginTransmission(address);
-    (void) bus.write(TELEMETRY_STATUS);
-    const byte writeStatus = bus.endTransmission();
-    delay(millisecondsAfterWrites);
-    if (writeStatus != 0)
-    {
-      return false;
-    }
-    const byte bytesToRead = 1;
-    const byte bytesRead = bus.requestFrom(address, bytesToRead);
-    if (bytesRead != bytesToRead)
-    {
-      return false;
-    }
-    const byte telemetryStatus = bus.read();
-    switch (telemetryStatus)
-    {
-      case TELEMETRY_NOT_REQUESTED:
-        return false;
-        break;
-      case TELEMETRY_NOT_READY:
-        delay(millisecondsBetweenAttempts);
-        break;
-      case TELEMETRY_READY:
-        return true;
-        break;
-      case TELEMETRY_REQUEST_REJECTED:
-        return false;
-        break;
-      case TELEMETRY_INVALID:
-        return false;
-        break;
-      default:
-        return false;
-        break;
-    }
+    return version;
   }
-  return false;
+  bus->beginTransmission(address);
+  (void) bus->write(PROTOCOL_VERSION_NUMBER);
+  const byte writeStatus = bus->endTransmission();
+  if (writeStatus != 0)
+  {
+    return version;
+  }
+  const byte bytesToRead = ESAT_SemanticVersionNumber::LENGTH;
+  const byte bytesRead = bus->requestFrom(address, bytesToRead);
+  if (bytesRead != bytesToRead)
+  {
+    return version;
+  }
+  (void) version.readFrom(*bus);
+  return version;
 }
 
-boolean ESAT_I2CMasterClass::writeTelecommand(TwoWire& bus,
-                                              const byte address,
-                                              ESAT_CCSDSPacket& packet,
-                                              const byte millisecondsAfterWrites,
-                                              const byte attempts,
-                                              const word millisecondsBetweenAttempts)
+boolean ESAT_I2CMasterClass::readTelemetry(TwoWire& i2cInterface,
+                                           const byte address,
+                                           const byte packetIdentifier,
+                                           ESAT_CCSDSPacket& packet,
+                                           const byte numberOfMillisecondsAfterWrites,
+                                           const byte numberOfAttempts,
+                                           const word numberOfMillisecondsBetweenAttempts)
 {
-  const boolean telecommandStatusCorrect =
-    readTelecommandStatus(bus,
-                          address,
-                          millisecondsAfterWrites,
-                          attempts,
-                          millisecondsBetweenAttempts);
-  if (!telecommandStatusCorrect)
+  // Save the original configuration.
+  TwoWire* const originalBus =
+    bus;
+  const word originalMillisecondsAfterWrites =
+    millisecondsAfterWrites;
+  const word originalAttempts =
+    attempts;
+  const word originalInitialDelay =
+    initialDelay;
+  const float originalGrowthFactor =
+    growthFactor;
+  // Set a temporary configuration in agreement with the arguments.
+  bus = &i2cInterface;
+  millisecondsAfterWrites = numberOfMillisecondsAfterWrites;
+  attempts = numberOfAttempts;
+  initialDelay = numberOfMillisecondsBetweenAttempts;
+  growthFactor = 1;
+  // Use the new application programming interface to read the packet.
+  const boolean correctPacket = readPacket(packet,
+                                           packetIdentifier,
+                                           address);
+  // Recover the original configuration.
+  bus = originalBus;
+  millisecondsAfterWrites = originalMillisecondsAfterWrites;
+  attempts = originalAttempts;
+  initialDelay = originalInitialDelay;
+  growthFactor = originalGrowthFactor;
+  // Return the result of the packet read.
+  return correctPacket;
+}
+
+boolean ESAT_I2CMasterClass::readTelecommand(ESAT_CCSDSPacket& packet,
+                                             const byte address)
+{
+  if (!bus)
   {
     return false;
   }
-  const boolean telecommandPrimaryHeaderCorrect =
-    writeTelecommandPrimaryHeader(bus,
-                                  address,
-                                  packet,
-                                  millisecondsAfterWrites);
-  if (!telecommandPrimaryHeaderCorrect)
+  return readPacket(packet,
+                    NEXT_TELECOMMAND_PACKET_REQUESTED,
+                    address);
+}
+
+boolean ESAT_I2CMasterClass::requestPacket(const int requestedPacket,
+                                           const byte address)
+{
+  if (!bus)
   {
     return false;
   }
-  const boolean telecommandPacketDataCorrect =
-    writeTelecommandPacketData(bus,
-                               address,
-                               packet,
-                               millisecondsAfterWrites);
-  return telecommandPacketDataCorrect;
+  bus->beginTransmission(address);
+  switch (requestedPacket)
+  {
+    case NEXT_TELEMETRY_PACKET_REQUESTED:
+      (void) bus->write(READ_TELEMETRY);
+      break;
+    case NEXT_TELECOMMAND_PACKET_REQUESTED:
+      (void) bus->write(READ_TELECOMMAND);
+      break;
+    default:
+      (void) bus->write(READ_TELEMETRY);
+      (void) bus->write(byte(requestedPacket));
+      break;
+  }
+  const byte writeStatus = bus->endTransmission();
+  // Delay for compatiblity with deprecated method readTelemetry().
+  delay(millisecondsAfterWrites);
+  if (writeStatus == 0)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
-boolean ESAT_I2CMasterClass::writeTelecommandPacketData(TwoWire& bus,
-                                                        const byte address,
-                                                        ESAT_CCSDSPacket& packet,
-                                                        const byte millisecondsAfterWrites)
+boolean ESAT_I2CMasterClass::resetTelemetryQueue(const byte address)
 {
+  if (!bus)
+  {
+    return false;
+  }
+  bus->beginTransmission(address);
+  (void) bus->write(RESET_TELEMETRY_QUEUE);
+  const byte writeStatus = bus->endTransmission();
+  if (writeStatus == 0)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+boolean ESAT_I2CMasterClass::writePacket(ESAT_CCSDSPacket& packet,
+                                         const byte address,
+                                         const word microsecondsBetweenChunks)
+{
+  if (!bus)
+  {
+    return false;
+  }
+  const boolean canWrite =
+    canWritePacket(address);
+  if (!canWrite)
+  {
+    return false;
+  }
+  const boolean primaryHeaderCorrect =
+    writePrimaryHeader(packet, address, microsecondsBetweenChunks);
+  if (!primaryHeaderCorrect)
+  {
+    return false;
+  }
+  const boolean packetDataCorrect =
+    writePacketData(packet, address, microsecondsBetweenChunks);
+  return packetDataCorrect;
+}
+
+boolean ESAT_I2CMasterClass::writePacketData(ESAT_CCSDSPacket& packet,
+                                             const byte address,
+                                             const word microsecondsBetweenChunks)
+{
+  if (!bus)
+  {
+    return false;
+  }
   packet.rewind();
   while (packet.available() > 0)
   {
-    bus.beginTransmission(address);
-    (void) bus.write(TELECOMMAND_PACKET_DATA);
+    bus->beginTransmission(address);
+    (void) bus->write(WRITE_PACKET_DATA);
     const byte bytesToWrite = I2C_CHUNK_LENGTH - 1;
     for (byte i = 0;
          (i < bytesToWrite) && (packet.available() > 0);
          i++)
     {
-      (void) bus.write(packet.readByte());
+      (void) bus->write(packet.readByte());
     }
-    const byte writeStatus = bus.endTransmission();
+    const byte writeStatus = bus->endTransmission();
+    delayMicroseconds(microsecondsBetweenChunks);
+    // Delay for compatiblity with deprecated method writeTelecommand().
     delay(millisecondsAfterWrites);
     if (writeStatus != 0)
     {
@@ -284,16 +490,21 @@ boolean ESAT_I2CMasterClass::writeTelecommandPacketData(TwoWire& bus,
   return true;
 }
 
-boolean ESAT_I2CMasterClass::writeTelecommandPrimaryHeader(TwoWire& bus,
-                                                           const byte address,
-                                                           ESAT_CCSDSPacket& packet,
-                                                           const byte millisecondsAfterWrites)
+boolean ESAT_I2CMasterClass::writePrimaryHeader(ESAT_CCSDSPacket& packet,
+                                                const byte address,
+                                                const word microsecondsBetweenChunks)
 {
-  bus.beginTransmission(address);
-  (void) bus.write(TELECOMMAND_PRIMARY_HEADER);
+  if (!bus)
+  {
+    return false;
+  }
+  bus->beginTransmission(address);
+  (void) bus->write(WRITE_PRIMARY_HEADER);
   const ESAT_CCSDSPrimaryHeader primaryHeader = packet.readPrimaryHeader();
-  (void) primaryHeader.writeTo(bus);
-  const byte writeStatus = bus.endTransmission();
+  (void) primaryHeader.writeTo(*bus);
+  const byte writeStatus = bus->endTransmission();
+  delayMicroseconds(microsecondsBetweenChunks);
+  // Delay for compatiblity with deprecated method writeTelecommand().
   delay(millisecondsAfterWrites);
   if (writeStatus == 0)
   {
@@ -305,24 +516,40 @@ boolean ESAT_I2CMasterClass::writeTelecommandPrimaryHeader(TwoWire& bus,
   }
 }
 
-boolean ESAT_I2CMasterClass::writeTelemetryRequest(TwoWire& bus,
-                                                   const byte address,
-                                                   const byte packetIdentifier,
-                                                   const byte millisecondsAfterWrites)
+boolean ESAT_I2CMasterClass::writeTelecommand(TwoWire& i2cInterface,
+                                              const byte address,
+                                              ESAT_CCSDSPacket& packet,
+                                              const byte numberOfMillisecondsAfterWrites,
+                                              const byte numberOfAttempts,
+                                              const word numberOfMillisecondsBetweenAttempts)
 {
-  bus.beginTransmission(address);
-  (void) bus.write(TELEMETRY_REQUEST);
-  (void) bus.write(packetIdentifier);
-  const byte writeStatus = bus.endTransmission();
-  delay(millisecondsAfterWrites);
-  if (writeStatus == 0)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  // Save the original configuration.
+  TwoWire* const originalBus =
+    bus;
+  const word originalMillisecondsAfterWrites =
+    millisecondsAfterWrites;
+  const word originalAttempts =
+    attempts;
+  const word originalInitialDelay =
+    initialDelay;
+  const float originalGrowthFactor =
+    growthFactor;
+  // Set a temporary configuration in agreement with the arguments.
+  bus = &i2cInterface;
+  millisecondsAfterWrites = numberOfMillisecondsAfterWrites;
+  attempts = numberOfAttempts;
+  initialDelay = numberOfMillisecondsBetweenAttempts;
+  growthFactor = 1;
+  // Use the new application programming interface to write the packet.
+  const boolean correctPacket = writePacket(packet, address);
+  // Recover the original configuration.
+  bus = originalBus;
+  millisecondsAfterWrites = originalMillisecondsAfterWrites;
+  attempts = originalAttempts;
+  initialDelay = originalInitialDelay;
+  growthFactor = originalGrowthFactor;
+  // Return the result of the packet write.
+  return correctPacket;
 }
 
 ESAT_I2CMasterClass ESAT_I2CMaster;

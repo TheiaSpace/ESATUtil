@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017 Theia Space, Universidad Politécnica de Madrid
+ *
  * This file is part of Theia Space's ESAT Util library.
  *
  * Theia Space's ESAT Util library is free software: you can
@@ -40,9 +42,14 @@ class ESAT_TimerClass
     // during the previous cycle.
     byte load();
 
-    // Return the milliseconds ellapsed
+    // Return the milliseconds elapsed
     // since the last wake-up time.
-    unsigned long ellapsedMilliseconds();
+    unsigned long elapsedMilliseconds();
+
+    // Deprecated method; use ESAT_Util.elapsedMilliseconds() instead.
+    // Return the milliseconds elapsed
+    // since the last wake-up time.
+    unsigned long ellapsedMilliseconds() __attribute__((deprecated("Use ESAT_Util.elapsedMilliseconds() instead.")));
 
     // Wait until the next cycle is due.
     // The next cycle starts when the timer period has ellapsed since

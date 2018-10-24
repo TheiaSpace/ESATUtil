@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ *
  * This file is part of Theia Space's ESAT Util library.
  *
  * Theia Space's ESAT Util library is free software: you can
@@ -17,17 +19,17 @@
  */
 
 #include "ESAT_Timestamp.h"
-#include <ESAT_Util.h>
+#include "ESAT_Util.h"
 
 
-ESAT_Timestamp::ESAT_Timestamp():
-  year(0),
-  month(0),
-  day(0),
-  hours(0),
-  minutes(0),
-  seconds(0)
+ESAT_Timestamp::ESAT_Timestamp()
 {
+  year = 0;
+  month = 0;
+  day = 0;
+  hours = 0;
+  minutes = 0;
+  seconds = 0;
 }
 
 ESAT_Timestamp::ESAT_Timestamp(const word theYear,
@@ -35,19 +37,19 @@ ESAT_Timestamp::ESAT_Timestamp(const word theYear,
                                const byte theDay,
                                const byte theHours,
                                const byte theMinutes,
-                               const byte theSeconds):
-  year(theYear),
-  month(theMonth),
-  day(theDay),
-  minutes(theMinutes),
-  hours(theHours),
-  seconds(theSeconds)
+                               const byte theSeconds)
 {
+  year = theYear;
+  month = theMonth;
+  day = theDay;
+  minutes = theMinutes;
+  hours = theHours;
+  seconds = theSeconds;
 }
 
 void ESAT_Timestamp::addDays(const unsigned long daysToAdd)
 {
-  for (long i = 0; i < daysToAdd; i++)
+  for (unsigned long i = 0; i < daysToAdd; i++)
   {
     const byte DAYS_PER_MONTH = daysPerMonth(year, month);
     day = day + 1;
@@ -127,7 +129,7 @@ ESAT_Timestamp::ComparisonResult ESAT_Timestamp::compareHoursTo(const ESAT_Times
   }
   else
   {
-    if (minutes < timestamp.minutes)
+    if (hours < timestamp.hours)
     {
       return THIS_IS_LOWER;
     }
@@ -256,23 +258,23 @@ size_t ESAT_Timestamp::printTo(Print& output) const
   bytesWritten =
     bytesWritten + output.print(ESAT_Util.pad(String(year, DEC), '0', 4));
   bytesWritten =
-    bytesWritten + output.print(String("-"));
+    bytesWritten + output.print(F("-"));
   bytesWritten =
     bytesWritten + output.print(ESAT_Util.pad(String(month, DEC), '0', 2));
   bytesWritten =
-    bytesWritten + output.print(String("-"));
+    bytesWritten + output.print(F("-"));
   bytesWritten =
     bytesWritten + output.print(ESAT_Util.pad(String(day, DEC), '0', 2));
   bytesWritten =
-    bytesWritten + output.print(String("T"));
+    bytesWritten + output.print(F("T"));
   bytesWritten =
     bytesWritten + output.print(ESAT_Util.pad(String(hours, DEC), '0', 2));
   bytesWritten =
-    bytesWritten + output.print(String(":"));
+    bytesWritten + output.print(F(":"));
   bytesWritten =
     bytesWritten + output.print(ESAT_Util.pad(String(minutes, DEC), '0', 2));
   bytesWritten =
-    bytesWritten + output.print(String(":"));
+    bytesWritten + output.print(F(":"));
   bytesWritten =
     bytesWritten + output.print(ESAT_Util.pad(String(seconds, DEC), '0', 2));
   return bytesWritten;
@@ -298,6 +300,28 @@ boolean ESAT_Timestamp::operator==(const ESAT_Timestamp timestamp) const
   }
 }
 
+boolean ESAT_Timestamp::operator!=(const ESAT_Timestamp timestamp) const
+{
+  const ComparisonResult result = compareTo(timestamp);
+  switch (result)
+  {
+    case THIS_IS_LOWER:
+      return true;
+      break;
+    case THIS_IS_EQUAL:
+      return false;
+      break;
+    case THIS_IS_HIGHER:
+      return true;
+      break;
+    default:
+      return false;
+      break;
+  }
+  // This point shouldn't be reached.
+  return false;
+}
+
 boolean ESAT_Timestamp::operator<(const ESAT_Timestamp timestamp) const
 {
   const ComparisonResult result = compareTo(timestamp);
@@ -316,6 +340,8 @@ boolean ESAT_Timestamp::operator<(const ESAT_Timestamp timestamp) const
       return false;
       break;
   }
+  // This point shouldn't be reached.
+  return false;
 }
 
 boolean ESAT_Timestamp::operator<=(const ESAT_Timestamp timestamp) const
@@ -336,6 +362,8 @@ boolean ESAT_Timestamp::operator<=(const ESAT_Timestamp timestamp) const
       return false;
       break;
   }
+  // This point shouldn't be reached.
+  return false;
 }
 
 boolean ESAT_Timestamp::operator>(const ESAT_Timestamp timestamp) const
@@ -356,6 +384,8 @@ boolean ESAT_Timestamp::operator>(const ESAT_Timestamp timestamp) const
       return false;
       break;
   }
+  // This point shouldn't be reached.
+  return false;
 }
 
 boolean ESAT_Timestamp::operator>=(const ESAT_Timestamp timestamp) const
@@ -376,4 +406,6 @@ boolean ESAT_Timestamp::operator>=(const ESAT_Timestamp timestamp) const
       return false;
       break;
   }
+  // This point shouldn't be reached.
+  return false;
 }

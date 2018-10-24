@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ *
  * This file is part of Theia Space's ESAT Util library.
  *
  * Theia Space's ESAT Util library is free software: you can
@@ -59,6 +61,10 @@ class ESAT_UtilClass
     // Convert a hexadecimal string to a word.
     word hexadecimalToWord(String hexadecimalNumber) const;
 
+    // Return the most-significant 16-bit unsigned integer word of a
+    // 32-bit unsigned integer.
+    word highWord(unsigned long number) const;
+
     // Return the bits of the two's-complement representation
     // of a signed 16-bit integer.
     word intToWord(int number) const;
@@ -67,11 +73,28 @@ class ESAT_UtilClass
     // of a signed 32-bit integer.
     unsigned long longToUnsignedLong(long number) const;
 
+    // Return the least-significant 16-bit unsigned integer word of a
+    // 32-bit unsigned integer.
+    word lowWord(unsigned long number) const;
+
     // Pad a string with a leading padding character to a given total length.
     String pad(String text, char padding, unsigned int length) const;
 
     // Swap the bytes of a word.
     word swapWordBytes(word number) const;
+
+    // Return the 32-bit unsigned integer made from the given 8-bit
+    // unsigned integer bytes, from most-significant byte to
+    // least-significant byte.
+    unsigned long unsignedLong(byte highByte,
+                               byte mediumHighByte,
+                               byte mediumLowByte,
+                               byte lowByte) const;
+
+    // Return the 32-bit unsigned integer made from the given 16-bit
+    // unsigned integer words, from most-significant word to
+    // least-significant word.
+    unsigned long unsignedLong(word highWord, word lowWord) const;
 
     // Return the single-precision floating-point number corresponding
     // to the given IEEE 754 binary32 bits.

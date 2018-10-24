@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ *
  * This file is part of Theia Space's ESAT Util library.
  *
  * Theia Space's ESAT Util library is free software: you can
@@ -17,7 +19,7 @@
  */
 
 #include <Arduino.h>
-#include "ESAT_Timestamp.h"
+#include "ESAT_Clock.h"
 
 #ifndef ESAT_SoftwareClock_h
 #define ESAT_SoftwareClock_h
@@ -25,40 +27,33 @@
 // Software real-time clock.
 // Once itialized with the current timestamp, it provides a real-time
 // clock and calendar function with second resolution.
-class ESAT_SoftwareClock
+class ESAT_SoftwareClock: public ESAT_Clock
 {
   public:
-    // Instantiate a new software real-time clock.
-    ESAT_SoftwareClock();
-
+    // Deprecated method; use write(timestamp) instead.
     // Initiate the clock so it starts counting time.
     // Set the clock to the given timestamp.
-    void begin(ESAT_Timestamp timestamp);
+    void begin(ESAT_Timestamp timestamp) __attribute__((deprecated("Use write(timestamp) instead.")));
 
-    // Return true if the RTC was initialized and it is running,
+    // Deprecated method.
+    // Return true if the clock was initialized and it is running,
     // otherwise returns false.
-    boolean isRunning() const;
+    boolean isRunning() const __attribute__((deprecated));
 
     // Return the current timestamp.
-    // If the RTC is not initialized before calling this method,
+    // If the clock is not initialized before calling this method,
     // return the invalid timestamp 0000-00-00T00:00:00.
-    ESAT_Timestamp read() const;
+    ESAT_Timestamp read();
 
     // Set the time to the given timestamp.
     void write(ESAT_Timestamp timestamp);
 
   private:
-    // True if the clock is running; false otherwise.
-    boolean running;
-
     // System uptime milliseconds at the last time setting.
     unsigned long setMilliseconds;
 
     // Timestamp given at the last time setting.
     ESAT_Timestamp setTimestamp;
-
-    // Set the time to the given timestamp.
-    void setCurrentTime(ESAT_Timestamp timestamp);
 };
 
 #endif /* ESAT_SoftwareClock_h */

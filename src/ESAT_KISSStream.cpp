@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ *
  * This file is part of Theia Space's ESAT Util library.
  *
  * Theia Space's ESAT Util library is free software: you can
@@ -18,22 +20,45 @@
 
 #include "ESAT_KISSStream.h"
 
-ESAT_KISSStream::ESAT_KISSStream():
-  backendStream(nullptr),
-  backendBuffer(),
-  decoderState(WAITING_FOR_FRAME_START)
+ESAT_KISSStream::ESAT_KISSStream()
 {
+  backendStream = nullptr;
+  backendBuffer = ESAT_Buffer();
+  decoderState = WAITING_FOR_FRAME_START;
+  setTimeout(0);
+}
+
+ESAT_KISSStream::ESAT_KISSStream(Stream& stream)
+{
+  backendStream = &stream;
+  backendBuffer = ESAT_Buffer();
+  decoderState = WAITING_FOR_FRAME_START;
   setTimeout(0);
 }
 
 ESAT_KISSStream::ESAT_KISSStream(Stream& stream,
                                  byte buffer[],
-                                 unsigned long bufferLength):
-  backendStream(&stream),
-  backendBuffer(buffer, bufferLength),
-  decoderState(WAITING_FOR_FRAME_START)
+                                 unsigned long bufferLength)
 {
+  backendStream = &stream;
+  backendBuffer = ESAT_Buffer(buffer, bufferLength);
+  decoderState = WAITING_FOR_FRAME_START;
   setTimeout(0);
+}
+
+size_t ESAT_KISSStream::append(const byte datum)
+{
+  // In buffered KISS streams, append the datum to the buffer;
+  // in unbuffered KISS streams, write the datum directly to
+  // the backend stream.
+  if (backendBuffer.capacity() > 0)
+  {
+    return backendBuffer.write(datum);
+  }
+  else
+  {
+    return backendStream->write(datum);
+  }
 }
 
 int ESAT_KISSStream::available()
@@ -48,9 +73,14 @@ int ESAT_KISSStream::available()
   }
 }
 
-size_t ESAT_KISSStream::append(const byte datum)
+size_t ESAT_KISSStream::beginFrame()
 {
-  return backendBuffer.write(datum);
+  reset();
+  const size_t frameEndBytesWritten =
+    append(FRAME_END);
+  const size_t dataFrameBytesWritten =
+    append(DATA_FRAME);
+  return frameEndBytesWritten + dataFrameBytesWritten;
 }
 
 void ESAT_KISSStream::decode(const byte datum)
@@ -149,16 +179,6 @@ void ESAT_KISSStream::decodeFrameStart(const byte datum)
   }
 }
 
-size_t ESAT_KISSStream::beginFrame()
-{
-  reset();
-  const size_t frameEndBytesWritten =
-    append(FRAME_END);
-  const size_t dataFrameBytesWritten =
-    append(DATA_FRAME);
-  return frameEndBytesWritten + dataFrameBytesWritten;
-}
-
 size_t ESAT_KISSStream::endFrame()
 {
   const size_t frameEndBytesWritten = append(FRAME_END);
@@ -174,20 +194,6 @@ void ESAT_KISSStream::flush()
   }
   (void) backendBuffer.writeTo(*backendStream);
   reset();
-}
-
-unsigned long ESAT_KISSStream::frameLength(const unsigned long dataLength)
-{
-  const unsigned long frameStartLength = 1;
-  const unsigned long dataFrameLength = 1;
-  const unsigned long frameEndLength = 1;
-  const unsigned long escapeFactor = 2;
-  const unsigned long totalLength =
-    frameStartLength
-    + dataFrameLength
-    + escapeFactor * dataLength
-    + frameEndLength;
-  return totalLength;
 }
 
 int ESAT_KISSStream::peek()
@@ -221,7 +227,7 @@ boolean ESAT_KISSStream::receiveFrame()
   while ((backendStream->available() > 0)
          && (decoderState != FINISHED))
   {
-    const byte datum = backendStream->read();
+    const int datum = backendStream->read();
     if (datum >= 0)
     {
       decode(datum);

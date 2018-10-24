@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017 Theia Space, Universidad Politécnica de Madrid
+ *
  * This file is part of Theia Space's ESAT Util library.
  *
  * Theia Space's ESAT Util library is free software: you can
@@ -93,6 +95,10 @@ class ESAT_Timestamp: public Printable
     // Return true if the argument timestamp coincides with this timestamp;
     // otherwise return false.
     boolean operator==(ESAT_Timestamp timestamp) const;
+
+    // Return true if the argument timestamp doesn't coincide with
+    // this timestamp; otherwise return false.
+    boolean operator!=(ESAT_Timestamp timestamp) const;
 
     // Return true if the argument timestamp happens after this
     // timestamp; otherwise return false.
