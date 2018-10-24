@@ -1,0 +1,66 @@
+ESATUtil NEWS -- history of changes.
+
+Copyright (C) 2018 Theia Space, Universidad Politécnica de Madrid
+
+This file is part of Theia Space's ESAT Utility library.
+
+Theia Space's ESAT Utility library is free software: you can
+redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation, either
+version 3 of the License, or (at your option) any later version.
+
+Theia Space's ESAT Utility library is distributed in the hope that it
+will be useful, but WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Theia Space's ESAT Utility library.  If not, see
+<http://www.gnu.org/licenses/>.
+
+
+* Changes in ESATUtil 2.1.0, 2018-10-24
+
+** Many errors have been fixed.
+
+** All computer code files have copyright notices.
+
+** There are example programs that illustrate the usage of the modules.
+
+** There are new modules and functions for facilitating the work with
+CCSDS Space Packets and KISS frames.
+
+** There is a new module for computing CRC8 remainders.
+
+** There is a new module for handling boolean flags/bit vectors.
+
+** There is a new module for handling Semantic Version Numbers.
+
+** There is a new clock interface.
+
+** There are new encoding conversion functions.
+
+
+* Changes in ESATUtil 2.0.0, 2017-11-08
+
+** All existing modules have been rewritten.
+
+** The old I2C and mathematics modules have been deleted.
+
+** There is a new module for working with buffers with a stream interface.
+
+** There are new modules for working with CCSDS Space Packets.
+
+** There is a new module for working with KISS frames.
+
+** There are new modules for passing CCSDS Space Packets through
+the I2C interface.
+
+** There are new modules for timekeeping.
+
+** There are new type conversion functions.
+
+
+* Changes in ESATUtil 1.0.0, 2017-02-09
+
+** This is the initial release.
