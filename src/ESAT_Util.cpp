@@ -24,7 +24,7 @@ signed char ESAT_UtilClass::byteToChar(const byte bits) const
 {
   if (bits > 127)
   {
-    return -((signed char) (((~bits) + 1U) & 0xFFFF));
+    return -((signed char) (((~bits) + 1U) & 0xFF));
   }
   else
   {
