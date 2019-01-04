@@ -22,7 +22,6 @@
 #define ESAT_I2CSlave_h
 
 #include <Arduino.h>
-#include "ESAT_Buffer.h"
 #include "ESAT_CCSDSPacket.h"
 #include "ESAT_SemanticVersionNumber.h"
 #include <Wire.h>
@@ -221,31 +220,31 @@ class ESAT_I2CSlaveClass
     volatile boolean resetTelemetryQueue;
 
     // Handle a write to WRITE_PACKET_DATA.
-    void handleWritePacketDataReception(ESAT_Buffer message);
+    void handleWritePacketDataReception();
 
     // Handle a write to WRITE_PRIMARY_HEADER.
-    void handleWritePrimaryHeaderReception(ESAT_Buffer message);
+    void handleWritePrimaryHeaderReception();
 
     // Handle a write to WRITE_STATE.
-    void handleWriteStateReception(ESAT_Buffer message);
+    void handleWriteStateReception();
 
     // Handle a write to READ_TELEMETRY.
-    void handleReadTelemetryReception(ESAT_Buffer message);
+    void handleReadTelemetryReception();
 
     // Handle a write to READ_STATE.
-    void handleReadStateReception(ESAT_Buffer message);
+    void handleReadStateReception();
 
     // Handle a write to READ_PACKET.
-    void handleReadPacketReception(ESAT_Buffer message);
+    void handleReadPacketReception();
 
     // Handle a write to READ_TELECOMMAND.
-    void handleReadTelecommandReception(ESAT_Buffer message);
+    void handleReadTelecommandReception();
 
     // Handle a write to RESET_TELEMETRY_QUEUE.
-    void handleResetTelemetryQueueReception(ESAT_Buffer message);
+    void handleResetTelemetryQueueReception();
 
     // Handle a write to PROTOCOL_VERSION_NUMBER.
-    void handleProtocolVersionNumberReception(ESAT_Buffer message);
+    void handleProtocolVersionNumberReception();
 
     // Handle a read from WRITE_STATE.
     void handleWriteStateRequest();
