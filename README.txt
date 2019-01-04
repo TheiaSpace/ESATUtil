@@ -1,4 +1,4 @@
-Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
 
 This file is part of Theia Space's ESAT utility library.
 
@@ -17,7 +17,7 @@ along with Theia Space's ESAT utility library.  If not, see
 <http://www.gnu.org/licenses/>.
 
 
-ESAT utility library version 2.1.0.
+ESAT utility library version 2.1.1.
 
 Shared utility libraries for ESAT.
 
