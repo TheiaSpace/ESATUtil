@@ -17,7 +17,7 @@ along with Theia Space's ESAT utility library.  If not, see
 <http://www.gnu.org/licenses/>.
 
 
-ESAT utility library version 2.1.1.
+ESAT utility library version 2.1.2.
 
 Shared utility libraries for ESAT.
 
