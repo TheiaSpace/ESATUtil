@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2018, 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Util library.
  *
@@ -25,9 +25,9 @@ ESAT_FlagContainer::ESAT_FlagContainer()
   clearAll();
 }
 
-byte ESAT_FlagContainer::available() const
+word ESAT_FlagContainer::available() const
 {
-  byte availableFlags = 0;
+  word availableFlags = 0;
   for (word flag = 0;
        flag < MAXIMUM_NUMBER_OF_FLAGS;
        flag++)
