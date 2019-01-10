@@ -19,6 +19,12 @@ along with Theia Space's ESAT Utility library.  If not, see
 <http://www.gnu.org/licenses/>.
 
 
+* Changes in ESATUtil 2.1.2, 2019-01-10
+
+** An error on how the module for handling boolean flags/bit vectors
+reported the number of true flags has been fixed.
+
+
 * Changes in ESATUtil 2.1.1, 2019-01-04
 
 ** Some portability issues have been fixed.
