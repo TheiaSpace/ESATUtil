@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2018, 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Util library.
  *
@@ -41,7 +41,7 @@ class ESAT_FlagContainer: public Printable
     ESAT_FlagContainer();
 
     // Return the number of set or active (true) flags.
-    byte available() const;
+    word available() const;
 
     // Set a flag to false.
     void clear(byte flag);
