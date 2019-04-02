@@ -34,11 +34,13 @@ ESAT_Buffer::ESAT_Buffer()
   setTimeout(0);
 }
 
-ESAT_Buffer::ESAT_Buffer(byte array[], const unsigned long length)
+ESAT_Buffer::ESAT_Buffer(byte array[],
+                         const unsigned long capacity,
+                         const unsigned long availableBytes)
 {
   buffer = array;
-  bufferCapacity = length;
-  bytesInBuffer = 0;
+  bufferCapacity = capacity;
+  bytesInBuffer = min(capacity, availableBytes);
   readWritePosition = 0;
   triedToReadBeyondBufferLength = false;
   triedToWriteBeyondBufferCapacity = false;

@@ -33,8 +33,18 @@ class ESAT_Buffer: public Printable, public Stream
     // An empty buffer will fail on reads and writes.
     ESAT_Buffer();
 
-    // Instantiate a buffer backed by a byte array of given length.
-    ESAT_Buffer(byte array[], unsigned long length);
+    // Instantiate a buffer backed by a byte array of given capacity.
+    // The number of available bytes (with a default value of 0 when
+    // not provided) is the number of bytes that can be read as soon
+    // as this buffer object is created.  It can't be greater than the
+    // capacity of the backend array, so the actual number of
+    // available bytes will be truncated to the capacity when the
+    // provided value is too great.  Calls to length() will return
+    // this number of available bytes and calls to peek() and read()
+    // will return useful data as long as position() < capacity.
+    ESAT_Buffer(byte array[],
+                unsigned long capacity,
+                unsigned long availableBytes = 0);
 
     // Return the number of unread bytes available in the buffer,
     // truncated to an int.
