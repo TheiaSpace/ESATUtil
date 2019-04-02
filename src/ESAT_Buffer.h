@@ -76,7 +76,8 @@ class ESAT_Buffer: public Printable, public Stream
     size_t printTo(Print& output) const;
 
     // Return the next byte (or -1 if no byte could be read).
-    // Advance the read/write position by 1, bounded by the capacity.
+    // Advance the read/write position by 1, bounded by the number
+    // of bytes stored in the buffer as returned by length().
     int read();
 
     // Read a number of bytes from an input stream and fill the
