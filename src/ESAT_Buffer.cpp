@@ -172,9 +172,17 @@ void ESAT_Buffer::rewind()
   readWritePosition = 0;
 }
 
-void ESAT_Buffer::setLength(const unsigned long newLength)
+boolean ESAT_Buffer::setLength(const unsigned long newLength)
 {
-  bytesInBuffer = min(newLength, bufferCapacity);
+  if (newLength <= bufferCapacity)
+  {
+    bytesInBuffer = newLength;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 boolean ESAT_Buffer::triedToReadBeyondLength() const
