@@ -78,6 +78,16 @@ class ESAT_Buffer: public Printable, public Stream
     // Set the read/write position to the start of the buffer.
     void rewind();
 
+    // Set the number of stored bytes in the buffer returned by future
+    // calls to length() to the requested new length or, if that's greater
+    // than the actual buffer capacity(), to the actual buffer capacity().
+    // Calls to peek() and read() return useful data as long as
+    // position() < length(), so setLength() changes the number
+    // of readable bytes in the buffer.  This is useful, for example,
+    // if the contents of the backend array are at some place other
+    // than this ESAT_Buffer object.
+    void setLength(unsigned long newLength);
+
     // Return true if the last read() or peek() attempt was beyond
     // the length() of the buffer; otherwise return false.
     boolean triedToReadBeyondLength() const;
