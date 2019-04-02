@@ -89,6 +89,11 @@ class ESAT_Buffer: public Printable, public Stream
     // Set the read/write position to the start of the buffer.
     void rewind();
 
+    // Set the read/write position to the desired value.
+    // Return true on success; otherwise (when the new position
+    // is greater than length() and it can't be set) return false.
+    boolean seek(unsigned long newPosition);
+
     // Set the number of stored bytes in the buffer returned by future
     // calls to length() to the requested new length.
     // Return true on success; otherwise (when the new length is
