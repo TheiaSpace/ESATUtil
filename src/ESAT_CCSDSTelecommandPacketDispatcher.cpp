@@ -66,8 +66,7 @@ boolean ESAT_CCSDSTelecommandPacketDispatcher::dispatch(ESAT_CCSDSPacket packet)
     return false;
   }
   ESAT_CCSDSSecondaryHeader secondaryHeader = packet.readSecondaryHeader();
-  for (ESAT_CCSDSTelecommandPacketHandler* handler = head
-         ;
+  for (ESAT_CCSDSTelecommandPacketHandler* handler = head;
        handler != nullptr;
        handler = handler->nextTelecommandPacketHandler)
   {
