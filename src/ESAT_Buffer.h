@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Util library.
  *
@@ -33,8 +33,18 @@ class ESAT_Buffer: public Printable, public Stream
     // An empty buffer will fail on reads and writes.
     ESAT_Buffer();
 
-    // Instantiate a buffer backed by a byte array of given length.
-    ESAT_Buffer(byte array[], unsigned long length);
+    // Instantiate a buffer backed by a byte array of given capacity.
+    // The number of available bytes (with a default value of 0 when
+    // not provided) is the number of bytes that can be read as soon
+    // as this buffer object is created.  It can't be greater than the
+    // capacity of the backend array, so the actual number of
+    // available bytes will be truncated to the capacity when the
+    // provided value is too great.  Calls to length() will return
+    // this number of available bytes and calls to peek() and read()
+    // will return useful data as long as position() < capacity.
+    ESAT_Buffer(byte array[],
+                unsigned long capacity,
+                unsigned long availableBytes = 0);
 
     // Return the number of unread bytes available in the buffer,
     // truncated to an int.
@@ -66,7 +76,8 @@ class ESAT_Buffer: public Printable, public Stream
     size_t printTo(Print& output) const;
 
     // Return the next byte (or -1 if no byte could be read).
-    // Advance the read/write position by 1, bounded by the capacity.
+    // Advance the read/write position by 1, bounded by the number
+    // of bytes stored in the buffer as returned by length().
     int read();
 
     // Read a number of bytes from an input stream and fill the
@@ -77,6 +88,22 @@ class ESAT_Buffer: public Printable, public Stream
 
     // Set the read/write position to the start of the buffer.
     void rewind();
+
+    // Set the read/write position to the desired value.
+    // Return true on success; otherwise (when the new position
+    // is greater than length() and it can't be set) return false.
+    boolean seek(unsigned long newPosition);
+
+    // Set the number of stored bytes in the buffer returned by future
+    // calls to length() to the requested new length.
+    // Return true on success; otherwise (when the new length is
+    // greater than capacity() and it can't be set) return false.
+    // Calls to peek() and read() return useful data as long as
+    // position() < length(), so setLength() changes the number
+    // of readable bytes in the buffer.  This is useful, for example,
+    // if the contents of the backend array are at some place other
+    // than this ESAT_Buffer object.
+    boolean setLength(unsigned long newLength);
 
     // Return true if the last read() or peek() attempt was beyond
     // the length() of the buffer; otherwise return false.

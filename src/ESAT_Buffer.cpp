@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Util library.
  *
@@ -34,11 +34,13 @@ ESAT_Buffer::ESAT_Buffer()
   setTimeout(0);
 }
 
-ESAT_Buffer::ESAT_Buffer(byte array[], const unsigned long length)
+ESAT_Buffer::ESAT_Buffer(byte array[],
+                         const unsigned long capacity,
+                         const unsigned long availableBytes)
 {
   buffer = array;
-  bufferCapacity = length;
-  bytesInBuffer = 0;
+  bufferCapacity = capacity;
+  bytesInBuffer = min(capacity, availableBytes);
   readWritePosition = 0;
   triedToReadBeyondBufferLength = false;
   triedToWriteBeyondBufferCapacity = false;
@@ -168,6 +170,32 @@ boolean ESAT_Buffer::readFrom(Stream& input, const unsigned long bytesToRead)
 void ESAT_Buffer::rewind()
 {
   readWritePosition = 0;
+}
+
+boolean ESAT_Buffer::seek(const unsigned long newPosition)
+{
+  if (newPosition <= bytesInBuffer)
+  {
+    readWritePosition = newPosition;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+boolean ESAT_Buffer::setLength(const unsigned long newLength)
+{
+  if (newLength <= bufferCapacity)
+  {
+    bytesInBuffer = newLength;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 boolean ESAT_Buffer::triedToReadBeyondLength() const
