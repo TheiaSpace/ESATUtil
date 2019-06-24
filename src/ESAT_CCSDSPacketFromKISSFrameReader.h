@@ -38,6 +38,12 @@ class ESAT_CCSDSPacketFromKISSFrameReader
 
     // Instantiate a CCSDS-from-KISS reader that will read data from
     // this backend stream.
+    // Use a buffer of given capacity to store frame contents.
+    ESAT_CCSDSPacketFromKISSFrameReader(Stream& backend,
+                                        unsigned long capacity);
+
+    // Instantiate a CCSDS-from-KISS reader that will read data from
+    // this backend stream.
     // Use the buffer of given capacity to store frame contents.
     ESAT_CCSDSPacketFromKISSFrameReader(Stream& backend,
                                         byte buffer[],
