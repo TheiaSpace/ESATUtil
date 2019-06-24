@@ -29,6 +29,14 @@ ESAT_CCSDSPacket::ESAT_CCSDSPacket()
   setTimeout(0);
 }
 
+ESAT_CCSDSPacket::ESAT_CCSDSPacket(const unsigned long packetDataCapacity)
+{
+  packetData = ESAT_Buffer(packetDataCapacity);
+  // Set the timeout for waiting for stream data to zero, as it
+  // doesn't make sense to wait when reading from these packets.
+  setTimeout(0);
+}
+
 ESAT_CCSDSPacket::ESAT_CCSDSPacket(byte* const buffer,
                                    const unsigned long bufferLength)
 {
