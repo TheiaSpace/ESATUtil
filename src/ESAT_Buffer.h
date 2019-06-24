@@ -33,6 +33,10 @@ class ESAT_Buffer: public Printable, public Stream
     // An empty buffer will fail on reads and writes.
     ESAT_Buffer();
 
+    // Instantiate a buffer of given capacity.
+    // The buffer will allocate its own memory.
+    ESAT_Buffer(unsigned long capacity);
+
     // Instantiate a buffer backed by a byte array of given capacity.
     // The number of available bytes (with a default value of 0 when
     // not provided) is the number of bytes that can be read as soon
@@ -45,6 +49,13 @@ class ESAT_Buffer: public Printable, public Stream
     ESAT_Buffer(byte array[],
                 unsigned long capacity,
                 unsigned long availableBytes = 0);
+
+    // Copy constructor.
+    // Instantiate a buffer with the same backend memory as another buffer.
+    ESAT_Buffer(const ESAT_Buffer& original);
+
+    // Destroy a buffer.
+    ~ESAT_Buffer();
 
     // Return the number of unread bytes available in the buffer,
     // truncated to an int.
@@ -128,6 +139,10 @@ class ESAT_Buffer: public Printable, public Stream
     // Return true on success; otherwise return false.
     boolean writeTo(Stream& output) const;
 
+    // Assignment operator: make this buffer have the same backend
+    // memory as another buffer.
+    ESAT_Buffer& operator=(const ESAT_Buffer& original);
+
   private:
     // Backend buffer.
     byte* buffer;
@@ -138,8 +153,15 @@ class ESAT_Buffer: public Printable, public Stream
     // Number of bytes written to the buffer.
     unsigned long bytesInBuffer;
 
+    // True when the backend buffer was allocated dynamically.
+    boolean dynamicallyAllocated;
+
     // Position of the next read or write operation.
     unsigned long readWritePosition;
+
+    // Reference count.
+    // Used only when the buffer manages its own memory.
+    unsigned long* references;
 
     // Set to true if the last read() or peek() attempt was beyond
     // the length() of the buffer; otherwise set to false.
@@ -148,6 +170,15 @@ class ESAT_Buffer: public Printable, public Stream
     // Set to true if the last write() attempt was beyond
     // the capacity() of the buffer; otherwise set to false.
     boolean triedToWriteBeyondBufferCapacity;
+
+    // If the buffer manages its own backend memory, add a reference
+    // to the reference count.
+    void addReference();
+
+    // If the buffer manages its own backend memory, remove a
+    // reference from the reference count.  If the reference count
+    // goes to zero, free the backend buffer.
+    void removeReference();
 };
 
 #endif /* ESAT_Buffer_h */
