@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Util library.
  *
@@ -114,6 +114,11 @@ unsigned long ESAT_CCSDSPacket::packetDataLength() const
 int ESAT_CCSDSPacket::peek()
 {
   return packetData.peek();
+}
+
+unsigned long ESAT_CCSDSPacket::position() const
+{
+  return packetData.position();
 }
 
 size_t ESAT_CCSDSPacket::printTo(Print& output) const

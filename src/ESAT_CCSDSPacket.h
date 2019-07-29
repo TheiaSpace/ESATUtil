@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Util library.
  *
@@ -93,6 +93,9 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // or, if the read/write pointer is at the end of the packet data,
     // return -1.
     int peek();
+
+    // Return the read/write position.
+    unsigned long position() const;
 
     // Print the packet in human-readable (JSON) form.
     // This leaves the read/write pointer untouched.
