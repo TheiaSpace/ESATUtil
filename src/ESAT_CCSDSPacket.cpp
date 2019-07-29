@@ -288,6 +288,11 @@ void ESAT_CCSDSPacket::rewind()
   packetData.rewind();
 }
 
+boolean ESAT_CCSDSPacket::seek(const unsigned long newPosition)
+{
+  return packetData.seek(newPosition);
+}
+
 boolean ESAT_CCSDSPacket::triedToReadBeyondLength() const
 {
   return packetData.triedToReadBeyondLength();

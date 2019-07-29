@@ -232,6 +232,11 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // packet data field (packet payload).
     void rewind();
 
+    // Set the read/write position to the desired value.
+    // Return true on success; otherwise (when the new position
+    // is greater than length() and it can't be set) return false.
+    boolean seek(unsigned long newPosition);
+
     // Return true if the last read*() or peek() attempt was beyond
     // the length of the packet data field; otherwise return false.
     boolean triedToReadBeyondLength() const;
