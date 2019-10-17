@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2018, 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Util library.
  *
@@ -66,11 +66,6 @@ class ESAT_CCSDSTelecommandPacketDispatcher
     // process identifier (e.g., the attitude determination and
     // control subsystem has its own application process identifier).
     word applicationProcessIdentifier;
-
-    // Version number in major.minor.patch format
-    // as defined in the Semantic Versioning 2.0.0 standard.
-    // Each application process has a version number.
-    ESAT_SemanticVersionNumber versionNumber;
 
     // Head of the list of packet handler objects.
     ESAT_CCSDSTelecommandPacketHandler* head;
