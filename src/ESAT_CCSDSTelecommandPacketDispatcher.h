@@ -38,7 +38,7 @@ class ESAT_CCSDSTelecommandPacketDispatcher
     // - The packet has a secondary header.
     // - The packet's application process identifier is the same
     //   as the telecommand dispatcher's application process identifier.
-    ESAT_CCSDSTelecommandPacketDispatcher(word applicationProcessIdentifier);
+    ESAT_CCSDSTelecommandPacketDispatcher(word applicationProcessIdentifier = 0);
 
     // Add a new entry to the list of packet handlers.
     void add(ESAT_CCSDSTelecommandPacketHandler& handler);
