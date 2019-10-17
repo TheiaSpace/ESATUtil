@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Util library.
  *
@@ -53,9 +53,9 @@ class ESAT_I2CSlaveClass
     // and telemetry.
     void begin(TwoWire& i2cInterface,
                byte masterWritePacketDataBuffer[],
-               word masterWritePacketDataBufferLength,
+               unsigned long masterWritePacketDataBufferLength,
                byte masterReadPacketDataBuffer[],
-               word masterReadPacketDataBufferLength);
+               unsigned long masterReadPacketDataBufferLength);
 
     // Return:
     // - NO_PACKET_REQUESTED if there isn't a pending packet read
