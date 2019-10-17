@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Util library.
  *
@@ -24,9 +24,9 @@ const ESAT_SemanticVersionNumber ESAT_I2CSlaveClass::VERSION_NUMBER(1, 0, 0);
 
 void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
                                byte masterWritePacketDataBuffer[],
-                               const word masterWritePacketDataBufferLength,
+                               const unsigned long masterWritePacketDataBufferLength,
                                byte masterReadPacketDataBuffer[],
-                               const word masterReadPacketDataBufferLength)
+                               const unsigned long masterReadPacketDataBufferLength)
 {
   bus = &i2cInterface;
   i2cState = IDLE;
