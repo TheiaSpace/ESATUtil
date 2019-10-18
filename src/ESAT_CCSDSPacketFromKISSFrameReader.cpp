@@ -26,6 +26,14 @@ ESAT_CCSDSPacketFromKISSFrameReader::ESAT_CCSDSPacketFromKISSFrameReader()
 }
 
 ESAT_CCSDSPacketFromKISSFrameReader::ESAT_CCSDSPacketFromKISSFrameReader(Stream& backend,
+                                                                         const unsigned long maximumPacketDataLength)
+{
+  const unsigned long maximumPacketLength =
+    maximumPacketDataLength + ESAT_CCSDSPrimaryHeader::LENGTH;
+  reader = ESAT_KISSStream(backend, maximumPacketLength);
+}
+
+ESAT_CCSDSPacketFromKISSFrameReader::ESAT_CCSDSPacketFromKISSFrameReader(Stream& backend,
                                                                          byte buffer[],
                                                                          const unsigned long capacity)
 {

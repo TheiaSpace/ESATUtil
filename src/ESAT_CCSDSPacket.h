@@ -43,6 +43,13 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // The packet is invalid and it shouldn't be used in this state.
     ESAT_CCSDSPacket();
 
+    // Instantiate a new packet with a packet data field of given
+    // capacity.  The packet will allocate its own memory.
+    // The capacity must be at least 1.
+    // The primary header starts with all fields set to 0.
+    // The read/write pointer starts at 0.
+    ESAT_CCSDSPacket(unsigned long packetDataCapacity);
+
     // Instantiate a new packet backed with the packet data field
     // (packet payload) given by the given buffer.
     // The buffer must be at least 1 byte long.
