@@ -23,6 +23,20 @@
 const ESAT_SemanticVersionNumber ESAT_I2CSlaveClass::VERSION_NUMBER(1, 0, 0);
 
 void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
+                               const unsigned long masterWritePacketDataCapacity,
+                               const unsigned long masterReadPacketDataCapacity)
+{
+  bus = &i2cInterface;
+  i2cState = IDLE;
+  masterWritePacket = ESAT_CCSDSPacket(masterWritePacketDataCapacity);
+  masterWriteState = WRITE_BUFFER_EMPTY;
+  masterReadPacket = ESAT_CCSDSPacket(masterReadPacketDataCapacity);
+  masterReadState = PACKET_NOT_REQUESTED;
+  bus->onReceive(receiveEvent);
+  bus->onRequest(requestEvent);
+}
+
+void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
                                byte masterWritePacketDataBuffer[],
                                const unsigned long masterWritePacketDataBufferLength,
                                byte masterReadPacketDataBuffer[],

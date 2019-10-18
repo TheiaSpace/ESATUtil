@@ -48,6 +48,15 @@ class ESAT_I2CSlaveClass
 
     // Configure the I2C slave to listen on the given I2C interface
     // (register the I2C reception and request handlers).
+    // The I2C interface must be already initated.
+    // The I2C slave will work with packets that fit on the given
+    // capacity.
+    void begin(TwoWire& i2cInterface,
+               unsigned long masterWritePacketDataCapacity,
+               unsigned long masterReadPacketDataCapacity);
+
+    // Configure the I2C slave to listen on the given I2C interface
+    // (register the I2C reception and request handlers).
     // The I2C interface must be already initiated.
     // The caller must provide the packet data buffers for telecommands
     // and telemetry.
