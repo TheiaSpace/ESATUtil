@@ -40,6 +40,16 @@ class ESAT_CCSDSTelecommandPacketDispatcher
     //   as the telecommand dispatcher's application process identifier.
     ESAT_CCSDSTelecommandPacketDispatcher(word applicationProcessIdentifier = 0);
 
+    // Return true if the packet is compatible; otherwise return
+    // false.
+    // A packet is compatible with this telecommand dispatcher when
+    // all the following conditions are met:
+    // - The packet is a telecommand packet.
+    // - The packet has a secondary header.
+    // - The packet's application process identifier is the same
+    //   as the telecommand dispatcher's application process identifier.
+    boolean compatiblePacket(ESAT_CCSDSPacket packet) const;
+    
     // Add a new entry to the list of packet handlers.
     void add(ESAT_CCSDSTelecommandPacketHandler& handler);
 
@@ -69,16 +79,6 @@ class ESAT_CCSDSTelecommandPacketDispatcher
 
     // Head of the list of packet handler objects.
     ESAT_CCSDSTelecommandPacketHandler* head;
-
-    // Return true if the packet is compatible; otherwise return
-    // false.
-    // A packet is compatible with this telecommand dispatcher when
-    // all the following conditions are met:
-    // - The packet is a telecommand packet.
-    // - The packet has a secondary header.
-    // - The packet's application process identifier is the same
-    //   as the telecommand dispatcher's application process identifier.
-    boolean compatiblePacket(ESAT_CCSDSPacket packet) const;
 
     // Return true if the handler is compatible with the packet with
     // given secondary header; otherwise return false.
