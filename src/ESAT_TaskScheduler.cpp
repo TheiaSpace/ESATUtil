@@ -23,7 +23,7 @@
 void ESAT_TaskScheduler::add(ESAT_Task& task)
 {
   task.next = tasks;
-  task.lastExecutionTime = millis();
+  task.lastExecutionTime = micros();
   tasks = &task;
 }
 
@@ -33,7 +33,7 @@ void ESAT_TaskScheduler::run()
        task != nullptr;
        task = task->next)
   {
-    const unsigned long currentTime = millis();
+    const unsigned long currentTime = micros();
     if ((currentTime - task->lastExecutionTime) >= task->period())
     {
       task->run();
