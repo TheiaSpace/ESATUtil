@@ -1,4 +1,4 @@
-Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
+Copyright (C) 2017, 2018, 2019, 2020 Theia Space, Universidad Politécnica de Madrid
 
 This file is part of Theia Space's ESAT utility library.
 
@@ -120,6 +120,16 @@ Version numbers in major.minor.patch format.
 # ESAT_SoftwareClock
 
 Software real-time clock implementing the ESAT_Clock interface.
+
+
+# ESAT_Task
+
+Periodic task interface.
+
+
+# ESAT_TaskScheduler
+
+Periodic task scheduler.
 
 
 # ESAT_Timer

@@ -1,4 +1,4 @@
-# Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+# Copyright (C) 2017, 2018, 2020 Theia Space, Universidad Politécnica de Madrid
 #
 # This file is part of Theia Space's ESAT utility library.
 #
@@ -43,6 +43,8 @@ ESAT_I2CSlaveClass	KEYWORD1
 ESAT_KISSStream	KEYWORD1
 ESAT_SemanticVersionNumber	KEYWORD1
 ESAT_SoftwareClock	KEYWORD1
+ESAT_Task	KEYWORD1
+ESAT_TaskScheduler	KEYWORD1
 ESAT_TimerClass	KEYWORD1
 ESAT_Timestamp	KEYWORD1
 ESAT_UtilClass	KEYWORD1
