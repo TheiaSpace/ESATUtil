@@ -27,6 +27,18 @@ void ESAT_TaskScheduler::add(ESAT_Task& task)
   tasks = &task;
 }
 
+void ESAT_TaskScheduler::begin()
+{
+  const unsigned long currentTime = micros();
+  for (ESAT_Task* task = tasks;
+       task != nullptr;
+       task = task->next)
+  {
+    task->run();
+    task->lastExecutionTime = currentTime;
+  }
+}
+
 void ESAT_TaskScheduler::run()
 {
   for (ESAT_Task* task = tasks;

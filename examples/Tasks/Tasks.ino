@@ -69,11 +69,12 @@ void setup()
   while (!Serial)
   {
   }
-  scheduler.add(HighFrequencyTask);
-  scheduler.add(LowFrequencyTask);
   (void) Serial.println(F("###############################"));
   (void) Serial.println(F("Periodic tasks example program."));
   (void) Serial.println(F("###############################"));
+  scheduler.add(HighFrequencyTask);
+  scheduler.add(LowFrequencyTask);
+  scheduler.begin();
 }
 
 void loop()
