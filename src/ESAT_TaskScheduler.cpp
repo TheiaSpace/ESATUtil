@@ -33,11 +33,11 @@ void ESAT_TaskScheduler::run()
        task != nullptr;
        task = task->next)
   {
-    const unsigned long currentTime = micros();
-    if ((currentTime - task->lastExecutionTime) >= task->period())
+    const unsigned long period = task->period();
+    if ((micros() - task->lastExecutionTime) >= period)
     {
       task->run();
-      task->lastExecutionTime = currentTime;
+      task->lastExecutionTime = task->lastExecutionTime + period;
     }
   }
 }
