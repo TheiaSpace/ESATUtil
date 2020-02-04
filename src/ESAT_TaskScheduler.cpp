@@ -46,10 +46,25 @@ void ESAT_TaskScheduler::run()
        task = task->next)
   {
     const unsigned long period = task->period();
-    if ((micros() - task->lastExecutionTime) >= period)
+    const unsigned long currentTime = micros();
+    const unsigned long elapsedTime = currentTime - task->lastExecutionTime;
+    if (elapsedTime >= period)
     {
       task->run();
-      task->lastExecutionTime = task->lastExecutionTime + period;
+      // Truncate the last execution time with a resolution
+      // of the task's period so that we get accurate timing.
+      // The scheduler takes some time to work, so using the
+      // actual execution time would lead to a slow drift.
+      if (period != 0)
+      {
+        const unsigned long elapsedPeriods = elapsedTime / period;
+        task->lastExecutionTime =
+          task->lastExecutionTime + elapsedPeriods * period;
+      }
+      else
+      {
+        task->lastExecutionTime = currentTime;
+      }
     }
   }
 }
