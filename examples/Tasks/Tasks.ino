@@ -27,12 +27,12 @@ class HighFrequencyTaskClass: public ESAT_Task
   public:
     unsigned long period()
     {
-      return 100;
+      return 100000;
     }
 
     void run()
     {
-      (void) Serial.print(millis(), DEC);
+      (void) Serial.print(micros(), DEC);
       (void) Serial.println(F(": high frequency task."));
     }
 };
@@ -45,12 +45,12 @@ class LowFrequencyTaskClass: public ESAT_Task
   public:
     unsigned long period()
     {
-      return 1000;
+      return 1000000;
     }
 
     void run()
     {
-      (void) Serial.print(millis(), DEC);
+      (void) Serial.print(micros(), DEC);
       (void) Serial.println(F(": low frequency task."));
     }
 };
@@ -69,11 +69,12 @@ void setup()
   while (!Serial)
   {
   }
-  scheduler.add(HighFrequencyTask);
-  scheduler.add(LowFrequencyTask);
   (void) Serial.println(F("###############################"));
   (void) Serial.println(F("Periodic tasks example program."));
   (void) Serial.println(F("###############################"));
+  scheduler.add(HighFrequencyTask);
+  scheduler.add(LowFrequencyTask);
+  scheduler.begin();
 }
 
 void loop()

@@ -31,6 +31,10 @@ class ESAT_TaskScheduler
     // Add a new task to the list of scheduled tasks.
     void add(ESAT_Task& task);
 
+    // Start running the scheduler.
+    // Run all tasks for the first time.
+    void begin();
+
     // Run the scheduled tasks.
     void run();
 

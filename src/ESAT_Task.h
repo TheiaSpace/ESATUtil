@@ -38,7 +38,7 @@ class ESAT_Task
     // ESAT_TaskScheduler object.
     ESAT_Task* next;
 
-    // Last time (in milliseconds) this task was run.
+    // Last time (in microseconds) this task was run.
     // ESAT_TaskScheduler uses this and period() to know when to run a
     // task.
     // Only ESAT_TaskScheduler should care about this.
@@ -49,7 +49,7 @@ class ESAT_Task
     // works this way.
     virtual ~ESAT_Task() {};
 
-    // Return the milliseconds between successive executions of this task.
+    // Return the microseconds between successive executions of this task.
     virtual unsigned long period() = 0;
 
     // Run the task.
