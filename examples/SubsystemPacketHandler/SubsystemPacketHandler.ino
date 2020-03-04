@@ -34,6 +34,7 @@
 // telecommand packets to I2C.
 
 // Packet handler configuration parameters.
+const byte address = 10;
 const word applicationProcessIdentifier = 10;
 const byte majorVersionNumber = 1;
 const byte minorVersionNumber = 0;
@@ -246,6 +247,8 @@ void setup()
   while (!Serial)
   {
   }
+  // Configure the I2C interface.
+  Wire.begin(address);
   // Seed the random number generator.
   randomSeed(0);
   // Start the packet handler.
