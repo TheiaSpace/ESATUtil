@@ -35,72 +35,8 @@
 // ESAT subsystem packet handler: I2C and USB telemetry and telecommands.
 // The subsystem packet handler takes care of common packet management
 // details so that subsystem developers may concentrate on the specifics
-// of their subsystems.
-// ESAT subsystem boards share the following traits:
-// - Subsystems can generate CCSDS Space Packets with their own telemetry.
-//   -- These telemetry packets come in batches; a batch can contain
-//      up to one packet for each possible packet identifier (for
-//      example, a batch could consist of one packet with identifier
-//      zero, one packet with identifier twenty and one packet with
-//      identifier two hundred).
-//   -- To start a new batch of telemetry packets, call
-//      ESAT_SubsystemPacketHandler.prepareSubsystemsOwnTelemetry().
-//   -- To get the next telemetry packet from the batch, call
-//      ESAT_SubsystemPacketHandler.readSubsystemsOwnTelemetry().
-//   -- The subsystem packet handler uses ESAT_CCSDSTelemetryPacketContents
-//      objects as recipes to build packets.  Register these recipes
-//      (one per desired packet identifier) with
-//      ESAT_SubsystemPacketHandler.addTelemetry().
-//   -- Use ESAT_SubsystemPacketHandler.enableTelemetry() and
-//      ESAT_SubsystemPacketHandler.disableTelemetry() to enable and
-//      disable the generation of telemetry packets with specific
-//      packet identifiers.
-//   -- Telemetry packets obtained with
-//      ESAT_SubsystemPacketHandler.readSubsystemsOwnTelemetry() often
-//      go to the USB interface with
-//      ESAT_SubsystemPacketHandler.writePacketToUSB().
-//   -- The I2C bus master (the On-Board Computer) may request
-//      telemetry packets.  Calling
-//      ESAT_SubsystemPacketHandler.respondToI2CPacketRequest()
-//      fulfills these requests automatically.
-// - Subsystems can respond to CCSDS Space Packets carrying telecommands.
-//   -- Call ESAT_SubsystemPacketHandler.dispatchTelecommand()
-//      to respond to a telecommand.
-//   -- The subsystem packet handler uses ESAT_CCSDSTelecommandPacketHandler
-//      objects as recipes on how to respond to telecommands.  Register
-//      these recipes (one per desired packet identifier and compatible
-//      version number) with ESAT_SubsystemPacketHandler.addTelecommand().
-//   -- Telecommand packets often come from the USB interface (read
-//      with ESAT_SubsystemPacketHandler.readPacketFromUSB()) and the
-//      I2C interface (read with
-//      ESAT_SubsystemPacketHandler.readPacketFromI2C()).
-// - Subsystems can receive CCSDS Space Packets (usually telecommands) from
-//   the USB interface.
-//   -- These packets come in KISS frames.
-//   -- These incoming packets may be, for example, telecommands that
-//      can be handled with
-//      ESAT_SubsystemPacketHandler.dispatchTelecommand().
-// - Subsystems can send CCSDS Space Packets (usually telemetry) through the
-//   USB interface.
-//   -- These packets go into KISS frames.
-//   -- These outgoing packets may be, for example, telemetry packets
-//      generated with
-//      ESAT_SubsystemPacketHandler.readSubsystemsTelemetry().
-// - Subsystems can receive from the I2C bus CCSDS Space Packets
-//   (telemetry and telecommands) written by the I2C bus master (the
-//   On-Board Computer).
-//   -- Incoming telecommands directed to this subsystem are usually
-//      handled with ESAT_SubsystemPacketHandler.dispatchTelecommand().
-// - Subsystems can send through the I2C bus CCSDS Space Packets
-//   (telemetry and telecommands) requested by the I2C bus master.
-//   -- The subsystem packet handler uses
-//      ESAT_CCSDSTelemetryPacketContents objects (registered with
-//      ESAT_SubsystemPacketHandler.addTelemetry()) as recipes to
-//      respond to telemery packet requests.
-//   -- The subsystem packet handler carries a queue of telecommand
-//      packets to respond to telecommand packet requests.  Queue
-//      telecommands with
-//      ESAT_SubsystemPacketHandler.queueTelecommandToI2C().
+// of their subsystems.  See the bottom of this file for a detailed
+// explanation.
 // Use the global instance ESAT_SubsystemPacketHandler.  Call
 // ESAT_SubsystemPacketHandler.begin() before doing any other
 // work with the subsystem packet handler.
@@ -227,5 +163,71 @@ class ESAT_SubsystemPacketHandlerClass
 
 // Global instance of the subsystem data handler library.
 extern ESAT_SubsystemPacketHandlerClass ESAT_SubsystemPacketHandler;
+
+// ESAT subsystem boards share the following traits:
+// - Subsystems can generate CCSDS Space Packets with their own telemetry.
+//   -- These telemetry packets come in batches; a batch can contain
+//      up to one packet for each possible packet identifier (for
+//      example, a batch could consist of one packet with identifier
+//      zero, one packet with identifier twenty and one packet with
+//      identifier two hundred).
+//   -- To start a new batch of telemetry packets, call
+//      ESAT_SubsystemPacketHandler.prepareSubsystemsOwnTelemetry().
+//   -- To get the next telemetry packet from the batch, call
+//      ESAT_SubsystemPacketHandler.readSubsystemsOwnTelemetry().
+//   -- The subsystem packet handler uses ESAT_CCSDSTelemetryPacketContents
+//      objects as recipes to build packets.  Register these recipes
+//      (one per desired packet identifier) with
+//      ESAT_SubsystemPacketHandler.addTelemetry().
+//   -- Use ESAT_SubsystemPacketHandler.enableTelemetry() and
+//      ESAT_SubsystemPacketHandler.disableTelemetry() to enable and
+//      disable the generation of telemetry packets with specific
+//      packet identifiers.
+//   -- Telemetry packets obtained with
+//      ESAT_SubsystemPacketHandler.readSubsystemsOwnTelemetry() often
+//      go to the USB interface with
+//      ESAT_SubsystemPacketHandler.writePacketToUSB().
+//   -- The I2C bus master (the On-Board Computer) may request
+//      telemetry packets.  Calling
+//      ESAT_SubsystemPacketHandler.respondToI2CPacketRequest()
+//      fulfills these requests automatically.
+// - Subsystems can respond to CCSDS Space Packets carrying telecommands.
+//   -- Call ESAT_SubsystemPacketHandler.dispatchTelecommand()
+//      to respond to a telecommand.
+//   -- The subsystem packet handler uses ESAT_CCSDSTelecommandPacketHandler
+//      objects as recipes on how to respond to telecommands.  Register
+//      these recipes (one per desired packet identifier and compatible
+//      version number) with ESAT_SubsystemPacketHandler.addTelecommand().
+//   -- Telecommand packets often come from the USB interface (read
+//      with ESAT_SubsystemPacketHandler.readPacketFromUSB()) and the
+//      I2C interface (read with
+//      ESAT_SubsystemPacketHandler.readPacketFromI2C()).
+// - Subsystems can receive CCSDS Space Packets (usually telecommands) from
+//   the USB interface.
+//   -- These packets come in KISS frames.
+//   -- These incoming packets may be, for example, telecommands that
+//      can be handled with
+//      ESAT_SubsystemPacketHandler.dispatchTelecommand().
+// - Subsystems can send CCSDS Space Packets (usually telemetry) through the
+//   USB interface.
+//   -- These packets go into KISS frames.
+//   -- These outgoing packets may be, for example, telemetry packets
+//      generated with
+//      ESAT_SubsystemPacketHandler.readSubsystemsTelemetry().
+// - Subsystems can receive from the I2C bus CCSDS Space Packets
+//   (telemetry and telecommands) written by the I2C bus master (the
+//   On-Board Computer).
+//   -- Incoming telecommands directed to this subsystem are usually
+//      handled with ESAT_SubsystemPacketHandler.dispatchTelecommand().
+// - Subsystems can send through the I2C bus CCSDS Space Packets
+//   (telemetry and telecommands) requested by the I2C bus master.
+//   -- The subsystem packet handler uses
+//      ESAT_CCSDSTelemetryPacketContents objects (registered with
+//      ESAT_SubsystemPacketHandler.addTelemetry()) as recipes to
+//      respond to telemery packet requests.
+//   -- The subsystem packet handler carries a queue of telecommand
+//      packets to respond to telecommand packet requests.  Queue
+//      telecommands with
+//      ESAT_SubsystemPacketHandler.queueTelecommandToI2C().
 
 #endif /* ESAT_SubsystemPacketHandler_h */
