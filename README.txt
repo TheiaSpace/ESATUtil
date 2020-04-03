@@ -42,6 +42,11 @@ Standard CCSDS space packets.
 Read CCSDS space packets from KISS frames coming from a stream.
 
 
+# ESAT_CCSDSPacketQueue
+
+A queue of CCSDS space packets.
+
+
 # ESAT_CCSDSPacketToKISSFrameWriter
 
 Write CCSDS space packets to KISS frames going through a stream.
