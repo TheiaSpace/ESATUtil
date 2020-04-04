@@ -66,7 +66,8 @@ class ESAT_SubsystemPacketHandlerClass
                byte patchVersionNumber,
                ESAT_Clock& clock,
                TwoWire& i2cInterface,
-               unsigned long packetDataCapacity);
+               unsigned long packetDataCapacity,
+			   unsigned long i2cInputPacketBufferCapacity);
 
     // Disable the telemetry packet with the given identifier.
     void disableTelemetry(byte packetIdentifier);
