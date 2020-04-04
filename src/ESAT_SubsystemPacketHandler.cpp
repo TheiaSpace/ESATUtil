@@ -37,7 +37,8 @@ void ESAT_SubsystemPacketHandlerClass::begin(const word applicationProcessIdenti
                                              const byte patchVersionNumber,
                                              ESAT_Clock& clock,
                                              TwoWire& i2cInterface,
-                                             const unsigned long packetDataCapacity)
+                                             const unsigned long packetDataCapacity,
+											 const unsigned long i2cInputPacketBufferCapacity)
 {
   telecommandPacketDispatcher =
     ESAT_CCSDSTelecommandPacketDispatcher(applicationProcessIdentifier);
@@ -54,7 +55,8 @@ void ESAT_SubsystemPacketHandlerClass::begin(const word applicationProcessIdenti
   usbWriter = ESAT_CCSDSPacketToKISSFrameWriter(Serial);
   ESAT_I2CSlave.begin(i2cInterface,
                       packetDataCapacity,
-                      packetDataCapacity);
+                      packetDataCapacity,
+					  i2cInputPacketBufferCapacity);
   i2cTelecommandPacket = ESAT_CCSDSPacket(packetDataCapacity);
   i2cTelemetryPacket = ESAT_CCSDSPacket(packetDataCapacity);
 }
