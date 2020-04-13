@@ -26,6 +26,8 @@ ESAT_CCSDSPacketQueue::ESAT_CCSDSPacketQueue()
   packets = nullptr;
   readPosition = 0;
   writePosition = 0;
+  queueIsEmpty = true;
+  queueIsFull = true;
 }
 
 ESAT_CCSDSPacketQueue::ESAT_CCSDSPacketQueue(const unsigned long numberOfPackets,
@@ -39,7 +41,13 @@ ESAT_CCSDSPacketQueue::ESAT_CCSDSPacketQueue(const unsigned long numberOfPackets
     {
       packets[index] = ESAT_CCSDSPacket(packetDataCapacity);
     }
+	queueIsFull = false;
   }
+  else
+  {
+	  queueIsFull = true;
+  }
+  queueIsEmpty = true;
   readPosition = 0;
   writePosition = 0;
 }
@@ -53,6 +61,8 @@ ESAT_CCSDSPacketQueue::ESAT_CCSDSPacketQueue(const ESAT_CCSDSPacketQueue& origin
   queueCapacity = original.queueCapacity;
   readPosition = original.readPosition;
   writePosition = original.writePosition;
+  queueIsEmpty = original.queueIsEmpty;
+  queueIsFull = original.queueIsFull;
   if ((queueCapacity != 0) && (original.packets != nullptr))
   {
     packets = ::new ESAT_CCSDSPacket[queueCapacity];
@@ -67,6 +77,11 @@ ESAT_CCSDSPacketQueue::ESAT_CCSDSPacketQueue(const ESAT_CCSDSPacketQueue& origin
 ESAT_CCSDSPacketQueue::~ESAT_CCSDSPacketQueue()
 {
   ::delete[] packets;
+}
+
+unsigned long ESAT_CCSDSPacketQueue::available() const
+{
+	return capacity() - length();
 }
 
 unsigned long ESAT_CCSDSPacketQueue::capacity() const
@@ -86,10 +101,20 @@ void ESAT_CCSDSPacketQueue::flush()
   }
   readPosition = 0;
   writePosition = 0;
+  queueIsEmpty = true;
+  queueIsFull = false;
 }
 
 unsigned long ESAT_CCSDSPacketQueue::length() const
 {
+  if (queueIsFull)
+  {
+	  return capacity();
+  }
+  if (queueIsEmpty)
+  {
+	  return 0;
+  }
   if (writePosition >= readPosition)
   {
     return writePosition - readPosition;
@@ -110,13 +135,21 @@ boolean ESAT_CCSDSPacketQueue::read(ESAT_CCSDSPacket& packet)
   {
     return false;
   }
-  const boolean goodCopy = packets[readPosition].copyTo(packet);
-  readPosition = readPosition + 1;
-  if (readPosition == capacity())
-  {
-    readPosition = 0;
+  if (packets[readPosition].copyTo(packet))
+  {	  
+	queueIsFull = false;
+	readPosition = readPosition + 1;
+	if (readPosition == capacity())
+	{
+		readPosition = 0;
+	}
+	if (readPosition == writePosition)
+	{
+	  queueIsEmpty = true;
+	}
+	return true;
   }
-  return goodCopy;
+  return false;
 }
 
 boolean ESAT_CCSDSPacketQueue::write(ESAT_CCSDSPacket packet)
@@ -129,13 +162,21 @@ boolean ESAT_CCSDSPacketQueue::write(ESAT_CCSDSPacket packet)
   {
     return false;
   }
-  const boolean goodCopy = packet.copyTo(packets[writePosition]);
-  writePosition = writePosition + 1;
-  if (writePosition == capacity())
+  if (packet.copyTo(packets[writePosition]))
   {
-    writePosition = 0;
+	queueIsEmpty = false;
+	writePosition = writePosition + 1;
+	if (writePosition == capacity())
+	{
+		writePosition = 0;
+	}
+	if (readPosition == writePosition)
+	{
+	  queueIsFull = true;
+	}
+	return true;
   }
-  return goodCopy;
+  return false;
 }
 
 ESAT_CCSDSPacketQueue& ESAT_CCSDSPacketQueue::operator=(const ESAT_CCSDSPacketQueue& original)
