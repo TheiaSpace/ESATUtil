@@ -90,6 +90,10 @@ class ESAT_I2CSlaveClass
                byte masterReadPacketDataBuffer[],
                unsigned long masterReadPacketDataBufferLength,
 			   unsigned long inputPacketBufferCapacity);
+			   
+			   
+	unsigned long getQueueAvailability();
+	unsigned long getQueueLength();
 
     // Return:
     // - NO_PACKET_REQUESTED if there isn't a pending packet read

@@ -34,6 +34,10 @@ void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
                                const unsigned long masterReadPacketDataCapacity,
 							   const unsigned long inputPacketBufferCapacity)
 {
+  Serial.print("Master Write packet data capacity: ");
+  Serial.println(masterWritePacketDataCapacity, DEC);
+  Serial.print("Master Read packet data capacity: ");
+  Serial.println(masterReadPacketDataCapacity, DEC);
   bus = &i2cInterface;
   i2cState = IDLE;
   masterWritePacket = ESAT_CCSDSPacket(masterWritePacketDataCapacity);
@@ -73,6 +77,16 @@ void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
   masterReadState = PACKET_NOT_REQUESTED;
   bus->onReceive(receiveEvent);
   bus->onRequest(requestEvent);
+}
+
+unsigned long ESAT_I2CSlaveClass::getQueueAvailability()
+{
+	return masterWrittenPacketsQueue.available();
+}	
+
+unsigned long ESAT_I2CSlaveClass::getQueueLength()
+{
+	return masterWrittenPacketsQueue.length();
 }
 
 void ESAT_I2CSlaveClass::handleWritePrimaryHeaderReception()
@@ -117,7 +131,22 @@ void ESAT_I2CSlaveClass::handleWritePacketDataReception()
         masterWritePacketDataLength)
     {
       masterWritePacket.rewind();
-	  masterWrittenPacketsQueue.write(masterWritePacket);
+	  Serial.println("I2C packet received");
+	// Serial.print("I2C queue space to write: ");
+	// Serial.println(getQueueAvailability(), DEC);
+	// Serial.print("I2C queue packets to be read: ");
+	// Serial.println(getQueueLength(), DEC);
+	Serial.print("Received packet length: ");
+	Serial.println(masterWritePacket.length(), DEC);
+	  masterWritePacket.rewind();
+	  if (masterWrittenPacketsQueue.write(masterWritePacket))
+	  {
+		  Serial.println("Packet successfully queued");
+	  }
+	  else
+	  {
+		Serial.println("Error in queueing");
+	  }		
 	  if (masterWrittenPacketsQueue.length() < masterWrittenPacketsQueue.capacity())
 	  {
 		masterWriteState = WRITE_BUFFER_EMPTY;
@@ -126,6 +155,11 @@ void ESAT_I2CSlaveClass::handleWritePacketDataReception()
 	  {
 		masterWriteState = WRITE_BUFFER_FULL;
 	  }
+	  
+	 Serial.print("I2C queue space to write: ");
+	Serial.println(getQueueAvailability(), DEC);
+	Serial.print("I2C queue packets to be read: ");
+	Serial.println(getQueueLength(), DEC);
     }
   }
 }
