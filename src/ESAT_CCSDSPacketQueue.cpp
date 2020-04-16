@@ -27,7 +27,7 @@ ESAT_CCSDSPacketQueue::ESAT_CCSDSPacketQueue()
   readPosition = 0;
   writePosition = 0;
   queueIsEmpty = true;
-  queueIsFull = true;
+  queueIsFull = false;
 }
 
 ESAT_CCSDSPacketQueue::ESAT_CCSDSPacketQueue(const unsigned long numberOfPackets,
@@ -37,22 +37,12 @@ ESAT_CCSDSPacketQueue::ESAT_CCSDSPacketQueue(const unsigned long numberOfPackets
   if (queueCapacity != 0)
   {
     packets = ::new ESAT_CCSDSPacket[queueCapacity];
-	Serial.print("Queue capacity: ");
-	Serial.println(queueCapacity, DEC);
     for (unsigned long index = 0; index < queueCapacity; index = index + 1)
     {
-	  Serial.print("Packet data capacity: ");
-	  Serial.println(packetDataCapacity, DEC);
       packets[index] = ESAT_CCSDSPacket(packetDataCapacity);
-	Serial.print("Packet size allowed in queue: ");
-	Serial.println(packets[index].capacity(), DEC);
     }	
-	queueIsFull = false;
   }
-  else
-  {
-	  queueIsFull = true;
-  }
+  queueIsFull = false;
   queueIsEmpty = true;
   readPosition = 0;
   writePosition = 0;
@@ -133,6 +123,19 @@ unsigned long ESAT_CCSDSPacketQueue::length() const
 
 boolean ESAT_CCSDSPacketQueue::read(ESAT_CCSDSPacket& packet)
 {
+  // Serial.println("Inside ESAT_CCSDSPacketQueue.read()");
+  // Serial.print("Write position: ");
+  // Serial.println(writePosition, DEC);
+  // Serial.print("Read position: ");
+  // Serial.println(readPosition, DEC);
+  // Serial.print("Is queue empty: ");
+  // Serial.println(queueIsEmpty, DEC);
+  // Serial.print("Is queue full: ");
+  // Serial.println(queueIsFull, DEC);
+  // Serial.print("Queue length: ");
+  // Serial.println(length(), DEC);
+  // Serial.print("Queue free space: ");
+  // Serial.println(available(), DEC);
   if (packets == nullptr)
   {
     return false;
@@ -153,6 +156,19 @@ boolean ESAT_CCSDSPacketQueue::read(ESAT_CCSDSPacket& packet)
 	{
 	  queueIsEmpty = true;
 	}
+  // // Serial.println("ESAT_CCSDSPacketQueue.read() after copy");
+  // Serial.print("Write position: ");
+  // Serial.println(writePosition, DEC);
+  // Serial.print("Read position: ");
+  // Serial.println(readPosition, DEC);
+  // Serial.print("Is queue empty: ");
+  // Serial.println(queueIsEmpty, DEC);
+  // Serial.print("Is queue full: ");
+  // Serial.println(queueIsFull, DEC);
+  // Serial.print("Queue length: ");
+  // Serial.println(length(), DEC);
+  // Serial.print("Queue free space: ");
+  // Serial.println(available(), DEC);
 	return true;
   }
   return false;
@@ -162,19 +178,13 @@ boolean ESAT_CCSDSPacketQueue::write(ESAT_CCSDSPacket packet)
 {
   if (packets == nullptr)
   {
-	Serial.println("Buffer is nullptr");
     return false;
   }
   if (length() == capacity())
   {
-	Serial.println("Queue is full");
-    return false;
+	return false;
   }
-  Serial.print("Packet to be queued size: ");
-  Serial.println(packet.length(), DEC);
   packets[writePosition].rewind();
-  // Serial.print("Packet size allowed in queue: ");
-  // Serial.println((packets[writePosition]).capacity(), DEC);
   if (packet.copyTo(packets[writePosition]))
   {
 	queueIsEmpty = false;
@@ -189,7 +199,6 @@ boolean ESAT_CCSDSPacketQueue::write(ESAT_CCSDSPacket packet)
 	}
 	return true;
   }
-  Serial.println("Copy failed");
   return false;
 }
 

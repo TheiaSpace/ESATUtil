@@ -65,16 +65,10 @@ unsigned long ESAT_CCSDSPacket::capacity() const
 
 boolean ESAT_CCSDSPacket::copyTo(ESAT_CCSDSPacket& target)
 {
-	  
-  Serial.print("Packet size allowed in queue: ");
-  Serial.println(target.capacity(), DEC);
-  Serial.print("Origin packet data length: ");
-  Serial.println(packetData.length(), DEC);
   // Just fail when our packet data cannot fit into the target.
   if (target.capacity() < packetData.length())
   {
-	Serial.println("Target payload is smaller!!");
-    return false;
+	return false;
   }
   // Normal operation: copy out packet into the target packet.
   target.writePrimaryHeader(primaryHeader);
