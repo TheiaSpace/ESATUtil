@@ -64,7 +64,7 @@ ESAT_CCSDSPacketQueue::ESAT_CCSDSPacketQueue(const ESAT_CCSDSPacketQueue& origin
     packets = ::new ESAT_CCSDSPacket[queueCapacity];
     for (unsigned long index = 0; index < queueCapacity; index = index + 1)
     {
-      packets[index] = ESAT_CCSDSPacket(capacity());
+      packets[index] = ESAT_CCSDSPacket(original.packets[index].capacity());
       (void) original.packets[index].copyTo(packets[index]);
     }
   }
@@ -218,7 +218,7 @@ ESAT_CCSDSPacketQueue& ESAT_CCSDSPacketQueue::operator=(const ESAT_CCSDSPacketQu
       packets = ::new ESAT_CCSDSPacket[queueCapacity];
       for (unsigned long index = 0; index < queueCapacity; index = index + 1)
       {
-        packets[index] = ESAT_CCSDSPacket(capacity());
+        packets[index] = ESAT_CCSDSPacket(original.packets[index].capacity());
         (void) original.packets[index].copyTo(packets[index]);
       }
     }
