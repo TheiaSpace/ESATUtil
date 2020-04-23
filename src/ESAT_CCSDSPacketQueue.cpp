@@ -26,8 +26,6 @@ ESAT_CCSDSPacketQueue::ESAT_CCSDSPacketQueue()
   packets = nullptr;
   readPosition = 0;
   writePosition = 0;
-  queueIsEmpty = true;
-  queueIsFull = false;
 }
 
 ESAT_CCSDSPacketQueue::ESAT_CCSDSPacketQueue(const unsigned long numberOfPackets,
@@ -40,10 +38,8 @@ ESAT_CCSDSPacketQueue::ESAT_CCSDSPacketQueue(const unsigned long numberOfPackets
     for (unsigned long index = 0; index < queueCapacity; index = index + 1)
     {
       packets[index] = ESAT_CCSDSPacket(packetDataCapacity);
-    }	
+    }
   }
-  queueIsFull = false;
-  queueIsEmpty = true;
   readPosition = 0;
   writePosition = 0;
 }
@@ -57,8 +53,6 @@ ESAT_CCSDSPacketQueue::ESAT_CCSDSPacketQueue(const ESAT_CCSDSPacketQueue& origin
   queueCapacity = original.queueCapacity;
   readPosition = original.readPosition;
   writePosition = original.writePosition;
-  queueIsEmpty = original.queueIsEmpty;
-  queueIsFull = original.queueIsFull;
   if ((queueCapacity != 0) && (original.packets != nullptr))
   {
     packets = ::new ESAT_CCSDSPacket[queueCapacity];
@@ -77,7 +71,7 @@ ESAT_CCSDSPacketQueue::~ESAT_CCSDSPacketQueue()
 
 unsigned long ESAT_CCSDSPacketQueue::available() const
 {
-	return capacity() - length();
+  return capacity() - length();
 }
 
 unsigned long ESAT_CCSDSPacketQueue::capacity() const
@@ -97,79 +91,41 @@ void ESAT_CCSDSPacketQueue::flush()
   }
   readPosition = 0;
   writePosition = 0;
-  queueIsEmpty = true;
-  queueIsFull = false;
 }
 
 unsigned long ESAT_CCSDSPacketQueue::length() const
 {
-  if (queueIsFull)
+  unsigned long currentLength = 0;
+  for (unsigned long index = 0; index < capacity(); index = index + 1)
   {
-	  return capacity();
+    if (packets[index].packetDataLength() > 0)
+    {
+      currentLength = currentLength + 1;
+    }
   }
-  if (queueIsEmpty)
-  {
-	  return 0;
-  }
-  if (writePosition >= readPosition)
-  {
-    return writePosition - readPosition;
-  }
-  else
-  {
-    return (writePosition + capacity()) - readPosition;
-  }
+  return currentLength;
 }
 
 boolean ESAT_CCSDSPacketQueue::read(ESAT_CCSDSPacket& packet)
 {
-  // Serial.println("Inside ESAT_CCSDSPacketQueue.read()");
-  // Serial.print("Write position: ");
-  // Serial.println(writePosition, DEC);
-  // Serial.print("Read position: ");
-  // Serial.println(readPosition, DEC);
-  // Serial.print("Is queue empty: ");
-  // Serial.println(queueIsEmpty, DEC);
-  // Serial.print("Is queue full: ");
-  // Serial.println(queueIsFull, DEC);
-  // Serial.print("Queue length: ");
-  // Serial.println(length(), DEC);
-  // Serial.print("Queue free space: ");
-  // Serial.println(available(), DEC);
   if (packets == nullptr)
   {
     return false;
   }
-  if (length() == 0)
+  if (packets[readPosition].packetDataLength() == 0)
   {
     return false;
   }
   if (packets[readPosition].copyTo(packet))
-  {	  
-	queueIsFull = false;
-	readPosition = readPosition + 1;
-	if (readPosition == capacity())
-	{
-		readPosition = 0;
-	}
-	if (readPosition == writePosition)
-	{
-	  queueIsEmpty = true;
-	}
-  // // Serial.println("ESAT_CCSDSPacketQueue.read() after copy");
-  // Serial.print("Write position: ");
-  // Serial.println(writePosition, DEC);
-  // Serial.print("Read position: ");
-  // Serial.println(readPosition, DEC);
-  // Serial.print("Is queue empty: ");
-  // Serial.println(queueIsEmpty, DEC);
-  // Serial.print("Is queue full: ");
-  // Serial.println(queueIsFull, DEC);
-  // Serial.print("Queue length: ");
-  // Serial.println(length(), DEC);
-  // Serial.print("Queue free space: ");
-  // Serial.println(available(), DEC);
-	return true;
+  {
+    unsigned long nextReadPosition = readPosition + 1;
+    if (nextReadPosition == capacity())
+    {
+      nextReadPosition = 0;
+    }
+    packets[readPosition].flush();
+    readPosition = nextReadPosition;
+    return true;
   }
   return false;
 }
@@ -178,26 +134,21 @@ boolean ESAT_CCSDSPacketQueue::write(ESAT_CCSDSPacket packet)
 {
   if (packets == nullptr)
   {
+     return false;
+  }
+  if (packets[writePosition].packetDataLength() > 0)
+  {
     return false;
   }
-  if (length() == capacity())
-  {
-	return false;
-  }
-  packets[writePosition].rewind();
   if (packet.copyTo(packets[writePosition]))
   {
-	queueIsEmpty = false;
-	writePosition = writePosition + 1;
-	if (writePosition == capacity())
-	{
-		writePosition = 0;
-	}
-	if (readPosition == writePosition)
-	{
-	  queueIsFull = true;
-	}
-	return true;
+    unsigned long nextWritePosition = writePosition + 1;
+    if (nextWritePosition == capacity())
+    {
+      nextWritePosition = 0;
+    }
+    writePosition = nextWritePosition;
+    return true;
   }
   return false;
 }

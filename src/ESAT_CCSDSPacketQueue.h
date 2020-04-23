@@ -42,9 +42,9 @@ class ESAT_CCSDSPacketQueue
 
     // Destroy a packet queue.
     ~ESAT_CCSDSPacketQueue();
-	
-	// Return the number of packets that still can be written in the queue.
-	unsigned long available() const;
+
+    // Return the number of packets that still can be written in the queue.
+    unsigned long available() const;
 
     // Return the number of packets that this queue can hold.
     unsigned long capacity() const;
@@ -66,25 +66,19 @@ class ESAT_CCSDSPacketQueue
 
     // Assignment operator: make this queue a copy of another packet queue.
     ESAT_CCSDSPacketQueue& operator=(const ESAT_CCSDSPacketQueue& original);
-	
-	    // Index of the next packet to be read.
-    unsigned long readPosition;
-
-    // Index of the next packet to be written.
-    unsigned long writePosition;
 
   private:
     // Capacity of the packet queue.
     unsigned long queueCapacity;
-	
-	// Queue has no pending packets to be read.
-	boolean queueIsEmpty;
-	
-	// Queue cannot hold more new packets.
-	boolean queueIsFull;
 
     // Packet buffer.
     ESAT_CCSDSPacket* packets;
+
+    // Index of the next packet to be read.
+    unsigned long readPosition;
+
+    // Index of the next packet to be written.
+    unsigned long writePosition;
 };
 
 #endif /* ESAT_CCSDSPacketQueue_h */
