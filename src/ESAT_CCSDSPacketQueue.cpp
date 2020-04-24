@@ -69,9 +69,22 @@ ESAT_CCSDSPacketQueue::~ESAT_CCSDSPacketQueue()
   ::delete[] packets;
 }
 
-unsigned long ESAT_CCSDSPacketQueue::available() const
+unsigned long ESAT_CCSDSPacketQueue::availableForRead() const
 {
-  return capacity() - length();
+  unsigned long currentLength = 0;
+  for (unsigned long index = 0; index < capacity(); index = index + 1)
+  {
+    if (packets[index].packetDataLength() > 0)
+    {
+      currentLength = currentLength + 1;
+    }
+  }
+  return currentLength;
+}
+
+unsigned long ESAT_CCSDSPacketQueue::availableForWrite() const
+{
+  return capacity() - availableForRead();
 }
 
 unsigned long ESAT_CCSDSPacketQueue::capacity() const
@@ -91,19 +104,6 @@ void ESAT_CCSDSPacketQueue::flush()
   }
   readPosition = 0;
   writePosition = 0;
-}
-
-unsigned long ESAT_CCSDSPacketQueue::length() const
-{
-  unsigned long currentLength = 0;
-  for (unsigned long index = 0; index < capacity(); index = index + 1)
-  {
-    if (packets[index].packetDataLength() > 0)
-    {
-      currentLength = currentLength + 1;
-    }
-  }
-  return currentLength;
 }
 
 boolean ESAT_CCSDSPacketQueue::read(ESAT_CCSDSPacket& packet)
