@@ -91,6 +91,9 @@ class ESAT_CCSDSPacketQueue
     // Index of the next packet to be read.
     unsigned long readPosition;
 
+    // Whether each packet in the queue is unread.
+    boolean* unread;
+
     // Index of the next packet to be written.
     unsigned long writePosition;
 };
