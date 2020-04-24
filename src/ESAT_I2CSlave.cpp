@@ -117,7 +117,7 @@ void ESAT_I2CSlaveClass::handleWritePacketDataReception()
         masterWritePacketDataLength)
     {
       masterWritePacket.rewind();
-	  (void) masterWrittenPacketsQueue.write(masterWritePacket))
+	  (void) masterWrittenPacketsQueue.write(masterWritePacket);
 	  if (masterWrittenPacketsQueue.availableForRead() < masterWrittenPacketsQueue.capacity())
 	  {
 		masterWriteState = WRITE_BUFFER_EMPTY;
