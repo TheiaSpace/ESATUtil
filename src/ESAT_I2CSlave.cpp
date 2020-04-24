@@ -75,16 +75,6 @@ void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
   bus->onRequest(requestEvent);
 }
 
-unsigned long ESAT_I2CSlaveClass::getQueueAvailability()
-{
-	return masterWrittenPacketsQueue.available();
-}	
-
-unsigned long ESAT_I2CSlaveClass::getQueueLength()
-{
-	return masterWrittenPacketsQueue.length();
-}
-
 void ESAT_I2CSlaveClass::handleWritePrimaryHeaderReception()
 {
   i2cState = IDLE;
@@ -127,15 +117,8 @@ void ESAT_I2CSlaveClass::handleWritePacketDataReception()
         masterWritePacketDataLength)
     {
       masterWritePacket.rewind();
-	  if (masterWrittenPacketsQueue.write(masterWritePacket))
-	  {
-		  
-	  }
-	  else
-	  {
-		
-	  }		
-	  if (masterWrittenPacketsQueue.length() < masterWrittenPacketsQueue.capacity())
+	  (void) masterWrittenPacketsQueue.write(masterWritePacket))
+	  if (masterWrittenPacketsQueue.availableForRead() < masterWrittenPacketsQueue.capacity())
 	  {
 		masterWriteState = WRITE_BUFFER_EMPTY;
 	  }
@@ -283,20 +266,9 @@ void ESAT_I2CSlaveClass::handleProtocolVersionNumberRequest()
 
 boolean ESAT_I2CSlaveClass::readPacket(ESAT_CCSDSPacket& packet)
 {
-  if (masterWrittenPacketsQueue.length() > 0)
+  if (masterWrittenPacketsQueue.availableForRead() > 0)
   {
-	// Serial.println("Now inside I2CSlave read packet (bef. read) ");
-	// Serial.print("I2C queue space to write: ");
-	// Serial.println(masterWrittenPacketsQueue.available(), DEC);
-	// Serial.print("I2C queue packets to be read: ");
-	// Serial.println(masterWrittenPacketsQueue.length(), DEC);  
-	
-    const boolean successfulCopy = masterWrittenPacketsQueue.read(packet);
-	// Serial.println("After read: ");
-	// Serial.print("I2C queue space to write: ");
-	// Serial.println(masterWrittenPacketsQueue.available(), DEC);
-	// Serial.print("I2C queue packets to be read: ");
-	// Serial.println(masterWrittenPacketsQueue.length(), DEC); 
+    const boolean successfulCopy = masterWrittenPacketsQueue.read(packet);	
     packet.rewind();
     return successfulCopy;
   }
