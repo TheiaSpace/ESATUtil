@@ -75,6 +75,14 @@ void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
   bus->onRequest(requestEvent);
 }
 
+void ESAT_I2CSlaveClass::clearMasterWrittenPacketsQueue()
+{
+  noInterrupts();
+  masterWrittenPacketsQueue.flush();
+  masterWriteState = WRITE_BUFFER_EMPTY;
+  interrupts();
+}
+
 void ESAT_I2CSlaveClass::handleWritePrimaryHeaderReception()
 {
   i2cState = IDLE;

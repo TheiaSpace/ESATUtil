@@ -76,20 +76,20 @@ class ESAT_I2CSlaveClass
                byte masterWritePacketDataBuffer[],
                unsigned long masterWritePacketDataBufferLength,
                byte masterReadPacketDataBuffer[],
-               unsigned long masterReadPacketDataBufferLength);
-			   
-	// Configure the I2C slave to listen on the given I2C interface
+               unsigned long masterReadPacketDataBufferLength);       
+     
+    // Configure the I2C slave to listen on the given I2C interface
     // (register the I2C reception and request handlers).
     // The I2C interface must be already initiated.
     // The caller must provide the packet data buffers for telecommands
     // and telemetry.
-	// An additional buffer is used for the I2C incoming packets.
+    // An additional buffer is used for the I2C incoming packets.
     void begin(TwoWire& i2cInterface,
                byte masterWritePacketDataBuffer[],
                unsigned long masterWritePacketDataBufferLength,
                byte masterReadPacketDataBuffer[],
                unsigned long masterReadPacketDataBufferLength,
-			   unsigned long inputPacketBufferCapacity);
+               unsigned long inputPacketBufferCapacity);
 			   
     // Return:
     // - NO_PACKET_REQUESTED if there isn't a pending packet read
@@ -134,6 +134,9 @@ class ESAT_I2CSlaveClass
     {
       rejectPacket();
     }
+    
+    // Clear the received packets queue.
+    void clearMasterWrittenPacketsQueue();
 
     // Return true if the master requested a reset of the telemetry queue
     // since the last call to writePacket() with next-packet telemetry;
@@ -228,8 +231,8 @@ class ESAT_I2CSlaveClass
     // Master-write packet buffer.
     ESAT_CCSDSPacket masterWritePacket;
 	
-	// Master-written packets queue.
-	ESAT_CCSDSPacketQueue masterWrittenPacketsQueue;
+    // Master-written packets queue.
+    ESAT_CCSDSPacketQueue masterWrittenPacketsQueue;
 
     // Number of received master-written packet data bytes.
     unsigned long masterWritePacketDataBytesReceived;
