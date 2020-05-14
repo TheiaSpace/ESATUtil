@@ -80,7 +80,11 @@ void ESAT_I2CSlaveClass::handleWritePrimaryHeaderReception()
   i2cState = IDLE;
   if (masterWriteState == WRITE_BUFFER_FULL)
   {
-    return;
+    if (masterWrittenPacketsQueue.availableForWrite() <= 0)
+    {
+      return;
+    }
+    masterWriteState = WRITE_BUFFER_EMPTY;
   }
   if (bus->available() != ESAT_CCSDSPrimaryHeader::LENGTH)
   {
@@ -117,16 +121,16 @@ void ESAT_I2CSlaveClass::handleWritePacketDataReception()
         masterWritePacketDataLength)
     {
       masterWritePacket.rewind();
-	  (void) masterWrittenPacketsQueue.write(masterWritePacket);
-	  if (masterWrittenPacketsQueue.availableForRead() < masterWrittenPacketsQueue.capacity())
-	  {
-		masterWriteState = WRITE_BUFFER_EMPTY;
-	  }
-	  else
-	  {
-		masterWriteState = WRITE_BUFFER_FULL;
-	  }
-	}
+      (void) masterWrittenPacketsQueue.write(masterWritePacket);
+      if (masterWrittenPacketsQueue.availableForRead() < masterWrittenPacketsQueue.capacity())
+      {
+        masterWriteState = WRITE_BUFFER_EMPTY;
+      }
+      else
+      {
+        masterWriteState = WRITE_BUFFER_FULL;
+      }
+    }
   }
 }
 
@@ -207,6 +211,11 @@ void ESAT_I2CSlaveClass::handleProtocolVersionNumberReception()
 
 void ESAT_I2CSlaveClass::handleWriteStateRequest()
 {
+  if ((masterWriteState == WRITE_BUFFER_FULL)
+    && (masterWrittenPacketsQueue.availableForWrite() > 0))
+  {
+    masterWriteState = WRITE_BUFFER_EMPTY;
+  }
   (void) bus->write(masterWriteState);
 }
 
