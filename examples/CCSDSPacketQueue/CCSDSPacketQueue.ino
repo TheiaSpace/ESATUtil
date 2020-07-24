@@ -25,6 +25,15 @@ const unsigned long packets = 5;
 const unsigned long packetDataCapacity = 4;
 ESAT_CCSDSPacketQueue packetQueue(packets, packetDataCapacity);
 
+long readLong()
+{
+  while (Serial.available() == 0)
+  {
+  }
+  String input = Serial.readString();
+  return input.toInt();
+}
+
 void setup()
 {
   // Configure the Serial interface.
@@ -42,9 +51,14 @@ void loop()
   (void) Serial.println(F("#########################################"));
   (void) Serial.println(F("CCSDS Space Packet queue example program."));
   (void) Serial.println(F("#########################################"));
-  (void) Serial.print(F("Queue free capacity: "));
-  (void) Serial.println(packetQueue.capacity() - packetQueue.length(), DEC);
-  const unsigned long packetsToWrite = random(packetQueue.capacity());
+  (void) Serial.print(F("Queue total capacity: "));
+  (void) Serial.println(packetQueue.capacity(), DEC);
+  (void) Serial.print(F("Queue used capacity: "));
+  (void) Serial.println(packetQueue.length(), DEC);
+  (void) Serial.print(F("Queue unused capacity: "));
+  (void) Serial.println(packetQueue.available(), DEC);
+  (void) Serial.println(F("How many packets do you want to write to the queue?"));
+  const long packetsToWrite = readLong();
   (void) Serial.print(F("Writing "));
   (void) Serial.print(packetsToWrite, DEC);
   (void) Serial.println(F(" packets to the queue..."));
@@ -53,11 +67,13 @@ void loop()
        iteration = iteration + 1)
   {
     ESAT_CCSDSPacket packet(packetDataCapacity);
-    packet.writeUnsignedLong(millis());
+    (void) Serial.println(F("What integer number do you want to store in the packet?"));
+    const long number = readLong();
+    packet.writeLong(number);
     packet.rewind();
     (void) Serial.print(F("Writing packet with the following packet data: "));
-    (void) Serial.print(packet.readUnsignedLong(), DEC);
-    (void) Serial.print(F("... "));
+    (void) Serial.print(packet.readLong(), DEC);
+    (void) Serial.println(F("... "));
     const boolean goodWrite = packetQueue.write(packet);
     if (goodWrite)
     {
@@ -68,7 +84,14 @@ void loop()
       (void) Serial.println(F("failure (full queue)!"));
     }
   }
-  const unsigned long packetsToRead = random(packetQueue.capacity());
+  (void) Serial.print(F("Queue total capacity: "));
+  (void) Serial.println(packetQueue.capacity(), DEC);
+  (void) Serial.print(F("Queue used capacity: "));
+  (void) Serial.println(packetQueue.length(), DEC);
+  (void) Serial.print(F("Queue unused capacity: "));
+  (void) Serial.println(packetQueue.available(), DEC);
+  (void) Serial.println(F("How many packets do you want to read from the queue?"));
+  const long packetsToRead = readLong();
   (void) Serial.print(F("Reading "));
   (void) Serial.print(packetsToRead, DEC);
   (void) Serial.println(F(" packets from the queue..."));
@@ -83,7 +106,7 @@ void loop()
     {
       packet.rewind();
       (void) Serial.print(F("success (packet data is "));
-      (void) Serial.print(packet.readUnsignedLong(), DEC);
+      (void) Serial.print(packet.readLong(), DEC);
       (void) Serial.println(F(")!"));
     }
     else
@@ -91,5 +114,4 @@ void loop()
       (void) Serial.println(F("failure (empty queue)!"));
     }
   }
-  delay(1000);
 }

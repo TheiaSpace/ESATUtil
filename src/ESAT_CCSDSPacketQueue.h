@@ -43,14 +43,31 @@ class ESAT_CCSDSPacketQueue
     // Destroy a packet queue.
     ~ESAT_CCSDSPacketQueue();
 
+    // Deprecated method.  Use availableForWrite() instead.
+    // Return the number of packets that still can be written in the queue.
+    unsigned long available() const __attribute__((deprecated("Use availableForWrite() instead.")))
+    {
+      return availableForWrite();
+    }
+
+    // Return the number of unread packets in the queue.
+    unsigned long availableForRead() const;
+
+    // Return the number of packets that still can be written in the queue.
+    unsigned long availableForWrite() const;
+
     // Return the number of packets that this queue can hold.
     unsigned long capacity() const;
 
     // Clear the queue.
     void flush();
 
+    // Deprecated method.  Use availableForRead() instead.
     // Return the number of unread packets in the queue.
-    unsigned long length() const;
+    unsigned long length() const __attribute__((deprecated("Use availableForRead() instead.")))
+    {
+      return availableForRead();
+    }
 
     // Pop the next packet of the queue and copy its contents
     // to the given packet object.
@@ -73,6 +90,9 @@ class ESAT_CCSDSPacketQueue
 
     // Index of the next packet to be read.
     unsigned long readPosition;
+
+    // Whether each packet in the queue is unread.
+    boolean* unread;
 
     // Index of the next packet to be written.
     unsigned long writePosition;

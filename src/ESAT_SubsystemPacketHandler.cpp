@@ -96,8 +96,8 @@ void ESAT_SubsystemPacketHandlerClass::prepareSubsystemsOwnTelemetry()
 
 boolean ESAT_SubsystemPacketHandlerClass::queueTelecommandToI2C(ESAT_CCSDSPacket telecommandPacket)
 {
-  if (i2cTelecommandPacket.length() == 0)
-  {
+  if (i2cTelecommandPacket.packetDataLength() == 0)
+  {    
     return telecommandPacket.copyTo(i2cTelecommandPacket);
   }
   else
