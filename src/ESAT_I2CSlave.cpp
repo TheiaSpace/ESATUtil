@@ -26,10 +26,19 @@ void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
                                const unsigned long masterWritePacketDataCapacity,
                                const unsigned long masterReadPacketDataCapacity)
 {
+	begin(i2cInterface, masterWritePacketDataCapacity, masterReadPacketDataCapacity, 1);
+}
+
+void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
+                               const unsigned long masterWritePacketDataCapacity,
+                               const unsigned long masterReadPacketDataCapacity,
+							   const unsigned long inputPacketBufferCapacity)
+{
   bus = &i2cInterface;
   i2cState = IDLE;
   masterWritePacket = ESAT_CCSDSPacket(masterWritePacketDataCapacity);
   masterWriteState = WRITE_BUFFER_EMPTY;
+  masterWrittenPacketsQueue = ESAT_CCSDSPacketQueue(inputPacketBufferCapacity, masterWritePacketDataCapacity);
   masterReadPacket = ESAT_CCSDSPacket(masterReadPacketDataCapacity);
   masterReadState = PACKET_NOT_REQUESTED;
   bus->onReceive(receiveEvent);
@@ -42,11 +51,23 @@ void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
                                byte masterReadPacketDataBuffer[],
                                const unsigned long masterReadPacketDataBufferLength)
 {
+	begin(i2cInterface, masterWritePacketDataBuffer, masterWritePacketDataBufferLength,
+		  masterReadPacketDataBuffer, masterReadPacketDataBufferLength, 1);
+}
+
+void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
+                               byte masterWritePacketDataBuffer[],
+                               const unsigned long masterWritePacketDataBufferLength,
+                               byte masterReadPacketDataBuffer[],
+                               const unsigned long masterReadPacketDataBufferLength,
+							   const unsigned long inputPacketBufferCapacity)
+{
   bus = &i2cInterface;
   i2cState = IDLE;
   masterWritePacket = ESAT_CCSDSPacket(masterWritePacketDataBuffer,
                                        masterWritePacketDataBufferLength);
   masterWriteState = WRITE_BUFFER_EMPTY;
+  masterWrittenPacketsQueue = ESAT_CCSDSPacketQueue(inputPacketBufferCapacity, masterWritePacketDataBufferLength);
   masterReadPacket = ESAT_CCSDSPacket(masterReadPacketDataBuffer,
                                       masterReadPacketDataBufferLength);
   masterReadState = PACKET_NOT_REQUESTED;
@@ -54,12 +75,24 @@ void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
   bus->onRequest(requestEvent);
 }
 
+void ESAT_I2CSlaveClass::clearMasterWrittenPacketsQueue()
+{
+  noInterrupts();
+  masterWrittenPacketsQueue.flush();
+  masterWriteState = WRITE_BUFFER_EMPTY;
+  interrupts();
+}
+
 void ESAT_I2CSlaveClass::handleWritePrimaryHeaderReception()
 {
   i2cState = IDLE;
   if (masterWriteState == WRITE_BUFFER_FULL)
   {
-    return;
+    if (masterWrittenPacketsQueue.availableForWrite() <= 0)
+    {
+      return;
+    }
+    masterWriteState = WRITE_BUFFER_EMPTY;
   }
   if (bus->available() != ESAT_CCSDSPrimaryHeader::LENGTH)
   {
@@ -96,7 +129,15 @@ void ESAT_I2CSlaveClass::handleWritePacketDataReception()
         masterWritePacketDataLength)
     {
       masterWritePacket.rewind();
-      masterWriteState = WRITE_BUFFER_FULL;
+      (void) masterWrittenPacketsQueue.write(masterWritePacket);
+      if (masterWrittenPacketsQueue.availableForRead() < masterWrittenPacketsQueue.capacity())
+      {
+        masterWriteState = WRITE_BUFFER_EMPTY;
+      }
+      else
+      {
+        masterWriteState = WRITE_BUFFER_FULL;
+      }
     }
   }
 }
@@ -178,6 +219,11 @@ void ESAT_I2CSlaveClass::handleProtocolVersionNumberReception()
 
 void ESAT_I2CSlaveClass::handleWriteStateRequest()
 {
+  if ((masterWriteState == WRITE_BUFFER_FULL)
+    && (masterWrittenPacketsQueue.availableForWrite() > 0))
+  {
+    masterWriteState = WRITE_BUFFER_EMPTY;
+  }
   (void) bus->write(masterWriteState);
 }
 
@@ -237,11 +283,10 @@ void ESAT_I2CSlaveClass::handleProtocolVersionNumberRequest()
 
 boolean ESAT_I2CSlaveClass::readPacket(ESAT_CCSDSPacket& packet)
 {
-  if (masterWriteState == WRITE_BUFFER_FULL)
+  if (masterWrittenPacketsQueue.availableForRead() > 0)
   {
-    const boolean successfulCopy = masterWritePacket.copyTo(packet);
+    const boolean successfulCopy = masterWrittenPacketsQueue.read(packet);	
     packet.rewind();
-    masterWriteState = WRITE_BUFFER_EMPTY;
     return successfulCopy;
   }
   else

@@ -68,7 +68,7 @@ boolean ESAT_CCSDSPacket::copyTo(ESAT_CCSDSPacket& target)
   // Just fail when our packet data cannot fit into the target.
   if (target.capacity() < packetData.length())
   {
-    return false;
+	return false;
   }
   // Normal operation: copy out packet into the target packet.
   target.writePrimaryHeader(primaryHeader);
