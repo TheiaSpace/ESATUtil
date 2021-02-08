@@ -132,6 +132,20 @@ void ESAT_FlagContainer::set(const byte flag)
          bitIndex(flag));
 }
 
+boolean ESAT_FlagContainer::writeTo(Stream& stream) const
+{
+  const size_t bytesToWrite = NUMBER_OF_FLAG_STORAGE_BYTES;
+  const size_t bytesWritten = stream.write(flagBytes, bytesToWrite);
+  if (bytesWritten < bytesToWrite)
+  {
+    return false;
+  }
+  else
+  {
+    return true;
+  }
+}
+
 ESAT_FlagContainer ESAT_FlagContainer::operator&(const ESAT_FlagContainer flags) const
 {
   ESAT_FlagContainer result;

@@ -70,6 +70,10 @@ class ESAT_FlagContainer: public Printable
     // Set a flag to true.
     void set(byte flag);
 
+    // Write the bits of this flag container to a stream.
+    // Return true on success; otherwise return false.
+    boolean writeTo(Stream& stream) const;
+
     // Return a flag container with flags that are the and operation
     // of the flags of the operands.
     ESAT_FlagContainer operator&(const ESAT_FlagContainer flags) const;
