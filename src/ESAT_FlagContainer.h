@@ -56,6 +56,10 @@ class ESAT_FlagContainer: public Printable
     // Return the value of a flag.
     boolean read(byte flag) const;
 
+    // Read the bits of this flag container from a stream.
+    // Return true on success; otherwise return false.
+    boolean readFrom(Stream& stream);
+
     // Return the number of the first flag, starting
     // from 0, with a true value.
     // Calling this function doesn't change the value of any flag.

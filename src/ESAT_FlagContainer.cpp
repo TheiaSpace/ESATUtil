@@ -94,6 +94,24 @@ boolean ESAT_FlagContainer::read(const byte flag) const
                  bitIndex(flag));
 }
 
+boolean ESAT_FlagContainer::readFrom(Stream& stream)
+{
+  const byte bytesToRead = NUMBER_OF_FLAG_STORAGE_BYTES;
+  byte buffer[bytesToRead];
+  const size_t bytesRead = stream.readBytes((char*) buffer, bytesToRead);
+  if (bytesRead < bytesToRead)
+  {
+    return false;
+  }
+  else
+  {
+    for (int index = 0; index < NUMBER_OF_FLAG_STORAGE_BYTES; index = index + 1)
+    {
+      flagBytes[index] = buffer[index];
+    }
+  }
+}
+
 int ESAT_FlagContainer::readNext() const
 {
   for (word flag = 0;
