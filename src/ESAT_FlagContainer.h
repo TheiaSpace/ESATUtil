@@ -37,6 +37,17 @@ class ESAT_FlagContainer: public Printable
     // Return value of readNext() when all flags are false.
     static const int NO_ACTIVE_FLAGS = -1;
 
+    // Maximum number of flags a flag container can store.
+    // This has to be a multiple of NUMBER_OF_FLAGS_PER_BYTE.
+    static const word MAXIMUM_NUMBER_OF_FLAGS = 256;
+
+    // Number of flags stored in each byte.
+    static const byte NUMBER_OF_FLAGS_PER_BYTE = 8;
+
+    // Number of bytes used to store the flags.
+    static constexpr byte NUMBER_OF_FLAG_STORAGE_BYTES =
+      MAXIMUM_NUMBER_OF_FLAGS / NUMBER_OF_FLAGS_PER_BYTE;
+
     // Instantiate a flag container with all flags set as false.
     ESAT_FlagContainer();
 
@@ -91,17 +102,6 @@ class ESAT_FlagContainer: public Printable
     ESAT_FlagContainer operator^(const ESAT_FlagContainer flags) const;
 
   private:
-    // Maximum number of flags a flag container can store.
-    // This has to be a multiple of NUMBER_OF_FLAGS_PER_BYTE.
-    static const word MAXIMUM_NUMBER_OF_FLAGS = 256;
-
-    // Number of flags stored in each byte.
-    static const byte NUMBER_OF_FLAGS_PER_BYTE = 8;
-
-    // Number of bytes used to store the flags.
-    static constexpr byte NUMBER_OF_FLAG_STORAGE_BYTES =
-      MAXIMUM_NUMBER_OF_FLAGS / NUMBER_OF_FLAGS_PER_BYTE;
-
     // Store flags compactly in this array of bytes: 8 flags per byte.
     byte flagBytes[NUMBER_OF_FLAG_STORAGE_BYTES];
 
