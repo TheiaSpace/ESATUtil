@@ -38,7 +38,7 @@ void ESAT_SubsystemPacketHandlerClass::begin(const word applicationProcessIdenti
                                              ESAT_Clock& clock,
                                              TwoWire& i2cInterface,
                                              const unsigned long packetDataCapacity,
-											 const unsigned long i2cInputPacketBufferCapacity)
+                                             const unsigned long i2cInputPacketBufferCapacity)
 {
   telecommandPacketDispatcher =
     ESAT_CCSDSTelecommandPacketDispatcher(applicationProcessIdentifier);
@@ -56,7 +56,7 @@ void ESAT_SubsystemPacketHandlerClass::begin(const word applicationProcessIdenti
   ESAT_I2CSlave.begin(i2cInterface,
                       packetDataCapacity,
                       packetDataCapacity,
-					  i2cInputPacketBufferCapacity);
+                      i2cInputPacketBufferCapacity);
   i2cTelecommandPacket = ESAT_CCSDSPacket(packetDataCapacity);
   i2cTelemetryPacket = ESAT_CCSDSPacket(packetDataCapacity);
 }
@@ -97,7 +97,7 @@ void ESAT_SubsystemPacketHandlerClass::prepareSubsystemsOwnTelemetry()
 boolean ESAT_SubsystemPacketHandlerClass::queueTelecommandToI2C(ESAT_CCSDSPacket telecommandPacket)
 {
   if (i2cTelecommandPacket.packetDataLength() == 0)
-  {    
+  {
     return telecommandPacket.copyTo(i2cTelecommandPacket);
   }
   else

@@ -55,17 +55,17 @@ class ESAT_I2CSlaveClass
     void begin(TwoWire& i2cInterface,
                unsigned long masterWritePacketDataCapacity,
                unsigned long masterReadPacketDataCapacity);
-			   
+
     // Configure the I2C slave to listen on the given I2C interface
     // (register the I2C reception and request handlers).
     // The I2C interface must be already initated.
     // The I2C slave will work with packets that fit on the given
     // capacity.
-	// An additional buffer is used for the I2C incoming packets.
+    // An additional buffer is used for the I2C incoming packets.
     void begin(TwoWire& i2cInterface,
                unsigned long masterWritePacketDataCapacity,
                unsigned long masterReadPacketDataCapacity,
-			   unsigned long inputPacketBufferCapacity);
+               unsigned long inputPacketBufferCapacity);
 
     // Configure the I2C slave to listen on the given I2C interface
     // (register the I2C reception and request handlers).
@@ -76,8 +76,8 @@ class ESAT_I2CSlaveClass
                byte masterWritePacketDataBuffer[],
                unsigned long masterWritePacketDataBufferLength,
                byte masterReadPacketDataBuffer[],
-               unsigned long masterReadPacketDataBufferLength);       
-     
+               unsigned long masterReadPacketDataBufferLength);
+
     // Configure the I2C slave to listen on the given I2C interface
     // (register the I2C reception and request handlers).
     // The I2C interface must be already initiated.
@@ -90,7 +90,7 @@ class ESAT_I2CSlaveClass
                byte masterReadPacketDataBuffer[],
                unsigned long masterReadPacketDataBufferLength,
                unsigned long inputPacketBufferCapacity);
-			   
+
     // Return:
     // - NO_PACKET_REQUESTED if there isn't a pending packet read
     //   request.
@@ -134,7 +134,7 @@ class ESAT_I2CSlaveClass
     {
       rejectPacket();
     }
-    
+
     // Clear the received packets queue.
     void clearMasterWrittenPacketsQueue();
 
@@ -230,7 +230,7 @@ class ESAT_I2CSlaveClass
 
     // Master-write packet buffer.
     ESAT_CCSDSPacket masterWritePacket;
-	
+
     // Master-written packets queue.
     ESAT_CCSDSPacketQueue masterWrittenPacketsQueue;
 

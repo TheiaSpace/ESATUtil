@@ -40,6 +40,9 @@ class ESAT_CCSDSTelecommandPacketDispatcher
     //   as the telecommand dispatcher's application process identifier.
     ESAT_CCSDSTelecommandPacketDispatcher(word applicationProcessIdentifier = 0);
 
+    // Add a new entry to the list of packet handlers.
+    void add(ESAT_CCSDSTelecommandPacketHandler& handler);
+
     // Return true if the packet is compatible; otherwise return
     // false.
     // A packet is compatible with this telecommand dispatcher when
@@ -49,9 +52,6 @@ class ESAT_CCSDSTelecommandPacketDispatcher
     // - The packet's application process identifier is the same
     //   as the telecommand dispatcher's application process identifier.
     boolean compatiblePacket(ESAT_CCSDSPacket packet) const;
-    
-    // Add a new entry to the list of packet handlers.
-    void add(ESAT_CCSDSTelecommandPacketHandler& handler);
 
     // Dispatch a telecommand packet.
     // This will work through the list of packet handlers until one

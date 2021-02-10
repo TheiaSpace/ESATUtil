@@ -26,19 +26,20 @@ void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
                                const unsigned long masterWritePacketDataCapacity,
                                const unsigned long masterReadPacketDataCapacity)
 {
-	begin(i2cInterface, masterWritePacketDataCapacity, masterReadPacketDataCapacity, 1);
+  begin(i2cInterface, masterWritePacketDataCapacity, masterReadPacketDataCapacity, 1);
 }
 
 void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
                                const unsigned long masterWritePacketDataCapacity,
                                const unsigned long masterReadPacketDataCapacity,
-							   const unsigned long inputPacketBufferCapacity)
+                               const unsigned long inputPacketBufferCapacity)
 {
   bus = &i2cInterface;
   i2cState = IDLE;
   masterWritePacket = ESAT_CCSDSPacket(masterWritePacketDataCapacity);
   masterWriteState = WRITE_BUFFER_EMPTY;
-  masterWrittenPacketsQueue = ESAT_CCSDSPacketQueue(inputPacketBufferCapacity, masterWritePacketDataCapacity);
+  masterWrittenPacketsQueue = ESAT_CCSDSPacketQueue(inputPacketBufferCapacity,
+                                                    masterWritePacketDataCapacity);
   masterReadPacket = ESAT_CCSDSPacket(masterReadPacketDataCapacity);
   masterReadState = PACKET_NOT_REQUESTED;
   bus->onReceive(receiveEvent);
@@ -51,8 +52,12 @@ void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
                                byte masterReadPacketDataBuffer[],
                                const unsigned long masterReadPacketDataBufferLength)
 {
-	begin(i2cInterface, masterWritePacketDataBuffer, masterWritePacketDataBufferLength,
-		  masterReadPacketDataBuffer, masterReadPacketDataBufferLength, 1);
+  begin(i2cInterface,
+        masterWritePacketDataBuffer,
+        masterWritePacketDataBufferLength,
+        masterReadPacketDataBuffer,
+        masterReadPacketDataBufferLength,
+        1);
 }
 
 void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
@@ -60,14 +65,15 @@ void ESAT_I2CSlaveClass::begin(TwoWire& i2cInterface,
                                const unsigned long masterWritePacketDataBufferLength,
                                byte masterReadPacketDataBuffer[],
                                const unsigned long masterReadPacketDataBufferLength,
-							   const unsigned long inputPacketBufferCapacity)
+                               const unsigned long inputPacketBufferCapacity)
 {
   bus = &i2cInterface;
   i2cState = IDLE;
   masterWritePacket = ESAT_CCSDSPacket(masterWritePacketDataBuffer,
                                        masterWritePacketDataBufferLength);
   masterWriteState = WRITE_BUFFER_EMPTY;
-  masterWrittenPacketsQueue = ESAT_CCSDSPacketQueue(inputPacketBufferCapacity, masterWritePacketDataBufferLength);
+  masterWrittenPacketsQueue = ESAT_CCSDSPacketQueue(inputPacketBufferCapacity,
+                                                    masterWritePacketDataBufferLength);
   masterReadPacket = ESAT_CCSDSPacket(masterReadPacketDataBuffer,
                                       masterReadPacketDataBufferLength);
   masterReadState = PACKET_NOT_REQUESTED;
@@ -285,7 +291,7 @@ boolean ESAT_I2CSlaveClass::readPacket(ESAT_CCSDSPacket& packet)
 {
   if (masterWrittenPacketsQueue.availableForRead() > 0)
   {
-    const boolean successfulCopy = masterWrittenPacketsQueue.read(packet);	
+    const boolean successfulCopy = masterWrittenPacketsQueue.read(packet);
     packet.rewind();
     return successfulCopy;
   }
