@@ -18,6 +18,23 @@ You should have received a copy of the GNU General Public License
 along with Theia Space's ESAT Utility library.  If not, see
 <http://www.gnu.org/licenses/>.
 
+* Changes in ESATUtil 2.2.0, 2021-02-10
+
+** Added seeking feature.
+
+** Added support for dynamic memory buffers.
+
+** There is a new module for scheduling tasks.
+
+** There is a new module for handling CCSDS packet queues.
+
+** Added packet queues handling support to ESAT_I2CSlave 
+and additional features.
+
+** Added new features to flag containers library.
+
+** Minor error corrections.
+
 
 * Changes in ESATUtil 2.1.2, 2019-01-10
 
