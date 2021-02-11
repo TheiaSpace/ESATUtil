@@ -20,18 +20,17 @@ along with Theia Space's ESAT Utility library.  If not, see
 
 * Changes in ESATUtil 2.2.0, 2021-02-10
 
-** Added seeking feature.
+** Streams are now seekable.
 
-** Added support for dynamic memory buffers.
+** Now buffers can use dynamic memory.
 
 ** There is a new module for scheduling tasks.
 
 ** There is a new module for handling CCSDS packet queues.
 
-** Added packet queues handling support to ESAT_I2CSlave 
-and additional features.
+** ESAT_I2CSlave now can handle packets using packet queues.
 
-** Added new features to flag containers library.
+** Flag containers now can read and write from/to streams.
 
 ** Minor error corrections.
 
