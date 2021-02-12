@@ -1,6 +1,6 @@
 ESATUtil NEWS -- history of changes.
 
-Copyright (C) 2018, 2019 Theia Space, Universidad Politécnica de Madrid
+Copyright (C) 2018, 2019, 2021 Theia Space, Universidad Politécnica de Madrid
 
 This file is part of Theia Space's ESAT Utility library.
 
