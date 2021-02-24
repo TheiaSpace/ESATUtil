@@ -1,6 +1,6 @@
 ESATUtil NEWS -- history of changes.
 
-Copyright (C) 2018, 2019 Theia Space, Universidad Politécnica de Madrid
+Copyright (C) 2018, 2019, 2021 Theia Space, Universidad Politécnica de Madrid
 
 This file is part of Theia Space's ESAT Utility library.
 
@@ -17,6 +17,22 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Theia Space's ESAT Utility library.  If not, see
 <http://www.gnu.org/licenses/>.
+
+* Changes in ESATUtil 2.2.0, 2021-02-10
+
+** Streams are now seekable.
+
+** Now buffers can use dynamic memory.
+
+** There is a new module for scheduling tasks.
+
+** There is a new module for handling CCSDS packet queues.
+
+** ESAT_I2CSlave now can handle packets using packet queues.
+
+** Flag containers now can read and write from/to streams.
+
+** Minor error corrections.
 
 
 * Changes in ESATUtil 2.1.2, 2019-01-10

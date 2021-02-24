@@ -110,6 +110,7 @@ boolean ESAT_FlagContainer::readFrom(Stream& stream)
       flagBytes[index] = buffer[index];
     }
   }
+  return true;
 }
 
 int ESAT_FlagContainer::readNext() const
