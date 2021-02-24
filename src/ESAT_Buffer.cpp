@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Util library.
  *
@@ -27,6 +27,7 @@ ESAT_Buffer::ESAT_Buffer()
   bufferCapacity = 0;
   bytesInBuffer = 0;
   readWritePosition = 0;
+  references = nullptr;
   triedToReadBeyondBufferLength = false;
   triedToWriteBeyondBufferCapacity = false;
   // Set the timeout for waiting for stream data to zero, as it
@@ -34,17 +35,61 @@ ESAT_Buffer::ESAT_Buffer()
   setTimeout(0);
 }
 
-ESAT_Buffer::ESAT_Buffer(byte array[], const unsigned long length)
+ESAT_Buffer::ESAT_Buffer(const unsigned long capacity)
 {
-  buffer = array;
-  bufferCapacity = length;
+  buffer = new byte[capacity];
+  bufferCapacity = capacity;
   bytesInBuffer = 0;
   readWritePosition = 0;
+  references = new unsigned long(1);
   triedToReadBeyondBufferLength = false;
   triedToWriteBeyondBufferCapacity = false;
   // Set the timeout for waiting for stream data to zero, as it
   // doesn't make sense to wait when reading from these buffers.
   setTimeout(0);
+}
+
+ESAT_Buffer::ESAT_Buffer(byte array[],
+                         const unsigned long capacity,
+                         const unsigned long availableBytes)
+{
+  buffer = array;
+  bufferCapacity = capacity;
+  bytesInBuffer = min(capacity, availableBytes);
+  readWritePosition = 0;
+  references = nullptr;
+  triedToReadBeyondBufferLength = false;
+  triedToWriteBeyondBufferCapacity = false;
+  // Set the timeout for waiting for stream data to zero, as it
+  // doesn't make sense to wait when reading from these buffers.
+  setTimeout(0);
+}
+
+ESAT_Buffer::ESAT_Buffer(const ESAT_Buffer& original)
+{
+  buffer = original.buffer;
+  bufferCapacity = original.bufferCapacity;
+  bytesInBuffer = original.bytesInBuffer;
+  dynamicallyAllocated = original.dynamicallyAllocated;
+  readWritePosition = original.readWritePosition;
+  references = original.references;
+  triedToReadBeyondBufferLength = original.triedToReadBeyondBufferLength;
+  triedToWriteBeyondBufferCapacity = original.triedToWriteBeyondBufferCapacity;
+  _timeout = original._timeout;
+  addReference();
+}
+
+ESAT_Buffer::~ESAT_Buffer()
+{
+  removeReference();
+}
+
+void ESAT_Buffer::addReference()
+{
+  if (references != nullptr)
+  {
+    *references = *references + 1;
+  }
 }
 
 int ESAT_Buffer::available()
@@ -165,9 +210,48 @@ boolean ESAT_Buffer::readFrom(Stream& input, const unsigned long bytesToRead)
   }
 }
 
+void ESAT_Buffer::removeReference()
+{
+  if (references != nullptr)
+  {
+    *references = *references - 1;
+    if (*references == 0)
+    {
+      delete[] buffer;
+      delete references;
+    }
+  }
+}
+
 void ESAT_Buffer::rewind()
 {
   readWritePosition = 0;
+}
+
+boolean ESAT_Buffer::seek(const unsigned long newPosition)
+{
+  if (newPosition <= bytesInBuffer)
+  {
+    readWritePosition = newPosition;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+boolean ESAT_Buffer::setLength(const unsigned long newLength)
+{
+  if (newLength <= bufferCapacity)
+  {
+    bytesInBuffer = newLength;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 boolean ESAT_Buffer::triedToReadBeyondLength() const
@@ -226,4 +310,23 @@ boolean ESAT_Buffer::writeTo(Stream& output) const
   {
     return true;
   }
+}
+
+ESAT_Buffer& ESAT_Buffer::operator=(const ESAT_Buffer& original)
+{
+  if (this != &original)
+  {
+    removeReference();
+    buffer = original.buffer;
+    bufferCapacity = original.bufferCapacity;
+    bytesInBuffer = original.bytesInBuffer;
+    dynamicallyAllocated = original.dynamicallyAllocated;
+    readWritePosition = original.readWritePosition;
+    references = original.references;
+    triedToReadBeyondBufferLength = original.triedToReadBeyondBufferLength;
+    triedToWriteBeyondBufferCapacity = original.triedToWriteBeyondBufferCapacity;
+    _timeout = original._timeout;
+    addReference();
+  }
+  return *this;
 }

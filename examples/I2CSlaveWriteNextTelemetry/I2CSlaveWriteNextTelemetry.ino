@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2018, 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 // Store packets here.
 const byte packetDataLength = ESAT_CCSDSSecondaryHeader::LENGTH;
+byte masterReadPacketData[packetDataLength];
 byte packetData[packetDataLength];
 ESAT_CCSDSPacket packet(packetData, packetDataLength);
 
@@ -54,7 +55,7 @@ void setup()
   ESAT_I2CSlave.begin(Wire,
                       nullptr,
                       0,
-                      packetData,
+                      masterReadPacketData,
                       packetDataLength);
 }
 

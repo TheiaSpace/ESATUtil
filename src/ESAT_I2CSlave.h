@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Util library.
  *
@@ -23,6 +23,7 @@
 
 #include <Arduino.h>
 #include "ESAT_CCSDSPacket.h"
+#include "ESAT_CCSDSPacketQueue.h"
 #include "ESAT_SemanticVersionNumber.h"
 #include <Wire.h>
 
@@ -48,14 +49,47 @@ class ESAT_I2CSlaveClass
 
     // Configure the I2C slave to listen on the given I2C interface
     // (register the I2C reception and request handlers).
+    // The I2C interface must be already initated.
+    // The I2C slave will work with packets that fit on the given
+    // capacity.
+    void begin(TwoWire& i2cInterface,
+               unsigned long masterWritePacketDataCapacity,
+               unsigned long masterReadPacketDataCapacity);
+
+    // Configure the I2C slave to listen on the given I2C interface
+    // (register the I2C reception and request handlers).
+    // The I2C interface must be already initated.
+    // The I2C slave will work with packets that fit on the given
+    // capacity.
+    // An additional buffer is used for the I2C incoming packets.
+    void begin(TwoWire& i2cInterface,
+               unsigned long masterWritePacketDataCapacity,
+               unsigned long masterReadPacketDataCapacity,
+               unsigned long inputPacketBufferCapacity);
+
+    // Configure the I2C slave to listen on the given I2C interface
+    // (register the I2C reception and request handlers).
     // The I2C interface must be already initiated.
     // The caller must provide the packet data buffers for telecommands
     // and telemetry.
     void begin(TwoWire& i2cInterface,
                byte masterWritePacketDataBuffer[],
-               word masterWritePacketDataBufferLength,
+               unsigned long masterWritePacketDataBufferLength,
                byte masterReadPacketDataBuffer[],
-               word masterReadPacketDataBufferLength);
+               unsigned long masterReadPacketDataBufferLength);
+
+    // Configure the I2C slave to listen on the given I2C interface
+    // (register the I2C reception and request handlers).
+    // The I2C interface must be already initiated.
+    // The caller must provide the packet data buffers for telecommands
+    // and telemetry.
+    // An additional buffer is used for the I2C incoming packets.
+    void begin(TwoWire& i2cInterface,
+               byte masterWritePacketDataBuffer[],
+               unsigned long masterWritePacketDataBufferLength,
+               byte masterReadPacketDataBuffer[],
+               unsigned long masterReadPacketDataBufferLength,
+               unsigned long inputPacketBufferCapacity);
 
     // Return:
     // - NO_PACKET_REQUESTED if there isn't a pending packet read
@@ -100,6 +134,9 @@ class ESAT_I2CSlaveClass
     {
       rejectPacket();
     }
+
+    // Clear the received packets queue.
+    void clearMasterWrittenPacketsQueue();
 
     // Return true if the master requested a reset of the telemetry queue
     // since the last call to writePacket() with next-packet telemetry;
@@ -193,6 +230,9 @@ class ESAT_I2CSlaveClass
 
     // Master-write packet buffer.
     ESAT_CCSDSPacket masterWritePacket;
+
+    // Master-written packets queue.
+    ESAT_CCSDSPacketQueue masterWrittenPacketsQueue;
 
     // Number of received master-written packet data bytes.
     unsigned long masterWritePacketDataBytesReceived;

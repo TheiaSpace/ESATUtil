@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2018, 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Util library.
  *
@@ -38,10 +38,20 @@ class ESAT_CCSDSTelecommandPacketDispatcher
     // - The packet has a secondary header.
     // - The packet's application process identifier is the same
     //   as the telecommand dispatcher's application process identifier.
-    ESAT_CCSDSTelecommandPacketDispatcher(word applicationProcessIdentifier);
+    ESAT_CCSDSTelecommandPacketDispatcher(word applicationProcessIdentifier = 0);
 
     // Add a new entry to the list of packet handlers.
     void add(ESAT_CCSDSTelecommandPacketHandler& handler);
+
+    // Return true if the packet is compatible; otherwise return
+    // false.
+    // A packet is compatible with this telecommand dispatcher when
+    // all the following conditions are met:
+    // - The packet is a telecommand packet.
+    // - The packet has a secondary header.
+    // - The packet's application process identifier is the same
+    //   as the telecommand dispatcher's application process identifier.
+    boolean compatiblePacket(ESAT_CCSDSPacket packet) const;
 
     // Dispatch a telecommand packet.
     // This will work through the list of packet handlers until one
@@ -67,23 +77,8 @@ class ESAT_CCSDSTelecommandPacketDispatcher
     // control subsystem has its own application process identifier).
     word applicationProcessIdentifier;
 
-    // Version number in major.minor.patch format
-    // as defined in the Semantic Versioning 2.0.0 standard.
-    // Each application process has a version number.
-    ESAT_SemanticVersionNumber versionNumber;
-
     // Head of the list of packet handler objects.
     ESAT_CCSDSTelecommandPacketHandler* head;
-
-    // Return true if the packet is compatible; otherwise return
-    // false.
-    // A packet is compatible with this telecommand dispatcher when
-    // all the following conditions are met:
-    // - The packet is a telecommand packet.
-    // - The packet has a secondary header.
-    // - The packet's application process identifier is the same
-    //   as the telecommand dispatcher's application process identifier.
-    boolean compatiblePacket(ESAT_CCSDSPacket packet) const;
 
     // Return true if the handler is compatible with the packet with
     // given secondary header; otherwise return false.

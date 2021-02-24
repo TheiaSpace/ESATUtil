@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Util library.
  *
@@ -42,6 +42,13 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // Instantiate a CCSDS packet with no packet data field.
     // The packet is invalid and it shouldn't be used in this state.
     ESAT_CCSDSPacket();
+
+    // Instantiate a new packet with a packet data field of given
+    // capacity.  The packet will allocate its own memory.
+    // The capacity must be at least 1.
+    // The primary header starts with all fields set to 0.
+    // The read/write pointer starts at 0.
+    ESAT_CCSDSPacket(unsigned long packetDataCapacity);
 
     // Instantiate a new packet backed with the packet data field
     // (packet payload) given by the given buffer.
@@ -93,6 +100,9 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // or, if the read/write pointer is at the end of the packet data,
     // return -1.
     int peek();
+
+    // Return the read/write position.
+    unsigned long position() const;
 
     // Print the packet in human-readable (JSON) form.
     // This leaves the read/write pointer untouched.
@@ -228,6 +238,11 @@ class ESAT_CCSDSPacket: public Printable, public Stream
     // Move the read/write pointer to 0: back to the start of the
     // packet data field (packet payload).
     void rewind();
+
+    // Set the read/write position to the desired value.
+    // Return true on success; otherwise (when the new position
+    // is greater than length() and it can't be set) return false.
+    boolean seek(unsigned long newPosition);
 
     // Return true if the last read*() or peek() attempt was beyond
     // the length of the packet data field; otherwise return false.

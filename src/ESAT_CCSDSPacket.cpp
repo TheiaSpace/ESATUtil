@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Util library.
  *
@@ -24,6 +24,14 @@
 ESAT_CCSDSPacket::ESAT_CCSDSPacket()
 {
   packetData = ESAT_Buffer(nullptr, 0);
+  // Set the timeout for waiting for stream data to zero, as it
+  // doesn't make sense to wait when reading from these packets.
+  setTimeout(0);
+}
+
+ESAT_CCSDSPacket::ESAT_CCSDSPacket(const unsigned long packetDataCapacity)
+{
+  packetData = ESAT_Buffer(packetDataCapacity);
   // Set the timeout for waiting for stream data to zero, as it
   // doesn't make sense to wait when reading from these packets.
   setTimeout(0);
@@ -60,7 +68,7 @@ boolean ESAT_CCSDSPacket::copyTo(ESAT_CCSDSPacket& target)
   // Just fail when our packet data cannot fit into the target.
   if (target.capacity() < packetData.length())
   {
-    return false;
+	return false;
   }
   // Normal operation: copy out packet into the target packet.
   target.writePrimaryHeader(primaryHeader);
@@ -114,6 +122,11 @@ unsigned long ESAT_CCSDSPacket::packetDataLength() const
 int ESAT_CCSDSPacket::peek()
 {
   return packetData.peek();
+}
+
+unsigned long ESAT_CCSDSPacket::position() const
+{
+  return packetData.position();
 }
 
 size_t ESAT_CCSDSPacket::printTo(Print& output) const
@@ -281,6 +294,11 @@ word ESAT_CCSDSPacket::readWord()
 void ESAT_CCSDSPacket::rewind()
 {
   packetData.rewind();
+}
+
+boolean ESAT_CCSDSPacket::seek(const unsigned long newPosition)
+{
+  return packetData.seek(newPosition);
 }
 
 boolean ESAT_CCSDSPacket::triedToReadBeyondLength() const

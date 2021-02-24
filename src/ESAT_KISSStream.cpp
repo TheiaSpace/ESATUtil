@@ -37,6 +37,15 @@ ESAT_KISSStream::ESAT_KISSStream(Stream& stream)
 }
 
 ESAT_KISSStream::ESAT_KISSStream(Stream& stream,
+                                 const unsigned long bufferCapacity)
+{
+  backendStream = &stream;
+  backendBuffer = ESAT_Buffer(bufferCapacity);
+  decoderState = WAITING_FOR_FRAME_START;
+  setTimeout(0);
+}
+
+ESAT_KISSStream::ESAT_KISSStream(Stream& stream,
                                  byte buffer[],
                                  unsigned long bufferLength)
 {

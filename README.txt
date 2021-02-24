@@ -1,4 +1,4 @@
-Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
+Copyright (C) 2017, 2018, 2019, 2020, 2021 Theia Space, Universidad Politécnica de Madrid
 
 This file is part of Theia Space's ESAT utility library.
 
@@ -17,7 +17,7 @@ along with Theia Space's ESAT utility library.  If not, see
 <http://www.gnu.org/licenses/>.
 
 
-ESAT utility library version 2.1.2.
+ESAT utility library version 2.2.0
 
 Shared utility libraries for ESAT.
 
@@ -40,6 +40,11 @@ Standard CCSDS space packets.
 # ESAT_CCSDSPacketFromKISSFrameReader
 
 Read CCSDS space packets from KISS frames coming from a stream.
+
+
+# ESAT_CCSDSPacketQueue
+
+A queue of CCSDS space packets.
 
 
 # ESAT_CCSDSPacketToKISSFrameWriter
@@ -120,6 +125,16 @@ Version numbers in major.minor.patch format.
 # ESAT_SoftwareClock
 
 Software real-time clock implementing the ESAT_Clock interface.
+
+
+# ESAT_Task
+
+Periodic task interface.
+
+
+# ESAT_TaskScheduler
+
+Periodic task scheduler.
 
 
 # ESAT_Timer

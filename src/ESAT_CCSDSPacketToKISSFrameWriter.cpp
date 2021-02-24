@@ -37,31 +37,22 @@ boolean ESAT_CCSDSPacketToKISSFrameWriter::bufferedWrite(ESAT_CCSDSPacket packet
   {
     const unsigned long capacity =
       ESAT_KISSStream::frameLength(packet.length());
-    byte* const buffer = new byte[capacity];
-    if (buffer == nullptr)
-    {
-      return false;
-    }
-    ESAT_KISSStream writer(*backendStream, buffer, capacity);
+    ESAT_KISSStream writer(*backendStream, capacity);
     const size_t beginBytesWritten = writer.beginFrame();
     if (beginBytesWritten < writer.FRAME_BEGIN_LENGTH)
     {
-      delete[] buffer;
       return false;
     }
     const boolean correctPacketWrite = packet.writeTo(writer);
     if (!correctPacketWrite)
     {
-      delete[] buffer;
       return false;
     }
     const boolean endBytesWritten = writer.endFrame();
     if (endBytesWritten < writer.FRAME_END_LENGTH)
     {
-      delete[] buffer;
       return false;
     }
-    delete[] buffer;
     return true;
   }
   else

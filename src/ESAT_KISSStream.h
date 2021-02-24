@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017, 2018 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2017, 2018, 2019 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Util library.
  *
@@ -55,6 +55,15 @@ class ESAT_KISSStream: public Stream
     // operations will fail because there is no buffer
     // for storing the decoded data.
     ESAT_KISSStream(Stream& stream);
+
+    // Instantiate a new unbuffered KISS stream that will operate
+    // on the given backend stream.
+    // Use a buffer of given capacity for storing encoded or decoded data.
+    // The KISS stream is half-duplex: it cannot be used
+    // for reading frames simultaneously with writing frames.
+    // The timeout for block read operations is zero.
+    ESAT_KISSStream(Stream& stream,
+                    unsigned long bufferCapacity);
 
     // Instantiate a new buffered KISS stream that will operate
     // on the given backend stream.
@@ -155,9 +164,6 @@ class ESAT_KISSStream: public Stream
     // Current state of the decoder state machine.
     DecoderState decoderState;
 
-    // Position of the next read/write operation on the backend buffer.
-    unsigned long position;
-
     // Append a byte to the backend buffer.
     // Return the number of bytes written.
     size_t append(byte datum);
@@ -180,7 +186,7 @@ class ESAT_KISSStream: public Stream
     // Reset the encoder/decoder:
     // - set decoderState to WAITING_FOR_FRAME_START;
     // - set decodedDataLength to 0;
-    // - set position to 0.
+    // - set the read/write position to 0.
     void reset();
 
     // Write a sequence to output an escaped frame end mark.
