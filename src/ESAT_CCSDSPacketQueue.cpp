@@ -192,6 +192,10 @@ ESAT_CCSDSPacketQueue& ESAT_CCSDSPacketQueue::operator=(const ESAT_CCSDSPacketQu
     {
       ::delete[] packets;
     }
+    if (unread != nullptr)
+    {
+      delete[] unread;
+    }
     queueCapacity = original.queueCapacity;
     readPosition = original.readPosition;
     writePosition = original.writePosition;
