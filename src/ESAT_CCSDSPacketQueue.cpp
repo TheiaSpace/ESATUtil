@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Theia Space, Universidad Politécnica de Madrid
+ * Copyright (C) 2020, 2021 Theia Space, Universidad Politécnica de Madrid
  *
  * This file is part of Theia Space's ESAT Util library.
  *
@@ -81,8 +81,14 @@ ESAT_CCSDSPacketQueue::ESAT_CCSDSPacketQueue(const ESAT_CCSDSPacketQueue& origin
 
 ESAT_CCSDSPacketQueue::~ESAT_CCSDSPacketQueue()
 {
-  ::delete[] packets;
-  delete[] unread;
+  if (packets != nullptr)
+  {
+    ::delete[] packets;
+  }
+  if (unread != nullptr)
+  {
+    delete[] unread;
+  }
 }
 
 unsigned long ESAT_CCSDSPacketQueue::availableForRead() const
@@ -185,6 +191,10 @@ ESAT_CCSDSPacketQueue& ESAT_CCSDSPacketQueue::operator=(const ESAT_CCSDSPacketQu
     if (packets != nullptr)
     {
       ::delete[] packets;
+    }
+    if (unread != nullptr)
+    {
+      delete[] unread;
     }
     queueCapacity = original.queueCapacity;
     readPosition = original.readPosition;
