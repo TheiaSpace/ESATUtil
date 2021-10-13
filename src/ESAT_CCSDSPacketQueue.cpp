@@ -81,8 +81,14 @@ ESAT_CCSDSPacketQueue::ESAT_CCSDSPacketQueue(const ESAT_CCSDSPacketQueue& origin
 
 ESAT_CCSDSPacketQueue::~ESAT_CCSDSPacketQueue()
 {
-  ::delete[] packets;
-  delete[] unread;
+  if (packets != nullptr)
+  {
+    ::delete[] packets;
+  }
+  if (unread != nullptr)
+  {
+    delete[] unread;
+  }
 }
 
 unsigned long ESAT_CCSDSPacketQueue::availableForRead() const
