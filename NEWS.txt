@@ -18,6 +18,11 @@ You should have received a copy of the GNU General Public License
 along with Theia Space's ESAT Utility library.  If not, see
 <http://www.gnu.org/licenses/>.
 
+* Changes in ESATUtil 2.2.1, 2021-10-21
+
+** Correction of memory handling errors.
+
+
 * Changes in ESATUtil 2.2.0, 2021-02-10
 
 ** Streams are now seekable.
